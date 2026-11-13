@@ -510,7 +510,7 @@ backend seed account (`make seed`).
   and `O/opportunities/:id/brief/` (GET generates synchronously if missing —
   would exceed the proxy's 15 s timeout; POST regenerates).
 
-### Backend (owned by backend team — see `../leadline_backend/docs/team-plan.md`)
+### Backend (plan: `../leadline_backend/my-folder/project.md`)
 
 - Agent fixes landed in `a098f5c` (researcher prompt v2, verifier, supervisor,
   lead scout logging) — real-run quality still to be confirmed.
