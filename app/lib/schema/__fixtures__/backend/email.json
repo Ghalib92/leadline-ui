@@ -1,0 +1,30 @@
+{
+  "id": "eAxQZi8cPcJB",
+  "opportunity": {
+    "id": "AvDuQK9VnhRH",
+    "title": "[Sample] Request for proposals: Education services",
+    "funder": "Coastal Communities Fund",
+    "deadline": "2026-10-18T09:00:36.211354+03:00",
+    "status": "pursuing"
+  },
+  "contact_id": "5YwiMSUne6Hf",
+  "to_email": "amina@fund.org",
+  "to_name": "Amina",
+  "purpose": "question",
+  "instructions": "",
+  "subject": "Hi",
+  "body": "Hello",
+  "status": "draft",
+  "error": "",
+  "created_by": {
+    "id": "q6ws4qMV9qbz",
+    "name": "user0@example.com"
+  },
+  "approved_by": null,
+  "approved_at": null,
+  "sent_at": null,
+  "prompt_id": "",
+  "model": "",
+  "created_at": "2026-10-08T09:00:36.313532+03:00",
+  "updated_at": "2026-10-08T09:00:36.313544+03:00"
+}

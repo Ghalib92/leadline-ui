@@ -1,0 +1,594 @@
+{
+  "id": "UdYXctqPZyHk",
+  "agent": "dHDgKF7ekYNo",
+  "agent_name": "Education grants",
+  "trigger": "manual",
+  "status": "succeeded",
+  "created_at": "2026-10-08T09:00:35.185399+03:00",
+  "started_at": "2026-10-08T09:00:35.194212+03:00",
+  "finished_at": "2026-10-08T09:00:35.735344+03:00",
+  "duration_ms": 541,
+  "sources_scanned": 4,
+  "pages_read": 7,
+  "found": 3,
+  "error": "",
+  "runner": "fake",
+  "depth": "quick",
+  "folders": [
+    {
+      "id": "qdWPq2z3bYTt",
+      "name": "Past proposals",
+      "purpose": "Style and structure examples"
+    }
+  ],
+  "budget": {
+    "max_pages": 15,
+    "max_rounds": 1,
+    "max_tokens": 80000,
+    "max_searches": 6,
+    "max_wall_seconds": 240
+  },
+  "usage": {
+    "pages": 7,
+    "searches": 8
+  },
+  "prompt_versions": {},
+  "models_used": {},
+  "last_event_seq": 35,
+  "steps": [
+    {
+      "key": "profile",
+      "label": "Read the organization profile",
+      "status": "warning",
+      "started_at": "2026-10-08T09:00:35.350309+03:00",
+      "duration_ms": 29,
+      "events": [
+        {
+          "seq": 1,
+          "step": "profile",
+          "level": "info",
+          "message": "Reading the profile of Acme Africa",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.350309+03:00"
+        },
+        {
+          "seq": 2,
+          "step": "profile",
+          "level": "warning",
+          "message": "No company dossier yet; planning from the profile only",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.361154+03:00"
+        },
+        {
+          "seq": 3,
+          "step": "profile",
+          "level": "info",
+          "message": "Planned 8 searches across 2 source type(s)",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {
+            "queries": [
+              "Data",
+              "Education",
+              "Data",
+              "Education",
+              "Data",
+              "Education",
+              "Data",
+              "Education"
+            ]
+          },
+          "at": "2026-10-08T09:00:35.369165+03:00"
+        }
+      ]
+    },
+    {
+      "key": "search",
+      "label": "Search sources",
+      "status": "done",
+      "started_at": "2026-10-08T09:00:35.379337+03:00",
+      "duration_ms": 159,
+      "events": [
+        {
+          "seq": 4,
+          "step": "search",
+          "level": "info",
+          "message": "Searching fundsforngos.org for “Data”",
+          "tool": "search",
+          "source": "fundsforngos.org",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.379337+03:00"
+        },
+        {
+          "seq": 5,
+          "step": "search",
+          "level": "info",
+          "message": "9 results from fundsforngos.org",
+          "tool": "",
+          "source": "fundsforngos.org",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.388580+03:00"
+        },
+        {
+          "seq": 6,
+          "step": "search",
+          "level": "info",
+          "message": "Searching fundsforngos.org for “Education”",
+          "tool": "search",
+          "source": "fundsforngos.org",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.398367+03:00"
+        },
+        {
+          "seq": 7,
+          "step": "search",
+          "level": "info",
+          "message": "12 results from fundsforngos.org",
+          "tool": "",
+          "source": "fundsforngos.org",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.409680+03:00"
+        },
+        {
+          "seq": 8,
+          "step": "search",
+          "level": "info",
+          "message": "Searching devex.com for “Data”",
+          "tool": "search",
+          "source": "devex.com",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.420660+03:00"
+        },
+        {
+          "seq": 9,
+          "step": "search",
+          "level": "info",
+          "message": "14 results from devex.com",
+          "tool": "",
+          "source": "devex.com",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.430040+03:00"
+        },
+        {
+          "seq": 10,
+          "step": "search",
+          "level": "info",
+          "message": "Searching devex.com for “Education”",
+          "tool": "search",
+          "source": "devex.com",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.439325+03:00"
+        },
+        {
+          "seq": 11,
+          "step": "search",
+          "level": "info",
+          "message": "7 results from devex.com",
+          "tool": "",
+          "source": "devex.com",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.449170+03:00"
+        },
+        {
+          "seq": 12,
+          "step": "search",
+          "level": "info",
+          "message": "Searching grants.gov for “Data”",
+          "tool": "search",
+          "source": "grants.gov",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.458600+03:00"
+        },
+        {
+          "seq": 13,
+          "step": "search",
+          "level": "info",
+          "message": "3 results from grants.gov",
+          "tool": "",
+          "source": "grants.gov",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.466968+03:00"
+        },
+        {
+          "seq": 14,
+          "step": "search",
+          "level": "info",
+          "message": "Searching grants.gov for “Education”",
+          "tool": "search",
+          "source": "grants.gov",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.476666+03:00"
+        },
+        {
+          "seq": 15,
+          "step": "search",
+          "level": "info",
+          "message": "3 results from grants.gov",
+          "tool": "",
+          "source": "grants.gov",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.485288+03:00"
+        },
+        {
+          "seq": 16,
+          "step": "search",
+          "level": "info",
+          "message": "Searching ec.europa.eu for “Data”",
+          "tool": "search",
+          "source": "ec.europa.eu",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.494859+03:00"
+        },
+        {
+          "seq": 17,
+          "step": "search",
+          "level": "info",
+          "message": "5 results from ec.europa.eu",
+          "tool": "",
+          "source": "ec.europa.eu",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.503956+03:00"
+        },
+        {
+          "seq": 18,
+          "step": "search",
+          "level": "info",
+          "message": "Searching ec.europa.eu for “Education”",
+          "tool": "search",
+          "source": "ec.europa.eu",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.513637+03:00"
+        },
+        {
+          "seq": 19,
+          "step": "search",
+          "level": "info",
+          "message": "8 results from ec.europa.eu",
+          "tool": "",
+          "source": "ec.europa.eu",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.524196+03:00"
+        }
+      ]
+    },
+    {
+      "key": "read",
+      "label": "Read opportunity pages",
+      "status": "warning",
+      "started_at": "2026-10-08T09:00:35.538820+03:00",
+      "duration_ms": 79,
+      "events": [
+        {
+          "seq": 20,
+          "step": "read",
+          "level": "info",
+          "message": "Reading devex.com: [Sample] Data Innovation Grant 2027",
+          "tool": "fetch",
+          "source": "devex.com",
+          "url": "https://example.org/sample/sample-data-innovation-grant-2027",
+          "data": {},
+          "at": "2026-10-08T09:00:35.538820+03:00"
+        },
+        {
+          "seq": 21,
+          "step": "read",
+          "level": "info",
+          "message": "Reading ec.europa.eu: [Sample] Request for proposals: Education services",
+          "tool": "fetch",
+          "source": "ec.europa.eu",
+          "url": "https://example.org/sample/sample-request-for-proposals-education-services",
+          "data": {},
+          "at": "2026-10-08T09:00:35.548496+03:00"
+        },
+        {
+          "seq": 22,
+          "step": "read",
+          "level": "info",
+          "message": "Reading devex.com: [Sample] Data Innovation Grant 2026",
+          "tool": "fetch",
+          "source": "devex.com",
+          "url": "https://example.org/sample/sample-data-innovation-grant-2026",
+          "data": {},
+          "at": "2026-10-08T09:00:35.556682+03:00"
+        },
+        {
+          "seq": 23,
+          "step": "read",
+          "level": "info",
+          "message": "Reading ec.europa.eu: [Sample] Request for proposals: Education services",
+          "tool": "fetch",
+          "source": "ec.europa.eu",
+          "url": "https://example.org/sample/sample-request-for-proposals-education-services",
+          "data": {},
+          "at": "2026-10-08T09:00:35.566087+03:00"
+        },
+        {
+          "seq": 24,
+          "step": "read",
+          "level": "info",
+          "message": "Reading fundsforngos.org: [Sample] Data Innovation Grant 2026",
+          "tool": "fetch",
+          "source": "fundsforngos.org",
+          "url": "https://example.org/sample/sample-data-innovation-grant-2026",
+          "data": {},
+          "at": "2026-10-08T09:00:35.575939+03:00"
+        },
+        {
+          "seq": 25,
+          "step": "read",
+          "level": "warning",
+          "message": "Skipped “[Sample] Data Innovation Grant 2026”: the deadline has passed",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.586347+03:00"
+        },
+        {
+          "seq": 26,
+          "step": "read",
+          "level": "info",
+          "message": "Reading ec.europa.eu: [Sample] Request for proposals: Education services",
+          "tool": "fetch",
+          "source": "ec.europa.eu",
+          "url": "https://example.org/sample/sample-request-for-proposals-education-services",
+          "data": {},
+          "at": "2026-10-08T09:00:35.596674+03:00"
+        },
+        {
+          "seq": 27,
+          "step": "read",
+          "level": "info",
+          "message": "Reading fundsforngos.org: [Sample] Data Innovation Grant 2027",
+          "tool": "fetch",
+          "source": "fundsforngos.org",
+          "url": "https://example.org/sample/sample-data-innovation-grant-2027",
+          "data": {},
+          "at": "2026-10-08T09:00:35.605531+03:00"
+        }
+      ]
+    },
+    {
+      "key": "match",
+      "label": "Score the matches",
+      "status": "done",
+      "started_at": "2026-10-08T09:00:35.618090+03:00",
+      "duration_ms": 107,
+      "events": [
+        {
+          "seq": 28,
+          "step": "match",
+          "level": "info",
+          "message": "Scoring 6 candidate(s) against your profile",
+          "tool": "judge",
+          "source": "",
+          "url": "",
+          "data": {},
+          "at": "2026-10-08T09:00:35.618090+03:00"
+        },
+        {
+          "seq": 29,
+          "step": "match",
+          "level": "info",
+          "message": "[Sample] Data Innovation Grant 2027: 95/100",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {
+            "score": 95
+          },
+          "at": "2026-10-08T09:00:35.626640+03:00"
+        },
+        {
+          "seq": 30,
+          "step": "match",
+          "level": "info",
+          "message": "[Sample] Request for proposals: Education services: 36/100",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {
+            "score": 36
+          },
+          "at": "2026-10-08T09:00:35.634485+03:00"
+        },
+        {
+          "seq": 31,
+          "step": "match",
+          "level": "info",
+          "message": "[Sample] Data Innovation Grant 2026: 77/100",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {
+            "score": 77
+          },
+          "at": "2026-10-08T09:00:35.643038+03:00"
+        },
+        {
+          "seq": 32,
+          "step": "match",
+          "level": "info",
+          "message": "[Sample] Request for proposals: Education services: 67/100",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {
+            "score": 67
+          },
+          "at": "2026-10-08T09:00:35.650581+03:00"
+        },
+        {
+          "seq": 33,
+          "step": "match",
+          "level": "info",
+          "message": "[Sample] Request for proposals: Education services: 94/100",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {
+            "score": 94
+          },
+          "at": "2026-10-08T09:00:35.658527+03:00"
+        },
+        {
+          "seq": 34,
+          "step": "match",
+          "level": "info",
+          "message": "[Sample] Data Innovation Grant 2027: 85/100",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {
+            "score": 85
+          },
+          "at": "2026-10-08T09:00:35.666684+03:00"
+        }
+      ]
+    },
+    {
+      "key": "save",
+      "label": "Save to the feed",
+      "status": "done",
+      "started_at": "2026-10-08T09:00:35.725889+03:00",
+      "duration_ms": 9,
+      "events": [
+        {
+          "seq": 35,
+          "step": "save",
+          "level": "info",
+          "message": "Added 3 new; 2 already in your feed; 1 below the 55 threshold",
+          "tool": "",
+          "source": "",
+          "url": "",
+          "data": {
+            "added": 3,
+            "duplicate": 2,
+            "below_threshold": 1
+          },
+          "at": "2026-10-08T09:00:35.725889+03:00"
+        }
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "title": "[Sample] Data Innovation Grant 2027",
+      "funder": "Coastal Communities Fund",
+      "source_name": "devex.com",
+      "source_url": "https://example.org/sample/sample-data-innovation-grant-2027",
+      "opportunity_type": "grant",
+      "match_score": 95,
+      "match_reasons": [
+        "Matches your focus on data",
+        "Open to organizations in KE"
+      ],
+      "decision": "added",
+      "opportunity": "zK93hWcCPkbL"
+    },
+    {
+      "title": "[Sample] Request for proposals: Education services",
+      "funder": "Lakeside Development Trust",
+      "source_name": "ec.europa.eu",
+      "source_url": "https://example.org/sample/sample-request-for-proposals-education-services",
+      "opportunity_type": "rfp",
+      "match_score": 94,
+      "match_reasons": [
+        "Matches your focus on education",
+        "Open to organizations in KE"
+      ],
+      "decision": "duplicate",
+      "opportunity": "AvDuQK9VnhRH"
+    },
+    {
+      "title": "[Sample] Data Innovation Grant 2027",
+      "funder": "Pan-African Growth Facility",
+      "source_name": "fundsforngos.org",
+      "source_url": "https://example.org/sample/sample-data-innovation-grant-2027",
+      "opportunity_type": "grant",
+      "match_score": 85,
+      "match_reasons": [
+        "Matches your focus on data",
+        "Open to organizations in KE"
+      ],
+      "decision": "duplicate",
+      "opportunity": "zK93hWcCPkbL"
+    },
+    {
+      "title": "[Sample] Data Innovation Grant 2026",
+      "funder": "Lakeside Development Trust",
+      "source_name": "devex.com",
+      "source_url": "https://example.org/sample/sample-data-innovation-grant-2026",
+      "opportunity_type": "grant",
+      "match_score": 77,
+      "match_reasons": [
+        "Matches your focus on data",
+        "Open to organizations in KE"
+      ],
+      "decision": "added",
+      "opportunity": "agVy8hxijdTV"
+    },
+    {
+      "title": "[Sample] Request for proposals: Education services",
+      "funder": "Coastal Communities Fund",
+      "source_name": "ec.europa.eu",
+      "source_url": "https://example.org/sample/sample-request-for-proposals-education-services",
+      "opportunity_type": "rfp",
+      "match_score": 67,
+      "match_reasons": [
+        "Matches your focus on education",
+        "Open to organizations in KE"
+      ],
+      "decision": "added",
+      "opportunity": "AvDuQK9VnhRH"
+    },
+    {
+      "title": "[Sample] Request for proposals: Education services",
+      "funder": "Horizon Impact Foundation",
+      "source_name": "ec.europa.eu",
+      "source_url": "https://example.org/sample/sample-request-for-proposals-education-services",
+      "opportunity_type": "rfp",
+      "match_score": 36,
+      "match_reasons": ["Matches your focus on education"],
+      "decision": "below_threshold",
+      "opportunity": null
+    }
+  ],
+  "outcome": {
+    "added": 3,
+    "duplicates": 2,
+    "below_threshold": 1,
+    "skipped": {
+      "closed": 1,
+      "not_an_opportunity": 0,
+      "wrong_type": 0,
+      "excluded": 0,
+      "unreadable": 0
+    },
+    "best_score": 95,
+    "match_threshold": 55
+  }
+}

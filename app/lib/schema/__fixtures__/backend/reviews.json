@@ -1,0 +1,16 @@
+[
+  {
+    "id": "vDYpab3Qhic8",
+    "decision": "approve",
+    "reason": "",
+    "comment": "",
+    "reviewer": {
+      "id": "q6ws4qMV9qbz",
+      "email": "user0@example.com",
+      "name": "user0@example.com"
+    },
+    "status_before": "new",
+    "match_score": 67,
+    "created_at": "2026-10-08T09:00:35.878070+03:00"
+  }
+]

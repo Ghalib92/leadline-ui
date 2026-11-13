@@ -1,0 +1,73 @@
+{
+  "days": 30,
+  "runs_by_week": [
+    {
+      "week": "2026-10-05T00:00:00+03:00",
+      "runs": 1,
+      "succeeded": 1,
+      "partial": 0,
+      "failed": 0,
+      "found": 3
+    }
+  ],
+  "opportunities_found": 3,
+  "by_type": [
+    {
+      "key": "grant",
+      "count": 2
+    },
+    {
+      "key": "rfp",
+      "count": 1
+    }
+  ],
+  "by_source": [
+    {
+      "key": "devex.com",
+      "count": 2
+    },
+    {
+      "key": "ec.europa.eu",
+      "count": 1
+    }
+  ],
+  "by_score": [
+    {
+      "label": "0\u201339",
+      "min": 0,
+      "max": 39,
+      "count": 0
+    },
+    {
+      "label": "40\u201354",
+      "min": 40,
+      "max": 54,
+      "count": 0
+    },
+    {
+      "label": "55\u201369",
+      "min": 55,
+      "max": 69,
+      "count": 1
+    },
+    {
+      "label": "70\u201384",
+      "min": 70,
+      "max": 84,
+      "count": 1
+    },
+    {
+      "label": "85\u2013100",
+      "min": 85,
+      "max": 100,
+      "count": 1
+    }
+  ],
+  "reviews": {
+    "approved": 1,
+    "rejected": 0,
+    "pending": 2,
+    "approval_rate": 1.0
+  },
+  "rejection_reasons": []
+}

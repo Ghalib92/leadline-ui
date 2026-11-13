@@ -1,0 +1,53 @@
+{
+  "id": "AvDuQK9VnhRH",
+  "agent": "dHDgKF7ekYNo",
+  "agent_name": "Education grants",
+  "run": "UdYXctqPZyHk",
+  "opportunity_type": "rfp",
+  "title": "[Sample] Request for proposals: Education services",
+  "funder": "Coastal Communities Fund",
+  "summary": "Sample opportunity from the test runner, not a real listing. Supports education work in KE.",
+  "eligibility": "Registered organizations operating in the region (sample).",
+  "amount": null,
+  "deadline": "2026-11-24T09:00:35.538608+03:00",
+  "location": "KE",
+  "source_url": "https://example.org/sample/sample-request-for-proposals-education-services",
+  "source_name": "ec.europa.eu",
+  "match_score": 67,
+  "match_reasons": [
+    "Matches your focus on education",
+    "Open to organizations in KE"
+  ],
+  "status": "new",
+  "saved": false,
+  "notes": "",
+  "requirements": {},
+  "latest_review": null,
+  "found_at": "2026-10-08T09:00:35.707107+03:00",
+  "updated_at": "2026-10-08T09:00:35.707451+03:00",
+  "brief": {
+    "what_it_is": "A grant from the Northbridge Foundation for youth data skills training in Kenya.",
+    "why_it_fits": "Matches your focus on data skills and your training record in Nairobi.",
+    "eligibility_checklist": [
+      {
+        "criterion": "Registered NGO in Kenya",
+        "meets": true,
+        "notes": "Registered since 2019."
+      },
+      {
+        "criterion": "Three years of audited accounts",
+        "meets": false,
+        "notes": "Only two years are on file."
+      }
+    ],
+    "documents_needed": [
+      "Project narrative",
+      "Detailed budget",
+      "Audited accounts"
+    ],
+    "deadline_plan": "Deadline is 30 Nov; start the narrative three weeks before.",
+    "effort_estimate": "medium (about a week of staff time)",
+    "next_step": "Confirm the audit gap with your accountant, then draft the outline."
+  },
+  "brief_status": "ready"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "value": "not_eligible",
+    "label": "We are not eligible"
+  },
+  {
+    "value": "wrong_focus",
+    "label": "Not our focus area"
+  },
+  {
+    "value": "wrong_location",
+    "label": "Wrong country or region"
+  },
+  {
+    "value": "amount_too_small",
+    "label": "Amount too small"
+  },
+  {
+    "value": "amount_too_large",
+    "label": "Amount too large for us"
+  },
+  {
+    "value": "deadline_too_soon",
+    "label": "Deadline too soon"
+  },
+  {
+    "value": "funder",
+    "label": "Not a funder we work with"
+  },
+  {
+    "value": "not_real",
+    "label": "Not a real or open opportunity"
+  },
+  {
+    "value": "duplicate",
+    "label": "Duplicate of another opportunity"
+  },
+  {
+    "value": "already_applied",
+    "label": "Already applied or in progress"
+  },
+  {
+    "value": "capacity",
+    "label": "No capacity right now"
+  },
+  {
+    "value": "other",
+    "label": "Other"
+  }
+]

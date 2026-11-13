@@ -1,0 +1,57 @@
+{
+  "review": {
+    "id": "vDYpab3Qhic8",
+    "decision": "approve",
+    "reason": "",
+    "comment": "",
+    "reviewer": {
+      "id": "q6ws4qMV9qbz",
+      "email": "user0@example.com",
+      "name": "user0@example.com"
+    },
+    "status_before": "new",
+    "match_score": 67,
+    "created_at": "2026-10-08T09:00:35.878070+03:00"
+  },
+  "opportunity": {
+    "id": "AvDuQK9VnhRH",
+    "agent": "dHDgKF7ekYNo",
+    "agent_name": "Education grants",
+    "run": "UdYXctqPZyHk",
+    "opportunity_type": "rfp",
+    "title": "[Sample] Request for proposals: Education services",
+    "funder": "Coastal Communities Fund",
+    "summary": "Sample opportunity from the test runner, not a real listing. Supports education work in KE.",
+    "eligibility": "Registered organizations operating in the region (sample).",
+    "amount": null,
+    "deadline": "2026-11-24T09:00:35.538608+03:00",
+    "location": "KE",
+    "source_url": "https://example.org/sample/sample-request-for-proposals-education-services",
+    "source_name": "ec.europa.eu",
+    "match_score": 67,
+    "match_reasons": [
+      "Matches your focus on education",
+      "Open to organizations in KE"
+    ],
+    "status": "pursuing",
+    "saved": false,
+    "notes": "",
+    "requirements": {},
+    "latest_review": {
+      "id": "vDYpab3Qhic8",
+      "decision": "approve",
+      "reason": "",
+      "comment": "",
+      "reviewer": {
+        "id": "q6ws4qMV9qbz",
+        "email": "user0@example.com",
+        "name": "user0@example.com"
+      },
+      "status_before": "new",
+      "match_score": 67,
+      "created_at": "2026-10-08T09:00:35.878070+03:00"
+    },
+    "found_at": "2026-10-08T09:00:35.707107+03:00",
+    "updated_at": "2026-10-08T09:00:35.879420+03:00"
+  }
+}

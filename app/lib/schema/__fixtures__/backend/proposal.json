@@ -1,0 +1,202 @@
+{
+  "id": "RxFSo4EqpPjz",
+  "opportunity": {
+    "id": "AvDuQK9VnhRH",
+    "title": "[Sample] Request for proposals: Education services",
+    "funder": "Coastal Communities Fund",
+    "deadline": "2026-11-24T09:00:35.538608+03:00",
+    "status": "pursuing"
+  },
+  "status": "ready",
+  "job": {
+    "kind": "draft",
+    "section": "",
+    "instructions": "",
+    "queued_at": "2026-10-08T09:00:35.892690+03:00",
+    "started_at": null
+  },
+  "version": 1,
+  "warning": "",
+  "error": "",
+  "drafted_at": "2026-10-08T09:00:36.083094+03:00",
+  "created_at": "2026-10-08T09:00:35.892893+03:00",
+  "updated_at": "2026-10-08T09:00:36.083241+03:00",
+  "sections": [
+    {
+      "key": "summary",
+      "title": "Executive summary",
+      "purpose": "Sample purpose of the executive summary section.",
+      "key_points": ["Sample point"],
+      "target_words": 200,
+      "content": "[Sample] Acme Africa proposes work that answers \u201c[Sample] Request for proposals: Education services\u201d from Coastal Communities Fund.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "problem",
+      "title": "Problem and need",
+      "purpose": "Sample purpose of the problem and need section.",
+      "key_points": ["Sample point"],
+      "target_words": 350,
+      "content": "[Sample] Acme Africa proposes work that answers \u201c[Sample] Request for proposals: Education services\u201d from Coastal Communities Fund.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "approach",
+      "title": "Approach and activities",
+      "purpose": "Sample purpose of the approach and activities section.",
+      "key_points": ["Sample point"],
+      "target_words": 450,
+      "content": "[Sample] Acme Africa proposes work that answers \u201c[Sample] Request for proposals: Education services\u201d from Coastal Communities Fund.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "results",
+      "title": "Expected results and monitoring",
+      "purpose": "Sample purpose of the expected results and monitoring section.",
+      "key_points": ["Sample point"],
+      "target_words": 300,
+      "content": "[Sample] Acme Africa proposes work that answers \u201c[Sample] Request for proposals: Education services\u201d from Coastal Communities Fund.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "team",
+      "title": "Team and track record",
+      "purpose": "Sample purpose of the team and track record section.",
+      "key_points": ["Sample point"],
+      "target_words": 250,
+      "content": "[Sample] Acme Africa proposes work that answers \u201c[Sample] Request for proposals: Education services\u201d from Coastal Communities Fund.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "budget",
+      "title": "Budget overview",
+      "purpose": "Sample purpose of the budget overview section.",
+      "key_points": ["Sample point"],
+      "target_words": 200,
+      "content": "[Sample] Acme Africa proposes work that answers \u201c[Sample] Request for proposals: Education services\u201d from Coastal Communities Fund.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    }
+  ],
+  "requirements": {
+    "summary": "[Sample] requirements from the test writer.",
+    "deadline": "",
+    "sections": [
+      {
+        "title": "Executive summary",
+        "guidance": "",
+        "word_limit": 200
+      },
+      {
+        "title": "Problem and need",
+        "guidance": "",
+        "word_limit": 350
+      },
+      {
+        "title": "Approach and activities",
+        "guidance": "",
+        "word_limit": 450
+      },
+      {
+        "title": "Expected results and monitoring",
+        "guidance": "",
+        "word_limit": 300
+      },
+      {
+        "title": "Team and track record",
+        "guidance": "",
+        "word_limit": 250
+      },
+      {
+        "title": "Budget overview",
+        "guidance": "",
+        "word_limit": 200
+      }
+    ],
+    "eligibility": [],
+    "budget_rules": [],
+    "format_rules": [],
+    "documents_required": ["Budget", "Registration certificate"],
+    "evaluation_criteria": [
+      "Relevance (30%)",
+      "Feasibility (30%)",
+      "Impact (25%)",
+      "Value for money (15%)"
+    ]
+  },
+  "review": {
+    "score": 62,
+    "issues": [
+      {
+        "issue": "Sample issue",
+        "section": "budget",
+        "suggestion": "Add the cost breakdown."
+      }
+    ],
+    "strengths": ["Sample strength"],
+    "missing_requirements": ["Registration certificate"]
+  },
+  "prompt_versions": {},
+  "models_used": {},
+  "usage": {},
+  "last_event_seq": 17
+}

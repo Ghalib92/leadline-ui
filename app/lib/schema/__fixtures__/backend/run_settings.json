@@ -1,0 +1,30 @@
+{
+  "depth": "quick",
+  "sources": ["web", "grants"],
+  "opportunity_types": ["grant", "fellowship"],
+  "folders": [
+    {
+      "id": "qdWPq2z3bYTt",
+      "name": "Past proposals"
+    }
+  ],
+  "knowledge_mode": "selected",
+  "depths": [
+    {
+      "key": "quick",
+      "label": "Quick",
+      "description": "A fast first look."
+    },
+    {
+      "key": "standard",
+      "label": "Standard",
+      "description": "Balanced; the usual choice."
+    },
+    {
+      "key": "deep",
+      "label": "Deep",
+      "description": "Wider and slower; more finds."
+    }
+  ],
+  "updated_at": "2026-10-14T03:38:41.291244+03:00"
+}

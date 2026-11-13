@@ -1,0 +1,449 @@
+import { useEffect, useEffectEvent } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { ExternalLink, Globe, Pencil, Plus, Trash2 } from 'lucide-react';
+import {
+  serverFieldErrors,
+  useRemoveSource,
+  useSaveSource,
+  useSources,
+  useToggleSource,
+} from '~/features/orgs';
+import {
+  orgSourceFormResolver,
+  orgSourcesFormResolver,
+  type OrgSource,
+  type OrgSourceForm,
+  type OrgSourcesForm,
+} from '~/lib/schema';
+import { useOrg } from '~/lib/org/org-context';
+import { toastUtils } from '~/lib/utils/toast';
+import { extractError } from '~/lib/utils/extract-error';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { Form } from '~/components/ui/form';
+import { Switch } from '~/components/ui/switch';
+import { AppCard, AppSheet, useConfirm } from '~/components/composed';
+import {
+  FormSwitchField,
+  FormTextareaField,
+  FormTextField,
+} from '~/components/form-fields';
+import type { EditingProps } from './profile-tabs';
+
+const blank: OrgSourceForm = {
+  url: '',
+  label: '',
+  notes: '',
+  enabled: true,
+};
+
+function formatDomain(urlStr: string): string {
+  try {
+    const parsed = new URL(urlStr);
+    return parsed.hostname.replace(/^www\./, '');
+  } catch {
+    return urlStr;
+  }
+}
+
+/**
+ * Custom grant portals, funding feeds, and RFP pages for discovery agents.
+ * `?edit=source` opens "add"; `?edit=source:<id>` edits.
+ */
+export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
+  const { view } = useOrg();
+  const { data: sources = [], isPending } = useSources(view.id);
+  const save = useSaveSource(view.id);
+  const remove = useRemoveSource(view.id);
+  const toggle = useToggleSource(view.id);
+  const { confirm, confirmDialog } = useConfirm();
+  const canEdit = view.myRole === 'admin' && !view.isArchived;
+
+  const editingId = editing?.startsWith('source:')
+    ? editing.slice(7)
+    : undefined;
+  const open = canEdit && !!editingId;
+  const adding = canEdit && editing === 'source';
+  const current = sources.find((s) => s.id === editingId);
+
+  const form = useForm<OrgSourceForm>({
+    resolver: orgSourceFormResolver,
+    defaultValues: blank,
+  });
+
+  const onOpened = useEffectEvent((source: OrgSource | undefined) =>
+    form.reset(
+      source
+        ? {
+            url: source.url,
+            label: source.label,
+            notes: source.notes,
+            enabled: source.enabled,
+          }
+        : blank
+    )
+  );
+
+  useEffect(() => {
+    if (open) onOpened(current);
+  }, [open, current]);
+
+  const submit = form.handleSubmit(async (data) => {
+    try {
+      await save.mutateAsync({ ...data, id: editingId });
+      toastUtils.success('Source updated');
+      setEditing(null);
+    } catch (error) {
+      for (const [name, message] of Object.entries(serverFieldErrors(error))) {
+        form.setError(name as keyof OrgSourceForm, { message });
+      }
+      toastUtils.error('Could not save source', extractError(error));
+    }
+  });
+
+  const onToggle = async (source: OrgSource, enabled: boolean) => {
+    try {
+      await toggle.mutateAsync({ id: source.id, enabled });
+      toastUtils.success(enabled ? 'Source activated' : 'Source paused');
+    } catch (error) {
+      toastUtils.error('Could not update source', extractError(error));
+    }
+  };
+
+  const onRemove = async (source: OrgSource) => {
+    const ok = await confirm({
+      title: 'Remove this source?',
+      description: source.label
+        ? `${source.label} (${source.url})`
+        : source.url,
+      confirmLabel: 'Remove',
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await remove.mutateAsync(source.id);
+      toastUtils.success('Source removed');
+    } catch (error) {
+      toastUtils.error('Could not remove source', extractError(error));
+    }
+  };
+
+  return (
+    <>
+      <AppCard
+        title="Custom sources"
+        description="Portals, grant databases and opportunity feeds your discovery agents will crawl."
+        actions={
+          canEdit && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setEditing('source')}
+            >
+              <Plus className="h-3.5 w-3.5" /> Add source
+            </Button>
+          )
+        }
+        contentClassName="divide-y divide-border"
+      >
+        {isPending ? null : sources.length === 0 ? (
+          <p className="py-2 text-sm text-muted-foreground">
+            No custom sources added yet. Add grant websites or feeds for
+            discovery agents to check.
+          </p>
+        ) : (
+          sources.map((source) => (
+            <div
+              key={source.id}
+              className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                <Globe className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="truncate text-sm font-medium">
+                    {source.label || formatDomain(source.url)}
+                  </p>
+                  <Badge
+                    variant={source.enabled ? 'secondary' : 'outline'}
+                    className="text-xs font-normal"
+                  >
+                    {source.enabled ? 'Active' : 'Paused'}
+                  </Badge>
+                </div>
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex max-w-full items-center gap-1 truncate text-xs text-primary hover:underline"
+                >
+                  <span className="truncate">{source.url}</span>
+                  <ExternalLink className="h-3 w-3 shrink-0" />
+                </a>
+                {source.notes && (
+                  <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                    {source.notes}
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {canEdit && (
+                  <>
+                    <Switch
+                      size="sm"
+                      checked={source.enabled}
+                      disabled={toggle.isPending}
+                      onCheckedChange={(checked) => onToggle(source, checked)}
+                      aria-label={
+                        source.enabled ? 'Pause source' : 'Activate source'
+                      }
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Edit ${source.url}`}
+                      onClick={() => setEditing(`source:${source.id}`)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Remove ${source.url}`}
+                      onClick={() => onRemove(source)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </AppCard>
+
+      <AppSheet
+        open={open}
+        onOpenChange={(next) => !next && setEditing(null)}
+        dismissible={false}
+        title="Edit source"
+        description="Add a funding portal, grant opportunities page, or RFP feed for discovery agents."
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setEditing(null)}>
+              Cancel
+            </Button>
+            <Button type="submit" form="source-form" disabled={save.isPending}>
+              {save.isPending ? 'Saving…' : 'Save changes'}
+            </Button>
+          </>
+        }
+      >
+        <Form {...form}>
+          <form
+            method="post"
+            id="source-form"
+            onSubmit={submit}
+            className="space-y-4"
+          >
+            <FormTextField
+              control={form.control}
+              name="url"
+              autoComplete="url"
+              label="Source URL"
+              type="url"
+              placeholder="https://example.org/funding-calls"
+              required
+            />
+            <FormTextField
+              control={form.control}
+              name="label"
+              autoComplete="off"
+              label="Label"
+              placeholder="Optional, e.g. Gates Foundation Global Health"
+            />
+            <FormTextareaField
+              control={form.control}
+              name="notes"
+              autoComplete="off"
+              label="Notes"
+              placeholder="Optional instructions for agents, e.g. Focus on climate and maternal health RFPs"
+              rows={3}
+            />
+            <FormSwitchField
+              control={form.control}
+              name="enabled"
+              label="Active"
+              description="Include this source in automated discovery runs."
+            />
+          </form>
+        </Form>
+      </AppSheet>
+      <AddSourcesSheet
+        open={adding}
+        orgId={view.id}
+        onClose={() => setEditing(null)}
+      />
+      {confirmDialog}
+    </>
+  );
+}
+
+/** Add several sources in one go: a row each, then one save. Rows that fail stay
+ * with their error; the ones that saved leave the list. */
+function AddSourcesSheet({
+  open,
+  orgId,
+  onClose,
+}: Readonly<{ open: boolean; orgId: string; onClose: () => void }>) {
+  const save = useSaveSource(orgId);
+  const form = useForm<OrgSourcesForm>({
+    resolver: orgSourcesFormResolver,
+    defaultValues: { sources: [blank] },
+  });
+  const rows = useFieldArray({ control: form.control, name: 'sources' });
+
+  const onOpened = useEffectEvent(() => form.reset({ sources: [blank] }));
+  useEffect(() => {
+    if (open) onOpened();
+  }, [open]);
+
+  const submit = form.handleSubmit(async ({ sources }) => {
+    const failed: { row: OrgSourceForm; errors: Record<string, string> }[] = [];
+    for (const row of sources) {
+      try {
+        await save.mutateAsync(row);
+      } catch (error) {
+        const errors = serverFieldErrors(error);
+        failed.push({
+          row,
+          errors: Object.keys(errors).length
+            ? errors
+            : { url: extractError(error) },
+        });
+      }
+    }
+    const added = sources.length - failed.length;
+    if (added)
+      toastUtils.success(
+        added === 1 ? 'Source added' : `${added} sources added`
+      );
+    if (!failed.length) return onClose();
+    form.reset({ sources: failed.map((f) => f.row) });
+    failed.forEach(({ errors }, index) => {
+      for (const [name, message] of Object.entries(errors)) {
+        form.setError(`sources.${index}.${name as keyof OrgSourceForm}`, {
+          message,
+        });
+      }
+    });
+    toastUtils.error(
+      failed.length === 1
+        ? 'One source could not be added'
+        : `${failed.length} sources could not be added`
+    );
+  });
+
+  return (
+    <AppSheet
+      open={open}
+      onOpenChange={(next) => !next && onClose()}
+      dismissible={!form.formState.isDirty}
+      size="lg"
+      title="Add sources"
+      description="Funding portals, grant pages or RFP feeds for your workers to read. Add as many as you like."
+      footer={
+        <>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="add-sources-form"
+            disabled={save.isPending}
+          >
+            {save.isPending
+              ? 'Adding…'
+              : rows.fields.length === 1
+                ? 'Add source'
+                : `Add ${rows.fields.length} sources`}
+          </Button>
+        </>
+      }
+    >
+      <Form {...form}>
+        <form
+          method="post"
+          id="add-sources-form"
+          onSubmit={submit}
+          className="space-y-4"
+        >
+          {rows.fields.map((field, index) => (
+            <fieldset
+              key={field.id}
+              className="space-y-3 rounded-lg border border-border p-3"
+            >
+              <div className="flex items-start gap-2">
+                <div className="flex-1">
+                  <FormTextField
+                    control={form.control}
+                    name={`sources.${index}.url`}
+                    autoComplete="url"
+                    label="Source URL"
+                    type="url"
+                    placeholder="https://example.org/funding-calls"
+                    required
+                  />
+                </div>
+                {rows.fields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="mt-6"
+                    aria-label={`Remove source ${index + 1}`}
+                    onClick={() => rows.remove(index)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+              <FormTextField
+                control={form.control}
+                name={`sources.${index}.label`}
+                autoComplete="off"
+                label="Label"
+                placeholder="Optional, e.g. Gates Foundation Global Health"
+              />
+              <FormTextareaField
+                control={form.control}
+                name={`sources.${index}.notes`}
+                autoComplete="off"
+                label="Notes"
+                placeholder="Optional, e.g. Focus on climate and maternal health RFPs"
+                rows={2}
+              />
+              <FormSwitchField
+                control={form.control}
+                name={`sources.${index}.enabled`}
+                label="Active"
+                description="Include this source in automated discovery runs."
+              />
+            </fieldset>
+          ))}
+          {rows.fields.length < 20 && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => rows.append({ ...blank })}
+            >
+              <Plus className="h-4 w-4" /> Add another
+            </Button>
+          )}
+        </form>
+      </Form>
+    </AppSheet>
+  );
+}

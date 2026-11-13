@@ -1,0 +1,22 @@
+[
+  {
+    "value": "introduction",
+    "label": "Introduce us and our interest"
+  },
+  {
+    "value": "question",
+    "label": "Ask a question about the call"
+  },
+  {
+    "value": "meeting",
+    "label": "Request a short call or meeting"
+  },
+  {
+    "value": "follow_up",
+    "label": "Follow up after applying"
+  },
+  {
+    "value": "other",
+    "label": "Other (see instructions)"
+  }
+]

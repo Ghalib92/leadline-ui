@@ -1,0 +1,190 @@
+{
+  "status": "ready",
+  "last_seq": 17,
+  "events": [
+    {
+      "seq": 1,
+      "step": "requirements",
+      "level": "info",
+      "message": "Reading the call: [Sample] Request for proposals: Education services",
+      "tool": "",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:35.939699+03:00"
+    },
+    {
+      "seq": 2,
+      "step": "requirements",
+      "level": "info",
+      "message": "Found 6 sections to write and 4 evaluation criteria",
+      "tool": "",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:35.948203+03:00"
+    },
+    {
+      "seq": 3,
+      "step": "outline",
+      "level": "info",
+      "message": "Planned 6 sections",
+      "tool": "proposal_outline",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:35.955732+03:00"
+    },
+    {
+      "seq": 4,
+      "step": "evidence",
+      "level": "info",
+      "message": "Searching company documents for \u201cexecutive summary\u201d",
+      "tool": "search_company_knowledge",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:35.963215+03:00"
+    },
+    {
+      "seq": 5,
+      "step": "draft",
+      "level": "info",
+      "message": "Writing \u201cExecutive summary\u201d",
+      "tool": "drafter",
+      "url": "",
+      "data": {
+        "section": "summary"
+      },
+      "at": "2026-10-08T09:00:35.971177+03:00"
+    },
+    {
+      "seq": 6,
+      "step": "evidence",
+      "level": "info",
+      "message": "Searching company documents for \u201cproblem and need\u201d",
+      "tool": "search_company_knowledge",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:35.978593+03:00"
+    },
+    {
+      "seq": 7,
+      "step": "draft",
+      "level": "info",
+      "message": "Writing \u201cProblem and need\u201d",
+      "tool": "drafter",
+      "url": "",
+      "data": {
+        "section": "problem"
+      },
+      "at": "2026-10-08T09:00:35.986134+03:00"
+    },
+    {
+      "seq": 8,
+      "step": "evidence",
+      "level": "info",
+      "message": "Searching company documents for \u201capproach and activities\u201d",
+      "tool": "search_company_knowledge",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:35.993354+03:00"
+    },
+    {
+      "seq": 9,
+      "step": "draft",
+      "level": "info",
+      "message": "Writing \u201cApproach and activities\u201d",
+      "tool": "drafter",
+      "url": "",
+      "data": {
+        "section": "approach"
+      },
+      "at": "2026-10-08T09:00:36.005415+03:00"
+    },
+    {
+      "seq": 10,
+      "step": "evidence",
+      "level": "info",
+      "message": "Searching company documents for \u201cexpected results and monitoring\u201d",
+      "tool": "search_company_knowledge",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:36.014744+03:00"
+    },
+    {
+      "seq": 11,
+      "step": "draft",
+      "level": "info",
+      "message": "Writing \u201cExpected results and monitoring\u201d",
+      "tool": "drafter",
+      "url": "",
+      "data": {
+        "section": "results"
+      },
+      "at": "2026-10-08T09:00:36.023897+03:00"
+    },
+    {
+      "seq": 12,
+      "step": "evidence",
+      "level": "info",
+      "message": "Searching company documents for \u201cteam and track record\u201d",
+      "tool": "search_company_knowledge",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:36.031255+03:00"
+    },
+    {
+      "seq": 13,
+      "step": "draft",
+      "level": "info",
+      "message": "Writing \u201cTeam and track record\u201d",
+      "tool": "drafter",
+      "url": "",
+      "data": {
+        "section": "team"
+      },
+      "at": "2026-10-08T09:00:36.039678+03:00"
+    },
+    {
+      "seq": 14,
+      "step": "evidence",
+      "level": "info",
+      "message": "Searching company documents for \u201cbudget overview\u201d",
+      "tool": "search_company_knowledge",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:36.046992+03:00"
+    },
+    {
+      "seq": 15,
+      "step": "draft",
+      "level": "info",
+      "message": "Writing \u201cBudget overview\u201d",
+      "tool": "drafter",
+      "url": "",
+      "data": {
+        "section": "budget"
+      },
+      "at": "2026-10-08T09:00:36.054230+03:00"
+    },
+    {
+      "seq": 16,
+      "step": "review",
+      "level": "info",
+      "message": "Checking the draft against the call",
+      "tool": "proposal_review",
+      "url": "",
+      "data": {},
+      "at": "2026-10-08T09:00:36.061153+03:00"
+    },
+    {
+      "seq": 17,
+      "step": "review",
+      "level": "info",
+      "message": "Readiness 62/100; 3 issues to fix",
+      "tool": "",
+      "url": "",
+      "data": {
+        "score": 62
+      },
+      "at": "2026-10-08T09:00:36.069608+03:00"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "AvDuQK9VnhRH",
+      "agent": "dHDgKF7ekYNo",
+      "agent_name": "Education grants",
+      "run": "UdYXctqPZyHk",
+      "opportunity_type": "rfp",
+      "title": "[Sample] Request for proposals: Education services",
+      "funder": "Coastal Communities Fund",
+      "summary": "Sample opportunity from the test runner, not a real listing. Supports education work in KE.",
+      "eligibility": "Registered organizations operating in the region (sample).",
+      "amount": null,
+      "deadline": "2026-11-24T09:00:35.538608+03:00",
+      "location": "KE",
+      "source_url": "https://example.org/sample/sample-request-for-proposals-education-services",
+      "source_name": "ec.europa.eu",
+      "match_score": 67,
+      "match_reasons": [
+        "Matches your focus on education",
+        "Open to organizations in KE"
+      ],
+      "status": "new",
+      "saved": false,
+      "notes": "",
+      "requirements": {},
+      "latest_review": null,
+      "found_at": "2026-10-08T09:00:35.707107+03:00",
+      "updated_at": "2026-10-08T09:00:35.707451+03:00"
+    },
+    {
+      "id": "agVy8hxijdTV",
+      "agent": "dHDgKF7ekYNo",
+      "agent_name": "Education grants",
+      "run": "UdYXctqPZyHk",
+      "opportunity_type": "grant",
+      "title": "[Sample] Data Innovation Grant 2026",
+      "funder": "Lakeside Development Trust",
+      "summary": "Sample opportunity from the test runner, not a real listing. Supports data work in KE.",
+      "eligibility": "Registered organizations operating in the region (sample).",
+      "amount": {
+        "min": "50000.00",
+        "max": "100000.00",
+        "currency": "USD"
+      },
+      "deadline": "2026-11-09T09:00:35.538557+03:00",
+      "location": "KE",
+      "source_url": "https://example.org/sample/sample-data-innovation-grant-2026",
+      "source_name": "devex.com",
+      "match_score": 77,
+      "match_reasons": [
+        "Matches your focus on data",
+        "Open to organizations in KE"
+      ],
+      "status": "new",
+      "saved": false,
+      "notes": "",
+      "requirements": {},
+      "latest_review": null,
+      "found_at": "2026-10-08T09:00:35.696690+03:00",
+      "updated_at": "2026-10-08T09:00:35.697018+03:00"
+    },
+    {
+      "id": "zK93hWcCPkbL",
+      "agent": "dHDgKF7ekYNo",
+      "agent_name": "Education grants",
+      "run": "UdYXctqPZyHk",
+      "opportunity_type": "grant",
+      "title": "[Sample] Data Innovation Grant 2027",
+      "funder": "Coastal Communities Fund",
+      "summary": "Sample opportunity from the test runner, not a real listing. Supports data work in KE.",
+      "eligibility": "Registered organizations operating in the region (sample).",
+      "amount": {
+        "min": "25000.00",
+        "max": "50000.00",
+        "currency": "USD"
+      },
+      "deadline": "2026-11-03T09:00:35.538281+03:00",
+      "location": "KE",
+      "source_url": "https://example.org/sample/sample-data-innovation-grant-2027",
+      "source_name": "devex.com",
+      "match_score": 95,
+      "match_reasons": [
+        "Matches your focus on data",
+        "Open to organizations in KE"
+      ],
+      "status": "new",
+      "saved": false,
+      "notes": "",
+      "requirements": {},
+      "latest_review": null,
+      "found_at": "2026-10-08T09:00:35.679864+03:00",
+      "updated_at": "2026-10-08T09:00:35.680236+03:00"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "status": "generating",
+  "content": {
+    "summary": "Mto Water Trust runs mobile clinics and rural water points in Kenya.",
+    "organization_type": "ngo",
+    "mission": "Safe water for all",
+    "focus_areas": ["wash"],
+    "offerings": [],
+    "beneficiaries": [],
+    "geographies": ["Kenya"],
+    "track_record": [],
+    "past_funders": [],
+    "strengths": [],
+    "eligibility_facts": [],
+    "seeking": [],
+    "search_keywords": ["rural water"],
+    "gaps": []
+  },
+  "version": 2,
+  "generated_at": "2026-10-13T08:05:00Z",
+  "error": "",
+  "prompt_id": "dossier/v1",
+  "model": "openai/gpt-oss-120b"
+}

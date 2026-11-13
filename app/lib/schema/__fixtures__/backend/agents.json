@@ -1,0 +1,107 @@
+[
+  {
+    "id": "dHDgKF7ekYNo",
+    "name": "Education grants",
+    "description": "",
+    "opportunity_types": ["grant", "rfp"],
+    "keywords": ["data"],
+    "sources": ["web", "grants"],
+    "depth": "",
+    "folders": [
+      {
+        "id": "qdWPq2z3bYTt",
+        "name": "Past proposals"
+      }
+    ],
+    "links": [
+      {
+        "url": "https://agent.example.org/calls",
+        "label": "Partner calls",
+        "notes": "",
+        "enabled": true
+      }
+    ],
+    "effective": {
+      "depth": {
+        "value": "standard",
+        "origin": "organization"
+      },
+      "sources": [
+        {
+          "value": "web",
+          "origin": "organization"
+        },
+        {
+          "value": "procurement",
+          "origin": "organization"
+        },
+        {
+          "value": "grants",
+          "origin": "agent"
+        }
+      ],
+      "opportunity_types": [
+        {
+          "value": "grant",
+          "origin": "organization"
+        },
+        {
+          "value": "tender",
+          "origin": "organization"
+        },
+        {
+          "value": "rfp",
+          "origin": "agent"
+        }
+      ],
+      "keywords": [
+        {
+          "value": "education",
+          "origin": "organization"
+        },
+        {
+          "value": "data",
+          "origin": "agent"
+        }
+      ],
+      "folders": [
+        {
+          "id": "Fm3kQ8pZ2vXy",
+          "name": "Financials",
+          "purpose": "Audited accounts",
+          "origin": "organization"
+        },
+        {
+          "id": "qdWPq2z3bYTt",
+          "name": "Past proposals",
+          "purpose": "Style examples",
+          "origin": "agent"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://org.example.org/tenders",
+          "label": "County tenders",
+          "notes": "",
+          "origin": "organization"
+        },
+        {
+          "url": "https://agent.example.org/calls",
+          "label": "Partner calls",
+          "notes": "",
+          "origin": "agent"
+        }
+      ]
+    },
+    "schedule": "manual",
+    "enabled": true,
+    "owner": "q6ws4qMV9qbz",
+    "last_run_id": null,
+    "last_run_at": null,
+    "last_run_found": null,
+    "last_run_status": null,
+    "can_manage": true,
+    "created_at": "2026-10-08T09:00:35.115795+03:00",
+    "updated_at": "2026-10-08T09:00:35.115807+03:00"
+  }
+]

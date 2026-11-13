@@ -1,0 +1,23 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "UdYXctqPZyHk",
+      "agent": "dHDgKF7ekYNo",
+      "agent_name": "Education grants",
+      "trigger": "manual",
+      "status": "succeeded",
+      "created_at": "2026-10-08T09:00:35.185399+03:00",
+      "started_at": "2026-10-08T09:00:35.194212+03:00",
+      "finished_at": "2026-10-08T09:00:35.735344+03:00",
+      "duration_ms": 541,
+      "sources_scanned": 4,
+      "pages_read": 7,
+      "found": 3,
+      "error": "",
+      "runner": "fake"
+    }
+  ]
+}
