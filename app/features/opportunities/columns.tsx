@@ -10,7 +10,7 @@ import {
 import { useOrgPath } from '~/lib/org/use-org-path';
 import { Picker } from '~/components/ui/picker';
 import { cn } from '~/lib/utils';
-import { formatDate, timeAgo } from '~/lib/utils/format';
+import { formatDate } from '~/lib/utils/format';
 import { DeadlineBadge, MatchScore, StatusBadge, TypeBadge } from './badges';
 
 const STATUS_ITEMS = OPPORTUNITY_STATUSES.map((s) => ({
