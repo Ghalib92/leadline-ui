@@ -52,7 +52,8 @@ import {
 describe('backend contract', () => {
   it('maps agents onto the feed types', () => {
     const [agent] = agentDtoSchema.array().parse(agents);
-    expect(agent.opportunityTypes).toEqual(['grant', 'tender']);
+    expect(agent.goal).toBe('grants');
+    expect(agent.opportunityTypes).toEqual(['grant']);
     expect(agent.canManage).toBe(true);
     expect(toAgentBody({ opportunityTypes: ['tender'] })).toEqual({
       opportunity_types: ['tender', 'rfp', 'consultancy'],
@@ -68,10 +69,9 @@ describe('backend contract', () => {
     expect(agent.links[0]).toMatchObject({ label: 'Partner calls' });
     const scope = agent.effective!;
     expect(scope.depth).toEqual({ value: 'standard', origin: 'organization' });
-    // `rfp` is a tender in the feed, which the organization already has.
+    // `fellowship` is a grant in the feed, which the organization already has.
     expect(scope.opportunityTypes).toEqual([
       { value: 'grant', origin: 'organization' },
-      { value: 'tender', origin: 'organization' },
     ]);
     expect(scope.folders.map((f) => [f.name, f.origin])).toEqual([
       ['Financials', 'organization'],
@@ -181,6 +181,25 @@ describe('backend contract', () => {
       knowledgeMode: 'selected',
       folders: ['qdWPq2z3bYTt'],
     });
+  });
+
+  it('lists every goal with the feed types and sources it searches', () => {
+    const { goals } = runSettingsDtoSchema.parse(runSettings);
+    expect(goals.map((g) => [g.value, g.available])).toEqual([
+      ['clients', false],
+      ['tenders', true],
+      ['grants', true],
+    ]);
+    const [, tenders, grants] = goals;
+    // rfp and consultancy are tenders in the feed; every grant kind folds into
+    // grants, partnerships and events.
+    expect(tenders.opportunityTypes).toEqual(['tender']);
+    expect(tenders.sources).toEqual(['web', 'procurement', 'news']);
+    expect(grants.opportunityTypes).toEqual(['grant', 'partnership', 'event']);
+  });
+
+  it("sends a worker's goal", () => {
+    expect(toAgentBody({ goal: 'tenders' })).toEqual({ goal: 'tenders' });
   });
 
   it('maps the run outcome', () => {

@@ -5,6 +5,7 @@ import {
   AgentTile,
   useAgents,
   useRunAgent,
+  useRunBlocked,
   useUpdateAgent,
 } from '~/features/agents';
 import { useOrg } from '~/lib/org/org-context';
@@ -37,6 +38,7 @@ export default function AgentsPage() {
   const path = useOrgPath();
   const { data: agents = [], isPending } = useAgents(org.id);
   const run = useRunAgent(org.id);
+  const runBlocked = useRunBlocked();
   const update = useUpdateAgent(org.id);
 
   const tab = searchParams.get('tab') ?? 'workers';
@@ -154,6 +156,7 @@ export default function AgentsPage() {
                         }
                         onRun={() => onRun(agent)}
                         onToggle={(enabled) => onToggle(agent, enabled)}
+                        runBlocked={runBlocked(agent.goal)}
                       />
                     ))}
                   </ul>

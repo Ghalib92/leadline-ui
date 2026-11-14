@@ -5,6 +5,7 @@ import {
   documentExtensions,
   documentMaxMb,
   geographicScopes,
+  goalOptions,
   linkKinds,
   opportunityKinds,
   targetRegions,
@@ -64,6 +65,7 @@ export const profileKeys = [
   'sdgs',
   'operatingCountries',
   'languages',
+  'goals',
 ] as const;
 export type ProfileKey = (typeof profileKeys)[number];
 
@@ -93,9 +95,18 @@ export interface OrgProfile {
   sdgs: number[];
   operatingCountries: string[];
   languages: string[];
+  /** What it wants to find; empty until chosen. */
+  goals: Goal[];
 }
 
 const text = z.string().default('');
+
+export const goalSchema = z.enum(enumValues(goalOptions));
+export type Goal = z.infer<typeof goalSchema>;
+const goalsField = z
+  .array(goalSchema)
+  .min(1, 'Pick at least one thing to find')
+  .max(goalOptions.length);
 const list = <T extends z.ZodType>(item: T) => z.array(item).default([]);
 
 export const orgDtoSchema = z
@@ -127,6 +138,7 @@ export const orgDtoSchema = z
     sdgs: list(z.number()),
     operating_countries: list(z.string()),
     languages: list(z.string()),
+    goals: list(goalSchema),
     created_by: z.string().nullable(),
     created_at: z.string(),
     archived_at: z.string().nullable(),
@@ -203,6 +215,7 @@ export const orgProfileFormSchema = z
     sdgs: z.array(z.number().int().min(1).max(17)).max(17),
     operatingCountries: z.array(z.string().regex(/^[A-Z]{2}$/)).max(250),
     languages: z.array(z.string().regex(/^[a-z]{2}$/)).max(30),
+    goals: goalsField,
   })
   .partial();
 export type OrgProfileForm = z.infer<typeof orgProfileFormSchema>;
@@ -233,6 +246,7 @@ export const onboardingFormSchema = z
     name: z.string().trim().min(1, 'Enter the organization name').max(200),
     organizationType: z.string().min(1, 'Choose an organization type'),
     country: z.string().regex(/^[A-Z]{2}$/, 'Choose a country'),
+    goals: goalsField,
     description: z
       .string()
       .trim()

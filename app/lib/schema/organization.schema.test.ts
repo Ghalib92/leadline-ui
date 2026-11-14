@@ -205,12 +205,33 @@ describe('onboarding form', () => {
       expect.arrayContaining([
         'organizationType',
         'country',
+        'goals',
         'description',
         'sectors',
         'opportunityTypes',
         'geographicScopes',
       ])
     );
+  });
+});
+
+describe('goals', () => {
+  it('reads what the organization wants to find, none before onboarding', () => {
+    expect(orgDtoSchema.parse(backendOrg).profile.goals).toEqual([]);
+    const view = orgDtoSchema.parse({
+      ...backendOrg,
+      goals: ['clients', 'tenders'],
+    });
+    expect(view.profile.goals).toEqual(['clients', 'tenders']);
+  });
+
+  it('needs at least one known goal when edited', () => {
+    expect(orgProfileFormSchema.safeParse({ goals: [] }).success).toBe(false);
+    expect(orgProfileFormSchema.safeParse({ goals: ['jobs'] }).success).toBe(
+      false
+    );
+    const form = orgProfileFormSchema.parse({ goals: ['grants'] });
+    expect(toOrgWrite(form)).toEqual({ goals: ['grants'] });
   });
 });
 
@@ -299,6 +320,7 @@ describe('onboarding focus step', () => {
     name: 'Kijani',
     organizationType: 'ngo',
     country: 'KE',
+    goals: ['grants'],
     description: 'x',
     sectors: ['health'],
     opportunityTypes: ['grant'],
@@ -331,6 +353,7 @@ describe('onboarding invites', () => {
       name: 'Kijani',
       organizationType: 'ngo',
       country: 'KE',
+      goals: ['clients'],
       description: 'x',
       mission: 'y',
       offerings: '',

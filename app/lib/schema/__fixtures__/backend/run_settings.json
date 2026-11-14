@@ -26,5 +26,45 @@
       "description": "Wider and slower; more finds."
     }
   ],
+  "goals": [
+    {
+      "key": "clients",
+      "label": "Clients",
+      "description": "Businesses that could buy what you sell, with a reason they need it.",
+      "opportunity_types": [],
+      "sources": [],
+      "available": false
+    },
+    {
+      "key": "tenders",
+      "label": "Tenders",
+      "description": "Tenders, RFPs and consultancies to bid on.",
+      "opportunity_types": ["tender", "rfp", "consultancy"],
+      "sources": ["web", "procurement", "news"],
+      "available": true
+    },
+    {
+      "key": "grants",
+      "label": "Grants & funding",
+      "description": "Grants, fellowships, awards, investment, partnerships and programmes.",
+      "opportunity_types": [
+        "grant",
+        "fellowship",
+        "scholarship",
+        "accelerator",
+        "competition",
+        "award",
+        "investment",
+        "loan",
+        "partnership",
+        "sponsorship",
+        "in_kind",
+        "conference",
+        "other"
+      ],
+      "sources": ["web", "grants", "news"],
+      "available": true
+    }
+  ],
   "updated_at": "2026-10-14T03:38:41.291244+03:00"
 }

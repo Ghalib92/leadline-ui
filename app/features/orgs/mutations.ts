@@ -61,6 +61,7 @@ export const useCreateOrg = () => {
         name: input.name,
         organization_type: input.organizationType,
         country: input.country,
+        goals: input.goals,
         description: input.description,
         mission: input.mission,
         offerings: input.offerings,

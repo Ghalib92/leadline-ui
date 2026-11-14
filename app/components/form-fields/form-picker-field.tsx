@@ -1,6 +1,7 @@
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,6 +16,8 @@ interface CommonProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
   label: string;
+  /** Help text under the field, like the other form fields. */
+  description?: string;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyMessage?: string;
@@ -107,6 +110,7 @@ export function FormPickerField<TFieldValues extends FieldValues>({
   control,
   name,
   label,
+  description,
   placeholder,
   searchPlaceholder,
   emptyMessage,
@@ -195,6 +199,7 @@ export function FormPickerField<TFieldValues extends FieldValues>({
                 />
               )}
             </FormControl>
+            {description && <FormDescription>{description}</FormDescription>}
             <FormMessage />
           </FormItem>
         );

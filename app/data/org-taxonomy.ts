@@ -22,6 +22,25 @@ export const organizationTypes = [
   { value: 'other', label: 'Other' },
 ] as const satisfies readonly Option[];
 
+/** What an organization wants to find (backend `Goal`). Each worker has one. */
+export const goalOptions = [
+  {
+    value: 'clients',
+    label: 'Clients',
+    description: 'Businesses that could buy what you sell',
+  },
+  {
+    value: 'tenders',
+    label: 'Tenders',
+    description: 'Tenders, RFPs and consultancies to bid on',
+  },
+  {
+    value: 'grants',
+    label: 'Grants & funding',
+    description: 'Grants, fellowships, awards, investment and partnerships',
+  },
+] as const satisfies readonly (Option & { description: string })[];
+
 export const teamSizes = [
   { value: '1-10', label: '1–10' },
   { value: '11-50', label: '11–50' },

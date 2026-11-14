@@ -8,6 +8,7 @@ import {
   budgetRanges,
   eligibilityOptions,
   geographicScopes,
+  goalOptions,
   languageOptions,
   opportunityKinds,
   organizationTypes,
@@ -295,6 +296,19 @@ const fieldRenderers: Record<string, Render> = {
   ),
 
   // Opportunity preferences
+  goals: (c, r) => (
+    <FormPickerField
+      control={c}
+      name="goals"
+      placeholder="Clients, tenders, grants…"
+      label="What do you want to find?"
+      description="Each worker you set up looks for one of these."
+      options={goalOptions}
+      searchable={false}
+      required={r}
+      {...multi}
+    />
+  ),
   opportunityTypes: (c, r) => (
     <FormPickerField
       control={c}

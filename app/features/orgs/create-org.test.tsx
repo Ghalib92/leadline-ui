@@ -17,6 +17,7 @@ const form: OnboardingForm = {
   name: 'Mto Water Trust',
   organizationType: 'ngo',
   country: 'KE',
+  goals: ['grants', 'tenders'],
   description: 'Rural water points',
   mission: 'Safe water for all',
   offerings: '',
@@ -48,6 +49,7 @@ describe('useCreateOrg', () => {
     expect(bodies).toEqual([
       expect.objectContaining({
         name: 'Mto Water Trust',
+        goals: ['grants', 'tenders'],
         invitations: [
           { email: 'wanjiru@mto.org', role: 'admin' },
           { email: 'otieno@mto.org', role: 'admin' },

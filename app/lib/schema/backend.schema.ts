@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toFeedTypes } from '~/data/org-taxonomy';
 import type { Agent, AgentInput, AgentScope } from './agent.schema';
+import { goalSchema, type Goal } from './organization.schema';
 import {
   runDepths,
   runStatusSchema,
@@ -128,6 +129,7 @@ export const agentDtoSchema = z
     name: z.string(),
     description: z.string().default(''),
     instructions: z.string().default(''),
+    goal: goalSchema.catch('grants'),
     opportunity_types: z.array(z.string()),
     keywords: z.array(z.string()),
     sources: z.array(z.string()),
@@ -167,6 +169,7 @@ export const agentDtoSchema = z
       name: dto.name,
       description: dto.description || undefined,
       instructions: dto.instructions || undefined,
+      goal: dto.goal,
       opportunityTypes: toFeedTypes(dto.opportunity_types),
       keywords: dto.keywords,
       sources: dto.sources,
@@ -203,6 +206,7 @@ export const toAgentInput = (agent: Agent): AgentInput => ({
   name: agent.name,
   description: agent.description ?? '',
   instructions: agent.instructions ?? '',
+  goal: agent.goal,
   opportunityTypes: agent.opportunityTypes,
   keywords: agent.keywords,
   sources: agent.sources,
@@ -233,6 +237,18 @@ export const runSettingsDtoSchema = z
     depths: z.array(
       z.object({ key: z.string(), label: z.string(), description: z.string() })
     ),
+    goals: z
+      .array(
+        z.object({
+          key: goalSchema,
+          label: z.string(),
+          description: z.string(),
+          opportunity_types: z.array(z.string()),
+          sources: z.array(z.string()),
+          available: z.boolean(),
+        })
+      )
+      .default([]),
   })
   .transform((dto) => ({
     depth: dto.depth,
@@ -246,7 +262,29 @@ export const runSettingsDtoSchema = z
       label: d.label,
       description: d.description,
     })),
+    // What each goal searches, so worker forms offer only what fits its goal.
+    goals: dto.goals.map(
+      (g): GoalOption => ({
+        value: g.key,
+        label: g.label,
+        description: g.description,
+        opportunityTypes: toFeedTypes(g.opportunity_types),
+        sources: g.sources,
+        available: g.available,
+      })
+    ),
   }));
+
+export interface GoalOption {
+  value: Goal;
+  label: string;
+  description: string;
+  /** The UI's opportunity types that belong to the goal. */
+  opportunityTypes: OpportunityType[];
+  sources: string[];
+  /** False: its workers can be set up, but searches arrive in a later update. */
+  available: boolean;
+}
 export type RunSettings = z.infer<typeof runSettingsDtoSchema>;
 
 export const runSettingsFormSchema = z

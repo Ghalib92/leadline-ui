@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router';
 import { Loader2, Play, Plus } from 'lucide-react';
-import { useAgents, useRunAgent } from '~/features/agents';
+import { useAgents, useRunAgent, useRunBlocked } from '~/features/agents';
 import { useOrg } from '~/lib/org/org-context';
 import { useOrgPath } from '~/lib/org/use-org-path';
 import { timeAgo } from '~/lib/utils/format';
@@ -22,6 +22,7 @@ export function RunAutomationDialog({
   const navigate = useNavigate();
   const { data: agents = [], isPending } = useAgents(org.id);
   const run = useRunAgent(org.id);
+  const runBlocked = useRunBlocked();
 
   const runnable = agents.filter(
     (a) =>
@@ -99,7 +100,8 @@ export function RunAutomationDialog({
               <Button
                 size="sm"
                 onClick={() => onRun(agent.id)}
-                disabled={run.isPending}
+                disabled={run.isPending || !!runBlocked(agent.goal)}
+                title={runBlocked(agent.goal) ?? undefined}
                 aria-label={`Run ${agent.name}`}
               >
                 {run.isPending && run.variables?.agentId === agent.id ? (

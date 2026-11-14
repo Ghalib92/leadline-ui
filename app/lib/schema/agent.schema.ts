@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { opportunityTypeSchema } from './opportunity.schema';
+import { goalSchema } from './organization.schema';
 import {
   agentRunSchema,
   runDepths,
@@ -50,6 +51,8 @@ export const agentSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   instructions: z.string().optional(),
+  /** What it looks for; its types and sources must belong to this goal. */
+  goal: goalSchema,
   /** What the agent adds to the organization's search settings. */
   opportunityTypes: z.array(opportunityTypeSchema),
   keywords: z.array(z.string()),
@@ -83,6 +86,7 @@ export const agentInputSchema = z.object({
     .string()
     .max(2000, 'Keep instructions under 2000 characters')
     .optional(),
+  goal: goalSchema,
   // Additions to the organization's settings, so each may be empty.
   opportunityTypes: z.array(opportunityTypeSchema),
   keywords: z.array(z.string().trim().min(1)).max(20, 'Use up to 20 keywords'),

@@ -4,6 +4,7 @@ import {
   useAgent,
   useDeleteAgent,
   useRunAgent,
+  useRunBlocked,
   useUpdateAgent,
 } from '~/features/agents';
 import { useOrg } from '~/lib/org/org-context';
@@ -50,6 +51,7 @@ export default function AgentPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: agent, isPending, isError } = useAgent(org.id, id);
   const run = useRunAgent(org.id);
+  const runBlocked = useRunBlocked();
   const update = useUpdateAgent(org.id);
   const remove = useDeleteAgent(org.id);
   const { confirm, confirmDialog } = useConfirm();
@@ -143,7 +145,10 @@ export default function AgentPage() {
             <>
               <Button
                 onClick={onRun}
-                disabled={run.isPending || !agent.enabled}
+                disabled={
+                  run.isPending || !agent.enabled || !!runBlocked(agent.goal)
+                }
+                title={runBlocked(agent.goal) ?? undefined}
               >
                 {run.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

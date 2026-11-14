@@ -9,6 +9,7 @@ const sampleAgent: Agent = {
   id: 'agent-1',
   orgId: 'org-1',
   name: 'Education Grants Scout',
+  goal: 'grants',
   opportunityTypes: ['grant'],
   keywords: [],
   sources: [],
@@ -26,7 +27,11 @@ const sampleAgent: Agent = {
   canManage: true,
 };
 
-function renderTile(agent: Agent = sampleAgent, onRun = vi.fn()) {
+function renderTile(
+  agent: Agent = sampleAgent,
+  onRun = vi.fn(),
+  runBlocked: string | null = null
+) {
   render(
     <MemoryRouter initialEntries={['/o/acme/agents']}>
       <Routes>
@@ -40,6 +45,7 @@ function renderTile(agent: Agent = sampleAgent, onRun = vi.fn()) {
                 running={false}
                 onRun={onRun}
                 onToggle={vi.fn()}
+                runBlocked={runBlocked}
               />
             </ul>
           }
@@ -63,6 +69,20 @@ describe('AgentTile', () => {
     const onRun = renderTile();
     await userEvent.click(screen.getByRole('button', { name: /run now/i }));
     expect(onRun).toHaveBeenCalled();
+  });
+
+  it('cannot run a worker whose goal has no search yet, and says why', () => {
+    renderTile(
+      { ...sampleAgent, goal: 'clients' },
+      vi.fn(),
+      'Searching for clients arrives in the next update.'
+    );
+    const button = screen.getByRole('button', { name: /run now/i });
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute(
+      'title',
+      'Searching for clients arrives in the next update.'
+    );
   });
 
   it('cannot run an automation that is switched off', () => {

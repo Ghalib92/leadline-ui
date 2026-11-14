@@ -17,6 +17,7 @@ const basicsFields = [
   'name',
   'organizationType',
   'country',
+  'goals',
   'description',
 ] as const;
 const focusFields = ['mission', 'offerings', 'sectors'] as const;

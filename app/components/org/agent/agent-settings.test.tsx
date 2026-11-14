@@ -13,7 +13,10 @@ import { AgentSettings } from './agent-settings';
 
 const ORG = 'Kq7vB2mXp9Lt';
 vi.mock('~/lib/org/org-context', () => ({
-  useOrg: () => ({ org: { id: 'Kq7vB2mXp9Lt' } }),
+  useOrg: () => ({
+    org: { id: 'Kq7vB2mXp9Lt' },
+    view: { profile: { goals: ['grants', 'tenders'] } },
+  }),
 }));
 
 const agent = { ...agentDtoSchema.parse(agents[0]), orgId: ORG };
@@ -88,10 +91,11 @@ describe('automation settings', () => {
     expect(Object.keys(sent!).sort()).toEqual([
       'depth',
       'description',
+      'goal',
       'name',
       'schedule',
     ]);
-    expect(sent).toMatchObject({ name: 'Renamed', depth: '' });
+    expect(sent).toMatchObject({ name: 'Renamed', depth: '', goal: 'grants' });
   });
 
   it('closes on Escape while nothing has changed', async () => {

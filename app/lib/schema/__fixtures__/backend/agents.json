@@ -3,7 +3,8 @@
     "id": "dHDgKF7ekYNo",
     "name": "Education grants",
     "description": "",
-    "opportunity_types": ["grant", "rfp"],
+    "goal": "grants",
+    "opportunity_types": ["grant", "fellowship"],
     "keywords": ["data"],
     "sources": ["web", "grants"],
     "depth": "",
@@ -22,6 +23,7 @@
       }
     ],
     "effective": {
+      "goal": "grants",
       "depth": {
         "value": "standard",
         "origin": "organization"
@@ -32,7 +34,7 @@
           "origin": "organization"
         },
         {
-          "value": "procurement",
+          "value": "news",
           "origin": "organization"
         },
         {
@@ -46,11 +48,7 @@
           "origin": "organization"
         },
         {
-          "value": "tender",
-          "origin": "organization"
-        },
-        {
-          "value": "rfp",
+          "value": "fellowship",
           "origin": "agent"
         }
       ],

@@ -6,6 +6,7 @@ import {
   countryOptions,
   eligibilityOptions,
   geographicScopes,
+  goalOptions,
   languageOptions,
   opportunityKinds,
   organizationTypes,
@@ -93,6 +94,11 @@ const profileSheets: Record<
   string,
   { title: string; fields: (keyof OrgProfile)[]; required?: (keyof OrgProfile)[] }
 > = {
+  goals: {
+    title: 'What you want to find',
+    fields: ['goals'],
+    required: ['goals'],
+  },
   identity: {
     title: 'Identity',
     fields: ['name', 'organizationType', 'legalName', 'registrationNumber', 'yearFounded', 'teamSize', 'annualBudget', 'industry'],
@@ -136,6 +142,18 @@ export function ProfileTab({ editing, setEditing }: Readonly<EditingProps>) {
 
   return (
     <div className="space-y-4">
+      <AppCard
+        title="What you want to find"
+        description="Each worker looks for one of these. Searches cover only what you pick."
+        actions={edit('goals')}
+      >
+        <dl className="divide-y divide-border">
+          <Field label="Looking for">
+            <Chips values={p.goals} list={goalOptions} />
+          </Field>
+        </dl>
+      </AppCard>
+
       <AppCard title="Identity" actions={edit('identity')}>
         <dl className="divide-y divide-border">
           <Field label="Name">{p.name}</Field>

@@ -11,7 +11,7 @@ import {
   type AgentScope,
   type ScopeOrigin,
 } from '~/lib/schema';
-import { useUpdateAgent } from '~/features/agents';
+import { goalItems, useGoalOptions, useUpdateAgent } from '~/features/agents';
 import { useFolders } from '~/features/orgs';
 import { useRunSettings } from '~/features/runs';
 import { useOrg } from '~/lib/org/org-context';
@@ -42,8 +42,8 @@ const sections = {
   basics: {
     title: 'Basics',
     description:
-      "What it's called, how often it runs and how deep it searches.",
-    fields: ['name', 'description', 'schedule', 'depth'],
+      "What it looks for, what it's called, how often it runs and how deep it searches.",
+    fields: ['goal', 'name', 'description', 'schedule', 'depth'],
   },
   instructions: {
     title: 'Worker brief',
@@ -154,6 +154,7 @@ export function AgentSettings({
   const disabledLinks = agent.links.filter((l) => !l.enabled).length;
   const summary = scope ? scopeSummary(scope) : null;
   const settingsTab = (tab: string) => path(`/settings/general?tab=${tab}`);
+  const goal = useGoalOptions(agent.goal).find((g) => g.value === agent.goal);
 
   const section = (key: SectionKey, children: ReactNode) => (
     <AppCard
@@ -205,6 +206,15 @@ export function AgentSettings({
       {section(
         'basics',
         <>
+          <Row label="Looks for">
+            {goal?.label ?? agent.goal}
+            {goal && !goal.available && (
+              <span className="text-muted-foreground">
+                {' '}
+                (searching arrives in the next update)
+              </span>
+            )}
+          </Row>
           <Row label="Name">{agent.name}</Row>
           <Row label="Description">
             {agent.description || (
@@ -338,7 +348,17 @@ function AgentSettingsSheet({
   const update = useUpdateAgent(org.id);
   const { data: folders = [] } = useFolders(org.id);
   const { data: runSettings } = useRunSettings(org.id);
+  const goals = useGoalOptions(agent.goal);
+  const goal = goals.find((g) => g.value === agent.goal);
   const scope = agent.effective;
+
+  // Only what fits the worker's goal is offered (all of it until goals load).
+  const goalSources = goal
+    ? AGENT_SOURCES.filter((s) => goal.sources.includes(s.value))
+    : AGENT_SOURCES;
+  const goalTypes = goal
+    ? OPPORTUNITY_TYPES.filter((t) => goal.opportunityTypes.includes(t.value))
+    : OPPORTUNITY_TYPES;
 
   // What the organization already covers isn't offered again.
   const orgSources = new Set(fromOrg(scope?.sources ?? []).map((r) => r.value));
@@ -427,6 +447,16 @@ function AgentSettingsSheet({
         <form id="agent-settings" onSubmit={onSubmit} className="space-y-4">
           {section === 'basics' && (
             <>
+              <FormPickerField
+                control={form.control}
+                name="goal"
+                label="What it looks for"
+                description="Changing it removes extra sources and types that don't fit the new goal."
+                options={goalItems(goals)}
+                searchable={false}
+                clearable={false}
+                required
+              />
               <FormTextField
                 control={form.control}
                 name="name"
@@ -479,11 +509,13 @@ function AgentSettingsSheet({
                 name="sources"
                 label="Extra source types"
                 placeholder={
-                  AGENT_SOURCES.every((s) => orgSources.has(s.value))
-                    ? 'Your organization already uses every source type'
-                    : 'Add a source type'
+                  goalSources.length === 0
+                    ? 'Sources for this goal arrive in the next update'
+                    : goalSources.every((s) => orgSources.has(s.value))
+                      ? 'Your organization already uses every source type'
+                      : 'Add a source type'
                 }
-                options={AGENT_SOURCES.filter((s) => !orgSources.has(s.value))}
+                options={goalSources.filter((s) => !orgSources.has(s.value))}
                 multi
                 optionStyle="checkbox"
                 searchable={false}
@@ -570,13 +602,13 @@ function AgentSettingsSheet({
                 name="opportunityTypes"
                 label="Extra opportunity types"
                 placeholder={
-                  OPPORTUNITY_TYPES.every((t) => orgTypes.has(t.value))
-                    ? 'Your organization already looks for every type'
-                    : 'Add a type'
+                  goalTypes.length === 0
+                    ? 'No opportunity types for this goal'
+                    : goalTypes.every((t) => orgTypes.has(t.value))
+                      ? 'Your organization already looks for every type'
+                      : 'Add a type'
                 }
-                options={OPPORTUNITY_TYPES.filter(
-                  (t) => !orgTypes.has(t.value)
-                )}
+                options={goalTypes.filter((t) => !orgTypes.has(t.value))}
                 multi
                 optionStyle="checkbox"
                 searchable={false}

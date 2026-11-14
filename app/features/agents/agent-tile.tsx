@@ -19,6 +19,8 @@ interface AgentTileProps {
   running: boolean;
   onRun: () => void;
   onToggle: (enabled: boolean) => void;
+  /** Why it can't run yet (its goal has no search); disables Run now. */
+  runBlocked?: string | null;
 }
 
 /** One automation in the list: name, schedule, last run. Details live on its page. */
@@ -28,6 +30,7 @@ export function AgentTile({
   running,
   onRun,
   onToggle,
+  runBlocked = null,
 }: Readonly<AgentTileProps>) {
   const path = useOrgPath();
   const found = agent.lastRunFound ?? 0;
@@ -70,7 +73,8 @@ export function AgentTile({
             size="sm"
             variant="outline"
             onClick={onRun}
-            disabled={running || !agent.enabled}
+            disabled={running || !agent.enabled || !!runBlocked}
+            title={runBlocked ?? undefined}
           >
             {running ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />

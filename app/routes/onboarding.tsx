@@ -58,6 +58,7 @@ export default function OnboardingPage() {
       name: '',
       organizationType: '',
       country: '',
+      goals: [],
       description: '',
       mission: '',
       offerings: '',

@@ -2,7 +2,12 @@ import { useEffect, useEffectEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { agentInputResolver, type AgentInput } from '~/lib/schema';
-import { useCreateAgent } from '~/features/agents';
+import {
+  defaultGoal,
+  goalItems,
+  useCreateAgent,
+  useGoalOptions,
+} from '~/features/agents';
 import { useOrg } from '~/lib/org/org-context';
 import { useOrgPath } from '~/lib/org/use-org-path';
 import { toastUtils } from '~/lib/utils/toast';
@@ -35,11 +40,13 @@ export function AgentFormSheet({
   const navigate = useNavigate();
   const path = useOrgPath();
   const create = useCreateAgent(org.id);
+  const goals = useGoalOptions();
 
   const defaults = (): AgentInput => ({
     name: '',
     description: '',
     instructions: '',
+    goal: defaultGoal(goals),
     opportunityTypes: [],
     keywords: [],
     sources: [],
@@ -59,6 +66,16 @@ export function AgentFormSheet({
   useEffect(() => {
     if (open) onOpened();
   }, [open]);
+
+  // The goals may load after the sheet opens: move off a goal that isn't offered.
+  const goalKeys = goals.map((g) => g.value).join();
+  const fitGoal = useEffectEvent(() => {
+    if (goals.length && !goals.some((g) => g.value === form.getValues('goal')))
+      form.setValue('goal', defaultGoal(goals));
+  });
+  useEffect(() => {
+    fitGoal();
+  }, [goalKeys]);
 
   const onSubmit = async (input: AgentInput) => {
     try {
@@ -103,6 +120,17 @@ export function AgentFormSheet({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-4"
         >
+          <FormPickerField
+            control={form.control}
+            name="goal"
+            label="What should it find?"
+            description="It searches only the sources and types that fit."
+            options={goalItems(goals)}
+            loading={goals.length === 0}
+            searchable={false}
+            clearable={false}
+            required
+          />
           <FormTextField
             control={form.control}
             name="name"
