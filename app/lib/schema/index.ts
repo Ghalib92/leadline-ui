@@ -7,6 +7,7 @@ export * from './agent.schema';
 export * from './integration.schema';
 export * from './invitation.schema';
 export * from './organization.schema';
+export * from './brief.schema';
 export * from './knowledge.schema';
 export * from './backend.schema';
 export * from './leadline.schema';

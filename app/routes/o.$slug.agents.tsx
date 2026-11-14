@@ -19,6 +19,11 @@ import { AppTabs } from '~/components/composed';
 import { PageHeader } from '~/components/dashboard/page-header';
 import { AgentFormSheet } from '~/components/org/agent-form-sheet';
 import { PreferencesTab } from '~/components/org/settings/profile-tabs';
+import {
+  ClientBriefTab,
+  TenderBriefTab,
+} from '~/components/org/settings/brief-tabs';
+import type { Goal } from '~/lib/schema';
 import { EmptyState, Page, PageLoader } from '~/components/dashboard/page';
 
 export function meta() {
@@ -67,6 +72,44 @@ export default function AgentsPage() {
     );
 
   const setEditing = (edit: string | null) => updateParams({ edit });
+  const editingProps = { editing, setEditing };
+
+  // One brief per goal the organization works on (grant preferences when it
+  // never picked goals); the tab values match the setup checklist's links.
+  const picked = view.profile.goals;
+  const inPlay = (goal: Goal) =>
+    picked.length ? picked.includes(goal) : goal === 'grants';
+  const briefTabs = [
+    inPlay('clients') && {
+      value: 'clients',
+      label: 'Clients brief',
+      content: <ClientBriefTab {...editingProps} />,
+    },
+    inPlay('tenders') && {
+      value: 'tenders',
+      label: 'Tenders brief',
+      content: <TenderBriefTab {...editingProps} />,
+    },
+    inPlay('grants') && {
+      value: 'preferences',
+      label: 'Grant preferences',
+      content: <PreferencesTab {...editingProps} />,
+    },
+  ]
+    .filter((t) => !!t)
+    .map((t) => ({
+      ...t,
+      content: (
+        <div className="space-y-4">
+          {t.content}
+          {view.myRole !== 'admin' && (
+            <p className="text-sm text-muted-foreground">
+              Only admins can edit this.
+            </p>
+          )}
+        </div>
+      ),
+    }));
 
   // `?new` opens the sheet so it's deep-linkable (command menu uses ?new=1);
   // an old `?edit=<id>` link opens that worker's settings.
@@ -164,20 +207,7 @@ export default function AgentsPage() {
               </>
             ),
           },
-          {
-            value: 'preferences',
-            label: 'Organization Preferences',
-            content: (
-              <div className="space-y-4">
-                <PreferencesTab editing={editing} setEditing={setEditing} />
-                {view.myRole !== 'admin' && (
-                  <p className="text-sm text-muted-foreground">
-                    Only admins can edit these preferences.
-                  </p>
-                )}
-              </div>
-            ),
-          },
+          ...briefTabs,
         ]}
       />
 

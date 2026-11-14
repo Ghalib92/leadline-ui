@@ -6,6 +6,12 @@ import {
 } from 'react-hook-form';
 import {
   budgetRanges,
+  businessCategories,
+  businessSizes,
+  buyerTypes,
+  leadSignals,
+  tenderCategories,
+  tenderEligibilityOptions,
   eligibilityOptions,
   geographicScopes,
   goalOptions,
@@ -26,6 +32,7 @@ import {
   FormTextareaField,
   FormTextField,
 } from '~/components/form-fields';
+import { ServicesField } from './services-field';
 
 /**
  * Every organization-setup field, by form name. Onboarding steps and each
@@ -472,12 +479,160 @@ const fieldRenderers: Record<string, Render> = {
       rows={3}
     />
   ),
+
+  // Clients brief: what you sell and who to
+  services: (c, r) => <ServicesField control={c} required={r} />,
+  customerTypes: (c, r) => (
+    <FormPickerField
+      control={c}
+      name="customerTypes"
+      placeholder="Hotels, clinics, schools…"
+      label="Kinds of customer"
+      description="The businesses the AI should look for."
+      options={businessCategories}
+      required={r}
+      {...multi}
+    />
+  ),
+  customerKeywords: (c) => (
+    <FormTagInputField
+      control={c}
+      name="customerKeywords"
+      label="Describe them in your words"
+      placeholder="e.g. boutique hotels, private clinics, then Enter"
+      maxTags={50}
+    />
+  ),
+  customerSizes: (c) => (
+    <FormPickerField
+      control={c}
+      name="customerSizes"
+      placeholder="Any size"
+      label="Their size"
+      options={businessSizes}
+      searchable={false}
+      {...multi}
+    />
+  ),
+  targetCities: (c) => (
+    <FormTagInputField
+      control={c}
+      name="targetCities"
+      label="Cities or towns"
+      placeholder="e.g. Nairobi, Mombasa, then Enter"
+      maxTags={50}
+    />
+  ),
+  signals: (c) => (
+    <FormPickerField
+      control={c}
+      name="signals"
+      placeholder="No website, no online booking…"
+      label="Signs they need you"
+      description="The AI checks each business for these and tells you what it found."
+      options={leadSignals}
+      searchable={false}
+      {...multi}
+    />
+  ),
+  notes: (c) => (
+    <FormTextareaField
+      control={c}
+      name="notes"
+      placeholder="Who you've worked with, what you won't do, how fast you deliver…"
+      label="Anything else the AI should know"
+      rows={3}
+    />
+  ),
+
+  // Tenders brief: what you bid for
+  tenderCategories: (c, r) => (
+    <FormPickerField
+      control={c}
+      name="tenderCategories"
+      placeholder="Software, consultancy, supplies…"
+      label="Kinds of tender"
+      options={tenderCategories}
+      required={r}
+      {...multi}
+    />
+  ),
+  buyerTypes: (c) => (
+    <FormPickerField
+      control={c}
+      name="buyerTypes"
+      placeholder="Any buyer"
+      label="Who you sell to"
+      options={buyerTypes}
+      searchable={false}
+      {...multi}
+    />
+  ),
+  minValue: (c) => (
+    <FormNumberField
+      autoComplete="off"
+      control={c}
+      name="minValue"
+      placeholder="e.g. 500000"
+      label="Smallest contract"
+      min={0}
+    />
+  ),
+  maxValue: (c) => (
+    <FormNumberField
+      autoComplete="off"
+      control={c}
+      name="maxValue"
+      placeholder="e.g. 20000000"
+      label="Largest contract"
+      min={0}
+    />
+  ),
+  currency: (c) => (
+    <FormTextField
+      control={c}
+      name="currency"
+      autoComplete="off"
+      label="Currency"
+      placeholder="KES"
+    />
+  ),
+  tenderEligibility: (c) => (
+    <FormPickerField
+      control={c}
+      name="tenderEligibility"
+      placeholder="AGPO, tax compliance…"
+      label="What you qualify for"
+      options={tenderEligibilityOptions}
+      searchable={false}
+      {...multi}
+    />
+  ),
+  certifications: (c) => (
+    <FormTagInputField
+      control={c}
+      name="certifications"
+      label="Registrations & certifications"
+      placeholder="e.g. ICTA 1, ISO 9001, NCA 4, then Enter"
+      maxTags={50}
+    />
+  ),
+  capacityNotes: (c) => (
+    <FormTextareaField
+      control={c}
+      name="capacityNotes"
+      placeholder="Team size, past contracts, how big a job you can deliver…"
+      label="Your capacity"
+      rows={3}
+    />
+  ),
 };
 
 /** Fields laid out two-up on wider screens (short inputs). */
 const halfWidth = new Set([
   'organizationType', 'yearFounded', 'teamSize', 'annualBudget', 'registrationNumber',
   'phone', 'city', 'contactEmail', 'minFundingAmount', 'maxFundingAmount', 'fundingCurrency',
+  'minValue', 'maxValue', 'currency',
 ]); // prettier-ignore
 
 export function OrgFields({

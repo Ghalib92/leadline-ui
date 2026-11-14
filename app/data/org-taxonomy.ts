@@ -41,6 +41,95 @@ export const goalOptions = [
   },
 ] as const satisfies readonly (Option & { description: string })[];
 
+// ---- Clients brief (who you sell to) and tenders brief (what you bid for) ----
+
+export const businessCategories = [
+  { value: 'hospitality', label: 'Hotels, lodges & guest houses' },
+  { value: 'restaurants', label: 'Restaurants, cafés & bars' },
+  { value: 'health', label: 'Clinics, hospitals & pharmacies' },
+  { value: 'education', label: 'Schools, colleges & training centres' },
+  { value: 'legal', label: 'Law firms' },
+  { value: 'professional', label: 'Accounting & consulting firms' },
+  { value: 'real_estate', label: 'Real estate & property' },
+  { value: 'retail', label: 'Shops & supermarkets' },
+  { value: 'beauty', label: 'Salons, barbers & spas' },
+  { value: 'fitness', label: 'Gyms & fitness' },
+  { value: 'automotive', label: 'Garages & car dealers' },
+  { value: 'logistics', label: 'Transport & logistics' },
+  { value: 'finance', label: 'SACCOs, microfinance & insurance' },
+  { value: 'manufacturing', label: 'Manufacturing' },
+  { value: 'agriculture', label: 'Farms & agribusiness' },
+  { value: 'construction', label: 'Construction & hardware' },
+  { value: 'events', label: 'Event venues & planners' },
+  { value: 'travel', label: 'Tour operators & travel agents' },
+  { value: 'ngo', label: 'NGOs & foundations' },
+  { value: 'religious', label: 'Churches & religious organizations' },
+  { value: 'tech', label: 'Tech companies & startups' },
+  { value: 'media', label: 'Media & creative agencies' },
+  { value: 'other', label: 'Other' },
+] as const satisfies readonly Option[];
+
+export const businessSizes = [
+  { value: 'solo', label: 'Sole trader' },
+  { value: 'small', label: 'Small (2–10 people)' },
+  { value: 'medium', label: 'Medium (11–50 people)' },
+  { value: 'large', label: 'Large (more than 50)' },
+] as const satisfies readonly Option[];
+
+export const leadSignals = [
+  { value: 'no_website', label: 'No website' },
+  { value: 'broken_website', label: 'Website is down or broken' },
+  { value: 'outdated_website', label: 'Website looks outdated' },
+  { value: 'not_mobile_friendly', label: 'Website not mobile-friendly' },
+  { value: 'slow_website', label: 'Slow website' },
+  { value: 'no_https', label: 'No secure (HTTPS) website' },
+  { value: 'social_only', label: 'Only on social media' },
+  { value: 'no_online_booking', label: 'No online booking or ordering' },
+  { value: 'no_chatbot', label: 'No chat or quick replies' },
+  { value: 'no_online_payments', label: 'No online payments' },
+  { value: 'many_reviews', label: 'Busy: many reviews or followers' },
+  { value: 'new_business', label: 'Recently opened' },
+  { value: 'hiring', label: 'Hiring or growing' },
+] as const satisfies readonly Option[];
+
+export const tenderCategories = [
+  { value: 'software', label: 'Software, systems & apps' },
+  { value: 'it_hardware', label: 'IT hardware & networks' },
+  { value: 'it_services', label: 'IT support & managed services' },
+  { value: 'consultancy', label: 'Consultancy & advisory' },
+  { value: 'marketing', label: 'Marketing, media & design' },
+  { value: 'training', label: 'Training & capacity building' },
+  { value: 'research', label: 'Research, surveys & evaluation' },
+  { value: 'construction', label: 'Construction & works' },
+  { value: 'supplies', label: 'Goods & supplies' },
+  { value: 'medical', label: 'Medical supplies & equipment' },
+  { value: 'facilities', label: 'Cleaning, security & facilities' },
+  { value: 'transport', label: 'Transport & logistics' },
+  { value: 'energy', label: 'Energy & utilities' },
+  { value: 'agriculture', label: 'Agriculture & food' },
+  { value: 'other', label: 'Other' },
+] as const satisfies readonly Option[];
+
+export const buyerTypes = [
+  { value: 'national_government', label: 'National government' },
+  { value: 'county_government', label: 'County or local government' },
+  { value: 'parastatal', label: 'State corporations & parastatals' },
+  { value: 'international', label: 'UN, donors & international NGOs' },
+  { value: 'ngo', label: 'Local NGOs' },
+  { value: 'education', label: 'Universities & schools' },
+  { value: 'private', label: 'Private companies' },
+] as const satisfies readonly Option[];
+
+export const tenderEligibilityOptions = [
+  { value: 'agpo_youth', label: 'AGPO: youth-owned' },
+  { value: 'agpo_women', label: 'AGPO: women-owned' },
+  { value: 'agpo_pwd', label: 'AGPO: owned by persons with disabilities' },
+  { value: 'local_firm', label: 'Locally owned firm' },
+  { value: 'registered_supplier', label: 'Registered government supplier' },
+  { value: 'tax_compliant', label: 'Valid tax compliance certificate' },
+  { value: 'international_bidder', label: 'Can bid on international tenders' },
+] as const satisfies readonly Option[];
+
 export const teamSizes = [
   { value: '1-10', label: '1–10' },
   { value: '11-50', label: '11–50' },

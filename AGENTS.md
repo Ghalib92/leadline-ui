@@ -184,6 +184,13 @@ setFilter, removeFilter, setSort, … }`. State lives in the `tableFilters` slic
 - `routes/o.$slug.tsx` resolves the org **client-side** (`useOrgBySlug` finds the
   slug in my orgs, then loads preferences). Unknown / archived-for-members → the
   not-found panel; archived for admins → read-only banner.
+- **Goals and briefs**: an organization picks what it wants to find (`goals`:
+  clients, tenders, grants); each worker has one goal. Each goal has a brief:
+  the clients brief (`O/client-brief/`: what you sell, who to, signs they need
+  you), the tenders brief (`O/tender-brief/`) and the grant preferences
+  (`O/preferences/`). They live on the Workers page as one tab per goal
+  (`?tab=clients|tenders|preferences`); onboarding's "What you're after" step
+  and the setup checklist ask only for the picked goals' briefs.
 - **Onboarding** follows the backend's required setup steps (basics → what you do
   → preferences) plus optional invites; the overview then shows the backend's
   setup checklist (`GET …/setup`) for admins, deep-linking into Settings sheets

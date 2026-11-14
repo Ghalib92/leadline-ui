@@ -28,6 +28,10 @@ import {
   type Overview,
   type PreferencesView,
   type SetupStatus,
+  clientBriefDtoSchema,
+  tenderBriefDtoSchema,
+  type ClientBrief,
+  type TenderBrief,
 } from '~/lib/schema';
 import { collectPages, findBySlug } from './map';
 import { orgKeys, type DocumentFilters } from './query-keys';
@@ -199,4 +203,26 @@ export const useOrgOverview = (orgId: string) =>
       return overviewDtoSchema.parse(data);
     },
     enabled: !!orgId,
+  });
+
+/** What the organization sells and to whom (its Clients workers' brief). */
+export const useClientBrief = (orgId: string, enabled = true) =>
+  useQuery({
+    queryKey: orgKeys.clientBrief(orgId),
+    queryFn: async (): Promise<ClientBrief> => {
+      const { data } = await apiClient.get(orgApi(orgId, '/client-brief'));
+      return clientBriefDtoSchema.parse(data);
+    },
+    enabled: !!orgId && enabled,
+  });
+
+/** What the organization bids for (its Tenders workers' brief). */
+export const useTenderBrief = (orgId: string, enabled = true) =>
+  useQuery({
+    queryKey: orgKeys.tenderBrief(orgId),
+    queryFn: async (): Promise<TenderBrief> => {
+      const { data } = await apiClient.get(orgApi(orgId, '/tender-brief'));
+      return tenderBriefDtoSchema.parse(data);
+    },
+    enabled: !!orgId && enabled,
   });

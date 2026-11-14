@@ -1,0 +1,23 @@
+{
+  "services": [
+    {
+      "name": "Business websites",
+      "description": "5 pages, mobile-friendly, WhatsApp button",
+      "price": "From KES 40,000"
+    },
+    {
+      "name": "AI chatbots",
+      "description": "",
+      "price": ""
+    }
+  ],
+  "customer_types": ["hospitality", "health"],
+  "customer_keywords": ["boutique hotels"],
+  "customer_sizes": ["small", "medium"],
+  "target_countries": ["KE"],
+  "target_cities": ["Nairobi", "Mombasa"],
+  "signals": ["no_website", "no_online_booking"],
+  "excluded_keywords": ["franchise"],
+  "notes": "We deliver in four weeks.",
+  "updated_at": "2026-11-14T21:03:14.265004+03:00"
+}

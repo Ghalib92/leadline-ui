@@ -12,8 +12,11 @@ import {
   eligibilityOptions,
   toFeedTypes,
   toLegacyRegions,
+  businessCategories,
+  tenderCategories,
 } from '~/data/org-taxonomy';
 import { enumValues } from '~/data/taxonomy';
+import { serviceSchema } from './brief.schema';
 import type { MyOrg } from './org.schema';
 
 /**
@@ -240,7 +243,27 @@ const opportunityKind = z.enum(enumValues(opportunityKinds));
 const geographicScope = z.enum(enumValues(geographicScopes));
 const targetRegion = z.enum(enumValues(targetRegions));
 
-/** Required = the backend's required setup steps (basics, focus, preferences). */
+/** A list the backend's setup step for `goal` needs, required only when the
+ * organization picked that goal. Runs even while other fields are invalid, so
+ * each step shows its own errors. */
+function needs(
+  goal: Goal,
+  field: string,
+  message: string
+): [
+  (v: Record<string, unknown>) => boolean,
+  { message: string; path: PropertyKey[]; when: () => boolean },
+] {
+  return [
+    (v) =>
+      !(v.goals as Goal[] | undefined)?.includes(goal) ||
+      ((v[field] as unknown[] | undefined)?.length ?? 0) > 0,
+    { message, path: [field], when: () => true },
+  ];
+}
+
+/** Required = the backend's required setup steps: basics, focus and the brief of
+ * each goal picked (grant preferences, the clients brief, the tenders brief). */
 export const onboardingFormSchema = z
   .object({
     name: z.string().trim().min(1, 'Enter the organization name').max(200),
@@ -258,13 +281,14 @@ export const onboardingFormSchema = z
       .array(z.string().trim().min(1).max(100))
       .min(1, 'Pick at least one sector')
       .max(50),
-    opportunityTypes: z
-      .array(opportunityKind)
-      .min(1, 'Pick at least one opportunity type'),
-    geographicScopes: z
-      .array(geographicScope)
-      .min(1, 'Pick at least one scope'),
+    // What you're after: only the picked goals' questions are required (below).
+    opportunityTypes: z.array(opportunityKind),
+    geographicScopes: z.array(geographicScope),
     targetRegions: z.array(targetRegion),
+    services: z.array(serviceSchema).max(20, 'Add up to 20 services'),
+    customerTypes: z.array(z.enum(enumValues(businessCategories))),
+    targetCities: z.array(z.string().trim().min(1).max(100)).max(50),
+    tenderCategories: z.array(z.enum(enumValues(tenderCategories))),
     // Normalized and de-duplicated: the backend rejects the whole creation if
     // any invitation is invalid, duplicates included.
     inviteEmails: z
@@ -284,7 +308,12 @@ export const onboardingFormSchema = z
     path: ['mission'],
     // Check it on the "What you do" step too, before later steps are filled in.
     when: () => true,
-  });
+  })
+  .refine(...needs('grants', 'opportunityTypes', 'Pick at least one opportunity type'))
+  .refine(...needs('grants', 'geographicScopes', 'Pick at least one scope'))
+  .refine(...needs('clients', 'services', 'Add at least one thing you sell'))
+  .refine(...needs('clients', 'customerTypes', 'Pick at least one kind of customer'))
+  .refine(...needs('tenders', 'tenderCategories', 'Pick at least one kind of tender')); // prettier-ignore
 export type OnboardingForm = z.infer<typeof onboardingFormSchema>;
 
 // ---- Preferences ------------------------------------------------------------

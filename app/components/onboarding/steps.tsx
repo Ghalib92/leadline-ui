@@ -1,5 +1,5 @@
-import { useFormContext } from 'react-hook-form';
-import type { OnboardingForm } from '~/lib/schema';
+import { useFormContext, useWatch } from 'react-hook-form';
+import type { Goal, OnboardingForm } from '~/lib/schema';
 import { useStepValidator } from '~/components/ui/multi-step-form';
 import { FormPickerField, FormTagInputField } from '~/components/form-fields';
 import { OrgFields } from '~/components/org/org-profile-fields';
@@ -21,11 +21,37 @@ const basicsFields = [
   'description',
 ] as const;
 const focusFields = ['mission', 'offerings', 'sectors'] as const;
-const preferenceFields = [
-  'opportunityTypes',
-  'geographicScopes',
-  'targetRegions',
-] as const;
+/** What you're after: the questions of each goal picked (the backend's brief
+ * steps), so a company chasing clients never sees grant questions. */
+const goalSections: {
+  goal: Goal;
+  title: string;
+  hint: string;
+  fields: (keyof OnboardingForm)[];
+  required: (keyof OnboardingForm)[];
+}[] = [
+  {
+    goal: 'clients',
+    title: 'Your clients',
+    hint: 'What you sell and who buys it. Your workers look for businesses like these.',
+    fields: ['services', 'customerTypes', 'targetCities'],
+    required: ['services', 'customerTypes'],
+  },
+  {
+    goal: 'tenders',
+    title: 'Tenders',
+    hint: 'The kinds of tender you bid for.',
+    fields: ['tenderCategories'],
+    required: ['tenderCategories'],
+  },
+  {
+    goal: 'grants',
+    title: 'Grants & funding',
+    hint: 'The kinds of funding you want and where.',
+    fields: ['opportunityTypes', 'geographicScopes', 'targetRegions'],
+    required: ['opportunityTypes', 'geographicScopes'],
+  },
+];
 
 export function StepOrganization() {
   useValidateFields([...basicsFields]);
@@ -46,12 +72,22 @@ export function StepFocus() {
 }
 
 export function StepPreferences() {
-  useValidateFields([...preferenceFields]);
+  const { control } = useFormContext<OnboardingForm>();
+  const goals = useWatch({ control, name: 'goals' }) ?? [];
+  const sections = goalSections.filter((s) => goals.includes(s.goal));
+  useValidateFields(sections.flatMap((s) => s.fields));
   return (
-    <OrgFields
-      names={preferenceFields}
-      required={['opportunityTypes', 'geographicScopes']}
-    />
+    <div className="space-y-8">
+      {sections.map((section) => (
+        <section key={section.goal} className="space-y-3">
+          <div>
+            <h3 className="font-medium">{section.title}</h3>
+            <p className="text-sm text-muted-foreground">{section.hint}</p>
+          </div>
+          <OrgFields names={section.fields} required={section.required} />
+        </section>
+      ))}
+    </div>
   );
 }
 

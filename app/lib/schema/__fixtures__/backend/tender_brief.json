@@ -1,0 +1,14 @@
+{
+  "categories": ["software", "it_services"],
+  "keywords": ["ERP"],
+  "excluded_keywords": ["construction"],
+  "buyer_types": ["county_government"],
+  "target_countries": ["KE"],
+  "min_value": "500000.00",
+  "max_value": "20000000.00",
+  "currency": "KES",
+  "eligibility": ["agpo_youth"],
+  "certifications": ["ICTA 1"],
+  "capacity_notes": "Eight developers.",
+  "updated_at": "2026-11-14T21:03:14.265004+03:00"
+}

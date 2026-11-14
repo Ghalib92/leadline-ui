@@ -194,24 +194,53 @@ describe('setup status', () => {
 });
 
 describe('onboarding form', () => {
+  const emptyLists = {
+    sectors: [],
+    opportunityTypes: [],
+    geographicScopes: [],
+    targetRegions: [],
+    services: [],
+    customerTypes: [],
+    targetCities: [],
+    tenderCategories: [],
+  };
+  const missing = (input: Record<string, unknown>) =>
+    onboardingFormSchema
+      .safeParse({
+        name: 'Kijani',
+        inviteEmails: [],
+        inviteRole: 'member',
+        ...emptyLists,
+        ...input,
+      })
+      .error!.issues.map((i) => i.path[0]);
+
   it('requires the backend setup basics, focus and preferences', () => {
-    const res = onboardingFormSchema.safeParse({
-      name: 'Kijani',
-      inviteEmails: [],
-      inviteRole: 'member',
-    });
-    const keys = res.error!.issues.map((i) => i.path[0]);
-    expect(keys).toEqual(
+    expect(missing({ goals: ['grants'] })).toEqual(
       expect.arrayContaining([
         'organizationType',
         'country',
-        'goals',
         'description',
         'sectors',
         'opportunityTypes',
         'geographicScopes',
       ])
     );
+    expect(missing({})).toContain('goals');
+  });
+
+  it('asks only the questions of the goals picked', () => {
+    const clients = missing({ goals: ['clients'] });
+    expect(clients).toEqual(
+      expect.arrayContaining(['services', 'customerTypes'])
+    );
+    expect(clients).not.toContain('opportunityTypes');
+    expect(clients).not.toContain('tenderCategories');
+
+    const tenders = missing({ goals: ['tenders'] });
+    expect(tenders).toContain('tenderCategories');
+    expect(tenders).not.toContain('services');
+    expect(tenders).not.toContain('geographicScopes');
   });
 });
 
@@ -326,6 +355,10 @@ describe('onboarding focus step', () => {
     opportunityTypes: ['grant'],
     geographicScopes: ['national'],
     targetRegions: [],
+    services: [],
+    customerTypes: [],
+    targetCities: [],
+    tenderCategories: [],
     inviteEmails: [],
     inviteRole: 'member',
   };
@@ -353,7 +386,7 @@ describe('onboarding invites', () => {
       name: 'Kijani',
       organizationType: 'ngo',
       country: 'KE',
-      goals: ['clients'],
+      goals: ['grants'],
       description: 'x',
       mission: 'y',
       offerings: '',
@@ -361,6 +394,10 @@ describe('onboarding invites', () => {
       opportunityTypes: ['grant'],
       geographicScopes: ['national'],
       targetRegions: [],
+      services: [],
+      customerTypes: [],
+      targetCities: [],
+      tenderCategories: [],
       inviteEmails: ['a@x.org', 'A@X.org ', 'b@x.org'],
       inviteRole: 'member',
     });

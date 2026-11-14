@@ -22,6 +22,14 @@ import {
   type OrgSourceForm,
   type OrgView,
   type PreferencesForm,
+  clientBriefDtoSchema,
+  tenderBriefDtoSchema,
+  toClientBriefWrite,
+  toTenderBriefWrite,
+  type ClientBrief,
+  type ClientBriefForm,
+  type TenderBrief,
+  type TenderBriefForm,
 } from '~/lib/schema';
 import { agentKeys } from '../agents/query-keys';
 import { runKeys } from '../runs/query-keys';
@@ -73,14 +81,41 @@ export const useCreateOrg = () => {
       });
       const view = orgDtoSchema.parse(data);
       const failed: string[] = [];
+      // The brief of each goal picked; each saves on its own, so one failure
+      // doesn't lose the others (the setup checklist asks for what's missing).
+      const save = (path: string, body: object, step: string) =>
+        apiClient
+          .patch(`${base(view.id)}/${path}`, body)
+          .catch(() => failed.push(step));
 
-      await apiClient
-        .patch(`${base(view.id)}/preferences`, {
-          opportunity_types: input.opportunityTypes,
-          geographic_scopes: input.geographicScopes,
-          target_regions: input.targetRegions,
-        })
-        .catch(() => failed.push('preferences'));
+      await Promise.all([
+        input.goals.includes('grants') &&
+          save(
+            'preferences',
+            {
+              opportunity_types: input.opportunityTypes,
+              geographic_scopes: input.geographicScopes,
+              target_regions: input.targetRegions,
+            },
+            'preferences'
+          ),
+        input.goals.includes('clients') &&
+          save(
+            'client-brief',
+            toClientBriefWrite({
+              services: input.services,
+              customerTypes: input.customerTypes,
+              targetCities: input.targetCities,
+            }),
+            'clients brief'
+          ),
+        input.goals.includes('tenders') &&
+          save(
+            'tender-brief',
+            toTenderBriefWrite({ tenderCategories: input.tenderCategories }),
+            'tenders brief'
+          ),
+      ]);
 
       return { view, failed };
     },
@@ -358,3 +393,31 @@ export async function downloadDocument(orgId: string, doc: OrgDocument) {
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+export const useUpdateClientBrief = (orgId: string) => {
+  const refresh = useRefreshOrg();
+  return useMutation({
+    mutationFn: async (input: ClientBriefForm): Promise<ClientBrief> => {
+      const { data } = await apiClient.patch(
+        `${base(orgId)}/client-brief`,
+        toClientBriefWrite(input)
+      );
+      return clientBriefDtoSchema.parse(data);
+    },
+    onSuccess: refresh,
+  });
+};
+
+export const useUpdateTenderBrief = (orgId: string) => {
+  const refresh = useRefreshOrg();
+  return useMutation({
+    mutationFn: async (input: TenderBriefForm): Promise<TenderBrief> => {
+      const { data } = await apiClient.patch(
+        `${base(orgId)}/tender-brief`,
+        toTenderBriefWrite(input)
+      );
+      return tenderBriefDtoSchema.parse(data);
+    },
+    onSuccess: refresh,
+  });
+};
