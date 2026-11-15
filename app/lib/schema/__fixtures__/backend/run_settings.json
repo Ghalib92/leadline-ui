@@ -31,9 +31,9 @@
       "key": "clients",
       "label": "Clients",
       "description": "Businesses that could buy what you sell, with a reason they need it.",
-      "opportunity_types": [],
-      "sources": [],
-      "available": false
+      "opportunity_types": ["client"],
+      "sources": ["businesses"],
+      "available": true
     },
     {
       "key": "tenders",

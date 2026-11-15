@@ -1,0 +1,50 @@
+{
+  "id": "Lq3Zr8Vt5Wm2",
+  "agent": "dHDgKF7ekYNo",
+  "agent_name": "Education grants",
+  "run": "UdYXctqPZyHk",
+  "opportunity_type": "client",
+  "title": "Savannah Lodge",
+  "funder": "",
+  "summary": "Hotel in 12 Ngong Road, Nairobi. Rated 4.6 from 230 reviews.",
+  "eligibility": "",
+  "amount": null,
+  "deadline": null,
+  "location": "12 Ngong Road, Nairobi",
+  "source_url": "https://www.google.com/maps/place/savannah-lodge",
+  "source_name": "Google Maps",
+  "match_score": 82,
+  "match_reasons": [
+    "A hotel in Nairobi, a kind you target",
+    "No website but 230 reviews"
+  ],
+  "status": "new",
+  "saved": false,
+  "notes": "",
+  "requirements": {},
+  "latest_review": null,
+  "found_at": "2026-10-08T09:00:35.707107+03:00",
+  "updated_at": "2026-10-08T09:00:35.707451+03:00",
+  "brief": null,
+  "brief_status": "none",
+  "brief_sources": null,
+  "business": {
+    "name": "Savannah Lodge",
+    "source": "google_maps",
+    "source_url": "https://www.google.com/maps/place/savannah-lodge",
+    "category": "Hotel",
+    "address": "12 Ngong Road",
+    "city": "Nairobi",
+    "country": "KE",
+    "phone": "+254 700 000001",
+    "socials": {
+      "instagram": "https://www.instagram.com/savannahlodge"
+    },
+    "rating": 4.6,
+    "reviews": 230,
+    "source_label": "Google Maps",
+    "signals": ["no_website", "many_reviews"],
+    "complete_listing": true,
+    "pitch_angle": "No website but 230 Google reviews: a booking site would turn that demand into bookings."
+  }
+}

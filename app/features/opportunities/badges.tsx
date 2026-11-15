@@ -24,6 +24,10 @@ const TYPE_META: Record<OpportunityType, { label: string; className: string }> =
       label: 'Event',
       className: 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
     },
+    client: {
+      label: 'Client lead',
+      className: 'bg-rose-500/10 text-rose-700 dark:text-rose-400',
+    },
   };
 
 const pill =

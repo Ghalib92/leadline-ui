@@ -47,6 +47,28 @@ export const opportunitySchema = z.object({
   updatedAt: z.string(),
   /** Backend: the precise kind (`rfp`, `fellowship`…) behind the feed `type`. */
   kind: z.string().optional(),
+  /** Client leads: the business's listing (contacts, rating, signs it needs you). */
+  business: z
+    .object({
+      category: z.string(),
+      address: z.string(),
+      city: z.string(),
+      country: z.string(),
+      phone: z.string(),
+      email: z.string(),
+      website: z.string(),
+      socials: z.record(z.string(), z.string()),
+      rating: z.number().optional(),
+      reviews: z.number().optional(),
+      /** True when the directory reliably lists websites (Google Maps). */
+      completeListing: z.boolean(),
+      signals: z.array(z.string()),
+      pitchAngle: z.string(),
+      source: z.string(),
+      sourceLabel: z.string(),
+      listingUrl: z.string(),
+    })
+    .optional(),
   /** Backend: what to check before applying, from the verifier and judge. */
   concerns: z.array(z.string()).optional(),
   requirementItems: z.array(z.string()).optional(),
@@ -68,7 +90,8 @@ export const opportunitySchema = z.object({
       nextStep: z.string(),
     })
     .optional(),
-  briefStatus: z.enum(['pending', 'ready', 'failed']).optional(),
+  /** `none`: no brief for this kind of find (client leads). */
+  briefStatus: z.enum(['pending', 'ready', 'failed', 'none']).optional(),
   /** Which company documents the brief read. */
   briefSources: z
     .object({
@@ -146,6 +169,7 @@ export const overviewSchema = z.object({
 export type OpportunityType = z.infer<typeof opportunityTypeSchema>;
 export type OpportunityStatus = z.infer<typeof opportunityStatusSchema>;
 export type Opportunity = z.infer<typeof opportunitySchema>;
+export type OpportunityBusiness = NonNullable<Opportunity['business']>;
 export type OpportunityList = z.infer<typeof opportunityListSchema>;
 export type UpdateOpportunityInput = z.infer<typeof updateOpportunitySchema>;
 export type Overview = z.infer<typeof overviewSchema>;

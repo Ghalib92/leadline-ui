@@ -17,6 +17,7 @@ import {
   opportunityStatusSchema,
   opportunityTypeSchema,
   type Opportunity,
+  type OpportunityBusiness,
   type OpportunityType,
   type Overview,
 } from './opportunity.schema';
@@ -42,6 +43,7 @@ const kindsOf: Record<OpportunityType, string[]> = {
   tender: ['tender', 'rfp', 'consultancy'],
   partnership: ['partnership', 'accelerator'],
   event: ['conference', 'award', 'competition'],
+  client: ['client'],
 };
 
 export const toBackendKinds = (types: readonly string[]): string[] => [
@@ -55,6 +57,48 @@ const nullableText = z
   .string()
   .nullish()
   .transform((value) => value ?? undefined);
+
+/** A client lead's business (`Opportunity.business`): what its listing shows. */
+const businessDtoSchema = z
+  .object({
+    name: z.string().default(''),
+    source: z.string().default(''),
+    source_label: z.string().default(''),
+    source_url: z.string().default(''),
+    category: z.string().default(''),
+    address: z.string().default(''),
+    city: z.string().default(''),
+    country: z.string().default(''),
+    phone: z.string().default(''),
+    email: z.string().default(''),
+    website: z.string().default(''),
+    socials: z.record(z.string(), z.string()).default({}),
+    rating: z.number().nullish(),
+    reviews: z.number().nullish(),
+    complete_listing: z.boolean().default(false),
+    signals: z.array(z.string()).default([]),
+    pitch_angle: z.string().default(''),
+  })
+  .transform(
+    (dto): OpportunityBusiness => ({
+      category: dto.category,
+      address: dto.address,
+      city: dto.city,
+      country: dto.country,
+      phone: dto.phone,
+      email: dto.email,
+      website: dto.website,
+      socials: dto.socials,
+      rating: dto.rating ?? undefined,
+      reviews: dto.reviews ?? undefined,
+      completeListing: dto.complete_listing,
+      signals: dto.signals,
+      pitchAngle: dto.pitch_angle,
+      source: dto.source,
+      sourceLabel: dto.source_label,
+      listingUrl: dto.source_url,
+    })
+  );
 
 export const runOpportunityDtoSchema = z
   .object({
@@ -630,9 +674,10 @@ export const opportunityDtoSchema = z
       .nullish()
       .catch(null),
     brief_status: z
-      .enum(['pending', 'ready', 'failed'])
+      .enum(['pending', 'ready', 'failed', 'none'])
       .optional()
       .catch(undefined),
+    business: businessDtoSchema.nullish().catch(null),
     brief_sources: z
       .object({
         mode: z.enum(['all', 'folders', 'none']).catch('all'),
@@ -686,6 +731,7 @@ export const opportunityDtoSchema = z
           }
         : undefined,
       briefStatus: dto.brief_status,
+      business: dto.business ?? undefined,
       briefSources: dto.brief_sources ?? undefined,
       concerns: dto.requirements?.concerns ?? [],
       requirementItems: dto.requirements?.items ?? [],

@@ -320,6 +320,7 @@ const feedTypeOf: Record<string, OpportunityType> = {
   conference: 'event',
   award: 'event',
   competition: 'event',
+  client: 'client',
 };
 
 export function toFeedTypes(kinds: readonly string[]): OpportunityType[] {

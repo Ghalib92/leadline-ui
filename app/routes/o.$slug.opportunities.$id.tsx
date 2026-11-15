@@ -10,6 +10,7 @@ import {
 } from '~/components/opportunity/review-actions';
 import { ProposalCard } from '~/components/opportunity/proposal-card';
 import { BriefCard } from '~/components/opportunity/brief-card';
+import { BusinessCard } from '~/components/opportunity/business-card';
 import { ContactsPanel } from '~/components/opportunity/contacts-panel';
 import {
   DeadlineBadge,
@@ -121,6 +122,9 @@ export default function OpportunityDetailPage() {
     );
   }
 
+  // A client lead (a business) shows its listing instead of a call's brief.
+  const lead = opp.type === 'client' ? opp.business : undefined;
+
   return (
     <Page>
       <PageHeader
@@ -131,6 +135,9 @@ export default function OpportunityDetailPage() {
             <TypeBadge type={opp.type} />
             <MatchScore score={opp.matchScore} />
             {opp.funder && <span>{opp.funder}</span>}
+            {opp.business?.category && (
+              <span className="capitalize">{opp.business.category}</span>
+            )}
           </>
         }
         actions={
@@ -181,7 +188,8 @@ export default function OpportunityDetailPage() {
             )}
             <Button asChild variant="outline">
               <a href={opp.sourceUrl} target="_blank" rel="noopener noreferrer">
-                Read more <ExternalLink className="h-4 w-4" />
+                {lead ? 'Open' : 'Read more'}{' '}
+                <ExternalLink className="h-4 w-4" />
               </a>
             </Button>
           </>
@@ -191,22 +199,28 @@ export default function OpportunityDetailPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <AppCard
-            title="Summary"
-            contentClassName="space-y-4 text-sm leading-relaxed"
-          >
-            <p>{opp.summary}</p>
-            {opp.eligibility && (
-              <div>
-                <p className="font-medium">Eligibility</p>
-                <p className="text-muted-foreground">{opp.eligibility}</p>
-              </div>
-            )}
-          </AppCard>
+          {lead ? (
+            <BusinessCard business={lead} summary={opp.summary} />
+          ) : (
+            <>
+              <AppCard
+                title="Summary"
+                contentClassName="space-y-4 text-sm leading-relaxed"
+              >
+                <p>{opp.summary}</p>
+                {opp.eligibility && (
+                  <div>
+                    <p className="font-medium">Eligibility</p>
+                    <p className="text-muted-foreground">{opp.eligibility}</p>
+                  </div>
+                )}
+              </AppCard>
 
-          <BriefCard orgId={org.id} opp={opp} />
+              <BriefCard orgId={org.id} opp={opp} />
 
-          <ProposalCard orgId={org.id} opp={opp} />
+              <ProposalCard orgId={org.id} opp={opp} />
+            </>
+          )}
 
           {(opp.concerns?.length ?? 0) > 0 && (
             <AppCard title="Check before applying">
@@ -273,10 +287,14 @@ export default function OpportunityDetailPage() {
 
         <AppCard className="h-fit">
           <dl className="space-y-4">
-            <Fact label="Amount">{formatAmount(opp.amount)}</Fact>
-            <Fact label="Deadline">
-              <DeadlineBadge deadline={opp.deadline} />
-            </Fact>
+            {!lead && (
+              <>
+                <Fact label="Amount">{formatAmount(opp.amount)}</Fact>
+                <Fact label="Deadline">
+                  <DeadlineBadge deadline={opp.deadline} />
+                </Fact>
+              </>
+            )}
             {opp.location && <Fact label="Location">{opp.location}</Fact>}
             <Fact label="Source">{opp.sourceName}</Fact>
             <Fact label="Found by">

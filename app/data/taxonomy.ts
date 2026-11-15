@@ -12,6 +12,7 @@ export const OPPORTUNITY_TYPES = [
   { value: 'tender', label: 'Tenders & RFPs' },
   { value: 'partnership', label: 'Partnerships' },
   { value: 'event', label: 'Events & awards' },
+  { value: 'client', label: 'Client leads' },
 ] as const satisfies readonly Option[];
 
 export const ORG_TYPES = [
@@ -107,4 +108,5 @@ export const AGENT_SOURCES = [
   { value: 'grants', label: 'Grant databases' },
   { value: 'procurement', label: 'Procurement portals' },
   { value: 'news', label: 'News & announcements' },
+  { value: 'businesses', label: 'Business directories' },
 ];

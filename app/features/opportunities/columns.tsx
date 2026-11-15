@@ -85,8 +85,12 @@ export function useOpportunityColumns({
                   Rejected ·
                 </span>
               )}
-              {row.original.funder} · found by{' '}
-              {row.original.agentName ?? 'a deleted worker'}
+              {row.original.business
+                ? [row.original.business.category, row.original.business.city]
+                    .filter(Boolean)
+                    .join(', ')
+                : row.original.funder}{' '}
+              · found by {row.original.agentName ?? 'a deleted worker'}
             </p>
           </div>
         ),

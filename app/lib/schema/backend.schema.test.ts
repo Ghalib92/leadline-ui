@@ -4,6 +4,7 @@ import runDetail from './__fixtures__/backend/run_detail.json';
 import runs from './__fixtures__/backend/runs.json';
 import opportunities from './__fixtures__/backend/opportunities.json';
 import opportunity from './__fixtures__/backend/opportunity.json';
+import clientLead from './__fixtures__/backend/client_lead.json';
 import overview from './__fixtures__/backend/overview.json';
 import reasons from './__fixtures__/backend/reasons.json';
 import review from './__fixtures__/backend/review.json';
@@ -186,16 +187,38 @@ describe('backend contract', () => {
   it('lists every goal with the feed types and sources it searches', () => {
     const { goals } = runSettingsDtoSchema.parse(runSettings);
     expect(goals.map((g) => [g.value, g.available])).toEqual([
-      ['clients', false],
+      ['clients', true],
       ['tenders', true],
       ['grants', true],
     ]);
+    expect(goals[0].opportunityTypes).toEqual(['client']);
+    expect(goals[0].sources).toEqual(['businesses']);
     const [, tenders, grants] = goals;
     // rfp and consultancy are tenders in the feed; every grant kind folds into
     // grants, partnerships and events.
     expect(tenders.opportunityTypes).toEqual(['tender']);
     expect(tenders.sources).toEqual(['web', 'procurement', 'news']);
     expect(grants.opportunityTypes).toEqual(['grant', 'partnership', 'event']);
+  });
+
+  it('reads a client lead with its business listing', () => {
+    const lead = opportunityDtoSchema.parse(clientLead);
+    expect(lead.type).toBe('client');
+    expect(lead.briefStatus).toBe('none');
+    expect(lead.business).toMatchObject({
+      category: 'Hotel',
+      phone: '+254 700 000001',
+      website: '',
+      completeListing: true,
+      signals: ['no_website', 'many_reviews'],
+      sourceLabel: 'Google Maps',
+      listingUrl: 'https://www.google.com/maps/place/savannah-lodge',
+    });
+    expect(lead.business?.socials).toEqual({
+      instagram: 'https://www.instagram.com/savannahlodge',
+    });
+    // Opportunities found before leads existed have no business.
+    expect(opportunityDtoSchema.parse(opportunity).business).toBeUndefined();
   });
 
   it("sends a worker's goal", () => {

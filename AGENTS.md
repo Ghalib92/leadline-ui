@@ -191,6 +191,13 @@ setFilter, removeFilter, setSort, … }`. State lives in the `tableFilters` slic
   (`O/preferences/`). They live on the Workers page as one tab per goal
   (`?tab=clients|tenders|preferences`); onboarding's "What you're after" step
   and the setup checklist ask only for the picked goals' briefs.
+- **Client leads** are opportunities of type `client` (feed type "Client leads")
+  with a `business` record: phone, email, website, socials, rating, the signs it
+  needs you and a suggested pitch. Their page shows `BusinessCard`
+  (`components/opportunity/business-card.tsx`) instead of the summary, brief and
+  proposal; `briefStatus` is `none`. A missing website reads "No website" only
+  when the directory lists websites reliably (`completeListing`), never for
+  OpenStreetMap.
 - **Onboarding** follows the backend's required setup steps (basics → what you do
   → preferences) plus optional invites; the overview then shows the backend's
   setup checklist (`GET …/setup`) for admins, deep-linking into Settings sheets
