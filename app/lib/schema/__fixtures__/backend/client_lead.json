@@ -45,6 +45,21 @@
     "source_label": "Google Maps",
     "signals": ["no_website", "many_reviews"],
     "complete_listing": true,
-    "pitch_angle": "No website but 230 Google reviews: a booking site would turn that demand into bookings."
+    "pitch_angle": "No website but 230 Google reviews: a booking site would turn that demand into bookings.",
+    "website_status": "none",
+    "evidence": [
+      {
+        "signal": "no_website",
+        "detail": "Google Maps lists no website for it."
+      },
+      {
+        "signal": "many_reviews",
+        "detail": "230 reviews: a busy business."
+      }
+    ],
+    "found_on": {
+      "instagram": "web search"
+    },
+    "looked_up": false
   }
 }

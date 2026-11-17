@@ -217,8 +217,60 @@ describe('backend contract', () => {
     expect(lead.business?.socials).toEqual({
       instagram: 'https://www.instagram.com/savannahlodge',
     });
+    expect(lead.business?.websiteStatus).toBe('none');
+    expect(lead.business?.evidence[0]).toEqual({
+      signal: 'no_website',
+      detail: 'Google Maps lists no website for it.',
+    });
+    expect(lead.business?.foundOn).toEqual({ instagram: 'web search' });
+    expect(lead.business?.site).toBeUndefined();
     // Opportunities found before leads existed have no business.
     expect(opportunityDtoSchema.parse(opportunity).business).toBeUndefined();
+  });
+
+  it("reads a lead's website check", () => {
+    const lead = opportunityDtoSchema.parse({
+      ...clientLead,
+      business: {
+        ...clientLead.business,
+        website: 'https://kilima.co.ke/',
+        website_status: 'found',
+        site: {
+          url: 'https://kilima.co.ke/',
+          https: false,
+          mobile_ready: false,
+          copyright_year: 2017,
+          booking: null,
+          stale: true,
+          checked_at: '2026-11-17',
+        },
+      },
+    });
+    expect(lead.business?.site).toMatchObject({
+      url: 'https://kilima.co.ke/',
+      reachable: true,
+      blocked: false,
+      https: false,
+      mobileReady: false,
+      copyrightYear: 2017,
+      booking: undefined,
+      certificateError: false,
+      checkedAt: '2026-11-17',
+    });
+  });
+
+  it('derives the website status of leads saved before the lookup', () => {
+    const { website_status: _, evidence: __, ...listing } = clientLead.business;
+    const parse = (business: object) =>
+      opportunityDtoSchema.parse({ ...clientLead, business }).business;
+    expect(parse(listing)?.websiteStatus).toBe('none');
+    expect(parse({ ...listing, complete_listing: false })?.websiteStatus).toBe(
+      'unknown'
+    );
+    expect(
+      parse({ ...listing, website: 'https://savannah.co.ke' })?.websiteStatus
+    ).toBe('listed');
+    expect(parse(listing)?.evidence).toEqual([]);
   });
 
   it("sends a worker's goal", () => {

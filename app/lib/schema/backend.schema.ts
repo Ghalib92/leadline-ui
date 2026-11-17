@@ -58,7 +58,59 @@ const nullableText = z
   .nullish()
   .transform((value) => value ?? undefined);
 
-/** A client lead's business (`Opportunity.business`): what its listing shows. */
+const optionalBoolean = z
+  .boolean()
+  .nullish()
+  .transform((value) => value ?? undefined);
+const optionalNumber = z
+  .number()
+  .nullish()
+  .transform((value) => value ?? undefined);
+
+/** What the lead lookup saw on a business's website (`business.site`). */
+const siteCheckDtoSchema = z
+  .object({
+    url: z.string().default(''),
+    reachable: z.boolean().default(true),
+    problem: z.string().default(''),
+    blocked: z.boolean().default(false),
+    https: optionalBoolean,
+    certificate_error: z.boolean().default(false),
+    mobile_ready: optionalBoolean,
+    copyright_year: optionalNumber,
+    booking: optionalBoolean,
+    chat: optionalBoolean,
+    payments: optionalBoolean,
+    mobile_speed: optionalNumber,
+    checked_at: z.string().default(''),
+  })
+  .transform((dto) => ({
+    url: dto.url,
+    reachable: dto.reachable,
+    problem: dto.problem,
+    blocked: dto.blocked,
+    https: dto.https,
+    certificateError: dto.certificate_error,
+    mobileReady: dto.mobile_ready,
+    copyrightYear: dto.copyright_year,
+    booking: dto.booking,
+    chat: dto.chat,
+    payments: dto.payments,
+    mobileSpeed: dto.mobile_speed,
+    checkedAt: dto.checked_at,
+  }));
+
+const websiteStatuses = [
+  'listed',
+  'found',
+  'down',
+  'none',
+  'not_found',
+  'unknown',
+] as const;
+
+/** A client lead's business (`Opportunity.business`): what its listing shows, and
+ * what the lead lookup found (each with where it came from). */
 const businessDtoSchema = z
   .object({
     name: z.string().default(''),
@@ -76,7 +128,15 @@ const businessDtoSchema = z
     rating: z.number().nullish(),
     reviews: z.number().nullish(),
     complete_listing: z.boolean().default(false),
+    // Leads saved before the lookup have no status: derived from the listing below.
+    website_status: z.enum(websiteStatuses).nullish().catch(undefined),
     signals: z.array(z.string()).default([]),
+    evidence: z
+      .array(z.object({ signal: z.string(), detail: z.string() }))
+      .default([])
+      .catch([]),
+    found_on: z.record(z.string(), z.string()).default({}).catch({}),
+    site: siteCheckDtoSchema.nullish().catch(undefined),
     pitch_angle: z.string().default(''),
   })
   .transform(
@@ -92,7 +152,13 @@ const businessDtoSchema = z
       rating: dto.rating ?? undefined,
       reviews: dto.reviews ?? undefined,
       completeListing: dto.complete_listing,
+      websiteStatus:
+        dto.website_status ??
+        (dto.website ? 'listed' : dto.complete_listing ? 'none' : 'unknown'),
       signals: dto.signals,
+      evidence: dto.evidence,
+      foundOn: dto.found_on,
+      site: dto.site ?? undefined,
       pitchAngle: dto.pitch_angle,
       source: dto.source,
       sourceLabel: dto.source_label,

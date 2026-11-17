@@ -62,7 +62,41 @@ export const opportunitySchema = z.object({
       reviews: z.number().optional(),
       /** True when the directory reliably lists websites (Google Maps). */
       completeListing: z.boolean(),
+      /**
+       * listed | found (by a web search) | down | none (a complete listing shows
+       * none) | not_found (none listed or found on the web) | unknown.
+       */
+      websiteStatus: z.enum([
+        'listed',
+        'found',
+        'down',
+        'none',
+        'not_found',
+        'unknown',
+      ]),
       signals: z.array(z.string()),
+      /** Why they need you: one checked fact per signal, e.g. "x.co.ke still shows © 2017." */
+      evidence: z.array(z.object({ signal: z.string(), detail: z.string() })),
+      /** Field (phone, email, website, instagram…) → where the lookup found it. */
+      foundOn: z.record(z.string(), z.string()),
+      /** What its website showed when checked; undefined = not checked. */
+      site: z
+        .object({
+          url: z.string(),
+          reachable: z.boolean(),
+          problem: z.string(),
+          blocked: z.boolean(),
+          https: z.boolean().optional(),
+          certificateError: z.boolean(),
+          mobileReady: z.boolean().optional(),
+          copyrightYear: z.number().optional(),
+          booking: z.boolean().optional(),
+          chat: z.boolean().optional(),
+          payments: z.boolean().optional(),
+          mobileSpeed: z.number().optional(),
+          checkedAt: z.string(),
+        })
+        .optional(),
       pitchAngle: z.string(),
       source: z.string(),
       sourceLabel: z.string(),
