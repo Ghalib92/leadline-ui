@@ -56,11 +56,17 @@ const link = 'text-primary hover:underline';
 type Site = NonNullable<OpportunityBusiness['site']>;
 
 /** Where the lead lookup found a field, shown next to it. Directory facts get none. */
+const FOUND_ON: Record<string, string> = {
+  website: 'from their website',
+  'web search': 'found in a web search',
+  Hunter: 'from Hunter.io',
+};
+
 function FoundOn({ where }: Readonly<{ where?: string }>) {
   if (!where) return null;
   return (
     <span className="text-xs text-muted-foreground">
-      {where === 'website' ? 'from their website' : `found in a ${where}`}
+      {FOUND_ON[where] ?? `from ${where}`}
     </span>
   );
 }
@@ -176,6 +182,7 @@ function SiteCheckRow({ site }: Readonly<{ site: Site }>) {
       {site.checkedAt && (
         <span className="text-xs text-muted-foreground">
           Checked {site.checkedAt}
+          {site.readBy && ` · read through ${site.readBy}`}
         </span>
       )}
     </Row>

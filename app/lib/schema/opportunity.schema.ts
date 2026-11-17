@@ -95,6 +95,8 @@ export const opportunitySchema = z.object({
           payments: z.boolean().optional(),
           mobileSpeed: z.number().optional(),
           checkedAt: z.string(),
+          /** A rendering service that read it for us ("Jina Reader"), or "". */
+          readBy: z.string(),
         })
         .optional(),
       pitchAngle: z.string(),

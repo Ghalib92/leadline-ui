@@ -83,6 +83,7 @@ const siteCheckDtoSchema = z
     payments: optionalBoolean,
     mobile_speed: optionalNumber,
     checked_at: z.string().default(''),
+    read_by: z.string().default(''),
   })
   .transform((dto) => ({
     url: dto.url,
@@ -98,6 +99,7 @@ const siteCheckDtoSchema = z
     payments: dto.payments,
     mobileSpeed: dto.mobile_speed,
     checkedAt: dto.checked_at,
+    readBy: dto.read_by,
   }));
 
 const websiteStatuses = [

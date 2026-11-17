@@ -30,6 +30,7 @@ const oldSite: NonNullable<OpportunityBusiness['site']> = {
   payments: undefined,
   mobileSpeed: 31,
   checkedAt: '2026-11-17',
+  readBy: 'Jina Reader',
 };
 
 describe('BusinessCard', () => {
@@ -116,13 +117,14 @@ describe('BusinessCard', () => {
       website: 'https://kilima.co.ke/',
       websiteStatus: 'found',
       email: 'info@kilima.co.ke',
-      foundOn: { website: 'web search', email: 'website' },
+      foundOn: { website: 'web search', email: 'website', phone: 'Hunter' },
     });
     expect(
       screen.getByRole('link', { name: 'kilima.co.ke' })
     ).toBeInTheDocument();
     expect(screen.getByText('found in a web search')).toBeInTheDocument();
     expect(screen.getByText('from their website')).toBeInTheDocument();
+    expect(screen.getByText('from Hunter.io')).toBeInTheDocument();
   });
 
   it('says why a website is down', () => {
@@ -154,7 +156,9 @@ describe('BusinessCard', () => {
     expect(screen.queryByText('Chat')).toBeNull(); // not checked: not shown
     expect(screen.getAllByLabelText('no')).toHaveLength(4);
     expect(screen.getAllByLabelText('yes')).toHaveLength(1);
-    expect(screen.getByText('Checked 2026-11-17')).toBeInTheDocument();
+    expect(
+      screen.getByText('Checked 2026-11-17 · read through Jina Reader')
+    ).toBeInTheDocument();
   });
 
   it('says when a site refuses automated checks', () => {
