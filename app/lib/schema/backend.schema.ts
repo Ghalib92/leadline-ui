@@ -111,6 +111,53 @@ const websiteStatuses = [
   'unknown',
 ] as const;
 
+/** A tender's portal facts (`Opportunity.tender`); `{}` for everything else. */
+const tenderDtoSchema = z
+  .object({
+    reference: z.string().default(''),
+    buyer: z.string().default(''),
+    category: z.string().default(''),
+    method: z.string().default(''),
+    published_at: z.string().default(''),
+    closes_at: z.string().default(''),
+    venue: z.string().default(''),
+    tender_fee: z.number().nullish(),
+    bid_security: z.string().default(''),
+    submission: z.array(z.string()).default([]),
+    reserved_for: z.array(z.string()).default([]),
+    documents: z
+      .array(z.object({ name: z.string().default(''), url: z.string() }))
+      .default([])
+      .catch([]),
+    addenda: z.number().default(0),
+    buyer_contact: z
+      .object({
+        email: z.string().default(''),
+        phone: z.string().default(''),
+        website: z.string().default(''),
+        address: z.string().default(''),
+      })
+      .default({ email: '', phone: '', website: '', address: '' }),
+    source: z.string().default(''),
+  })
+  .transform((dto) => ({
+    reference: dto.reference,
+    buyer: dto.buyer,
+    category: dto.category,
+    method: dto.method,
+    publishedAt: dto.published_at,
+    closesAt: dto.closes_at,
+    venue: dto.venue,
+    tenderFee: dto.tender_fee ?? undefined,
+    bidSecurity: dto.bid_security,
+    submission: dto.submission,
+    reservedFor: dto.reserved_for,
+    documents: dto.documents.filter((doc) => /^https?:\/\//.test(doc.url)),
+    addenda: dto.addenda,
+    buyerContact: dto.buyer_contact,
+    source: dto.source,
+  }));
+
 /** A client lead's business (`Opportunity.business`): what its listing shows, and
  * what the lead lookup found (each with where it came from). */
 const businessDtoSchema = z
@@ -746,6 +793,7 @@ export const opportunityDtoSchema = z
       .optional()
       .catch(undefined),
     business: businessDtoSchema.nullish().catch(null),
+    tender: z.record(z.string(), z.unknown()).nullish().catch(null),
     brief_sources: z
       .object({
         mode: z.enum(['all', 'folders', 'none']).catch('all'),
@@ -800,6 +848,11 @@ export const opportunityDtoSchema = z
         : undefined,
       briefStatus: dto.brief_status,
       business: dto.business ?? undefined,
+      // `{}` (not a portal tender) or unreadable: no tender card.
+      tender:
+        dto.tender && Object.keys(dto.tender).length > 0
+          ? (tenderDtoSchema.safeParse(dto.tender).data ?? undefined)
+          : undefined,
       briefSources: dto.brief_sources ?? undefined,
       concerns: dto.requirements?.concerns ?? [],
       requirementItems: dto.requirements?.items ?? [],

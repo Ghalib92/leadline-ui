@@ -105,6 +105,33 @@ export const opportunitySchema = z.object({
       listingUrl: z.string(),
     })
     .optional(),
+  /** Tenders from a procurement portal (tenders.go.ke): the portal's own facts. */
+  tender: z
+    .object({
+      reference: z.string(),
+      buyer: z.string(),
+      category: z.string(),
+      method: z.string(),
+      publishedAt: z.string(),
+      /** ISO time with offset; the precise closing time (`deadline` is the day). */
+      closesAt: z.string(),
+      venue: z.string(),
+      tenderFee: z.number().optional(),
+      bidSecurity: z.string(),
+      submission: z.array(z.string()),
+      /** AGPO groups the tender is reserved for (Youth, Women…); empty when open to all. */
+      reservedFor: z.array(z.string()),
+      documents: z.array(z.object({ name: z.string(), url: z.string() })),
+      addenda: z.number(),
+      buyerContact: z.object({
+        email: z.string(),
+        phone: z.string(),
+        website: z.string(),
+        address: z.string(),
+      }),
+      source: z.string(),
+    })
+    .optional(),
   /** Backend: what to check before applying, from the verifier and judge. */
   concerns: z.array(z.string()).optional(),
   requirementItems: z.array(z.string()).optional(),

@@ -10,6 +10,7 @@ import {
 } from '~/components/opportunity/review-actions';
 import { ProposalCard } from '~/components/opportunity/proposal-card';
 import { BriefCard } from '~/components/opportunity/brief-card';
+import { TenderCard } from '~/components/opportunity/tender-card';
 import { BusinessCard } from '~/components/opportunity/business-card';
 import { ContactsPanel } from '~/components/opportunity/contacts-panel';
 import { PitchCard } from '~/components/opportunity/pitch-card';
@@ -221,6 +222,8 @@ export default function OpportunityDetailPage() {
                   </div>
                 )}
               </AppCard>
+
+              {opp.tender && <TenderCard tender={opp.tender} />}
 
               <BriefCard orgId={org.id} opp={opp} />
 
