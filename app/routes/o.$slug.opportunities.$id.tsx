@@ -12,6 +12,8 @@ import { ProposalCard } from '~/components/opportunity/proposal-card';
 import { BriefCard } from '~/components/opportunity/brief-card';
 import { BusinessCard } from '~/components/opportunity/business-card';
 import { ContactsPanel } from '~/components/opportunity/contacts-panel';
+import { PitchCard } from '~/components/opportunity/pitch-card';
+import { LeadActivityCard } from '~/components/opportunity/lead-activity';
 import {
   DeadlineBadge,
   MatchScore,
@@ -200,7 +202,11 @@ export default function OpportunityDetailPage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           {lead ? (
-            <BusinessCard business={lead} summary={opp.summary} />
+            <>
+              <BusinessCard business={lead} summary={opp.summary} />
+              <PitchCard orgId={org.id} opp={opp} />
+              <LeadActivityCard orgId={org.id} opp={opp} />
+            </>
           ) : (
             <>
               <AppCard
@@ -254,7 +260,8 @@ export default function OpportunityDetailPage() {
             )}
           </AppCard>
 
-          <ContactsPanel orgId={org.id} opp={opp} />
+          {/* Funder contacts; a lead's contacts are on its business card. */}
+          {!lead && <ContactsPanel orgId={org.id} opp={opp} />}
           <ReviewHistory orgId={org.id} oppId={opp.id} />
 
           <AppCard title="Notes">

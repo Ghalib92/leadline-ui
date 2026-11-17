@@ -13,6 +13,7 @@ export const orgRoutes = [
       'opportunities/:id/proposal',
       'routes/o.$slug.opportunities.$id.proposal.tsx'
     ),
+    route('calls', 'routes/o.$slug.calls.tsx'),
     route('outreach', 'routes/o.$slug.outreach.tsx'),
     route('calendar', 'routes/o.$slug.calendar.tsx'),
     route('team', 'routes/o.$slug.team.tsx'),

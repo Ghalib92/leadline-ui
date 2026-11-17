@@ -1,0 +1,21 @@
+{
+  "id": "Pt4Wq8Zr2Kd9",
+  "status": "ready",
+  "whatsapp": "Hello Savannah Lodge, I'm with Digital Appex. I noticed your guests can't book on your site. Could we show you a 10-minute demo of online booking? [Your name], Digital Appex",
+  "email_subject": "Online booking for Savannah Lodge",
+  "email_body": "Dear Savannah Lodge team,\n\nI noticed you have 230 Google reviews but no website.\n\nKind regards,\n[Your name]\n[Your role]\nDigital Appex",
+  "call_points": [
+    "Digital Appex builds websites for Nairobi hotels",
+    "230 reviews and no website to book on",
+    "Could we show you a 10-minute demo?"
+  ],
+  "whatsapp_number": "254700000001",
+  "instructions": "",
+  "error": "",
+  "edited_by": null,
+  "edited_at": null,
+  "writing_started_at": "2026-11-17T10:00:00+03:00",
+  "prompt_id": "pitch_writer/v1",
+  "model": "openai/gpt-oss-120b",
+  "updated_at": "2026-11-17T10:00:12+03:00"
+}

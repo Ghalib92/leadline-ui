@@ -1,0 +1,20 @@
+[
+  {
+    "id": "Ac7Lm3Np8Qr1",
+    "channel": "whatsapp",
+    "outcome": "call_back",
+    "note": "Manager back on Thursday",
+    "follow_up_on": "2026-11-20",
+    "actor": { "id": "Us5Yt2Wq9Ke4", "name": "Mohaa" },
+    "created_at": "2026-11-17T11:00:00+03:00"
+  },
+  {
+    "id": "Ac2Bx6Cv4Dn7",
+    "channel": "call",
+    "outcome": "no_answer",
+    "note": "",
+    "follow_up_on": null,
+    "actor": null,
+    "created_at": "2026-11-17T10:30:00+03:00"
+  }
+]

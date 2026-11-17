@@ -10,6 +10,7 @@ import {
   Home,
   LayoutDashboard,
   Mail,
+  PhoneCall,
   Plug,
   Plus,
   Radar,
@@ -78,6 +79,12 @@ const orgPages: Entry[] = [
     to: '/opportunities',
     icon: Radar,
     keywords: ['feed', 'grants', 'tenders'],
+  },
+  {
+    label: 'Call list',
+    to: '/calls',
+    icon: PhoneCall,
+    keywords: ['leads', 'clients', 'whatsapp', 'calls'],
   },
   {
     label: 'Outreach',

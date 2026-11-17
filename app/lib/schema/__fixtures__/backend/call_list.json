@@ -1,0 +1,57 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "Lq3Zr8Vt5Wm2",
+      "title": "Savannah Lodge",
+      "status": "pursuing",
+      "match_score": 82,
+      "location": "12 Ngong Road, Nairobi",
+      "category": "Hotel",
+      "phone": "+254 700 000001",
+      "whatsapp_number": "254700000001",
+      "email": "info@savannah.co.ke",
+      "website": "",
+      "website_status": "none",
+      "evidence": [
+        "Google Maps lists no website for it.",
+        "230 reviews: a busy business."
+      ],
+      "pitch": {
+        "status": "ready",
+        "whatsapp": "Hello Savannah Lodge, I'm with Digital Appex.",
+        "email_subject": "Online booking for Savannah Lodge",
+        "email_body": "Dear Savannah Lodge team,\n\nI noticed…"
+      },
+      "last_outcome": "call_back",
+      "last_channel": "whatsapp",
+      "last_note": "Manager back on Thursday",
+      "last_contacted_at": "2026-11-17T11:00:00+03:00",
+      "follow_up_on": "2026-11-20"
+    },
+    {
+      "id": "Kp9Hd2Ls6Tz4",
+      "title": "Hibiscus Guest House",
+      "status": "pursuing",
+      "match_score": 65,
+      "location": "Nairobi",
+      "category": "guest_house",
+      "phone": "",
+      "whatsapp_number": "",
+      "email": "",
+      "website": "http://hibiscuskenya.com/",
+      "website_status": "down",
+      "evidence": [
+        "Its website hibiscuskenya.com is down: its domain no longer resolves."
+      ],
+      "pitch": null,
+      "last_outcome": null,
+      "last_channel": null,
+      "last_note": null,
+      "last_contacted_at": null,
+      "follow_up_on": null
+    }
+  ]
+}

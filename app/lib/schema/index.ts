@@ -11,3 +11,4 @@ export * from './brief.schema';
 export * from './knowledge.schema';
 export * from './backend.schema';
 export * from './leadline.schema';
+export * from './leads.schema';
