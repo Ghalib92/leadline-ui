@@ -27,6 +27,22 @@ export default defineConfig(({ mode }) => {
     build: {
       sourcemap: false,
     },
+    // Pre-bundled at start: otherwise the first visit to a page that uses one of
+    // these makes Vite re-bundle and reload mid-session, and the page crashes once
+    // with "Invalid hook call" (two copies of React). Dev server only.
+    optimizeDeps: {
+      include: [
+        'react-hook-form',
+        '@hookform/resolvers/zod',
+        'cmdk',
+        '@tanstack/react-table',
+        '@tiptap/react',
+        '@tiptap/starter-kit',
+        '@tiptap/extension-highlight',
+        '@tiptap/extension-placeholder',
+        'tiptap-markdown',
+      ],
+    },
     server: {
       port: 3000,
       strictPort: true,

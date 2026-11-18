@@ -17,9 +17,37 @@ import { Form } from '~/components/ui/form';
 import { AppSheet } from '~/components/composed';
 import {
   FormPickerField,
+  FormTagInputField,
   FormTextareaField,
   FormTextField,
 } from '~/components/form-fields';
+import { businessCategories } from '~/data/org-taxonomy';
+import type { Goal } from '~/lib/schema';
+
+/** Examples that fit what the worker looks for. */
+const GOAL_HINTS: Record<
+  Goal,
+  { name: string; description: string; brief: string }
+> = {
+  clients: {
+    name: 'Hotels in Nairobi',
+    description: 'Hotels that need online booking or a better website',
+    brief:
+      'e.g. Prefer places with many reviews but a weak or missing website; skip international chains.',
+  },
+  tenders: {
+    name: 'County IT tenders',
+    description: 'Government tenders for software, systems and dashboards',
+    brief:
+      'e.g. Only software and systems, not hardware supply; skip tenders reserved for AGPO groups we are not in.',
+  },
+  grants: {
+    name: 'Health grants in East Africa',
+    description: 'What this worker looks for, in a sentence',
+    brief:
+      'e.g. Focus on grants supporting climate resilience in East Africa, avoid equity requirements, prefer calls with deadlines at least 30 days away.',
+  },
+};
 
 const SCHEDULES = [
   { value: 'manual', label: 'Only when I run it' },
@@ -52,8 +80,10 @@ export function AgentFormSheet({
     sources: [],
     folders: [],
     links: [],
+    customerTypes: [],
+    places: [],
     depth: null,
-    schedule: 'daily',
+    schedule: 'weekly',
     enabled: true,
   });
 
@@ -76,6 +106,9 @@ export function AgentFormSheet({
   useEffect(() => {
     fitGoal();
   }, [goalKeys]);
+
+  const goal = form.watch('goal');
+  const hints = GOAL_HINTS[goal] ?? GOAL_HINTS.grants;
 
   const onSubmit = async (input: AgentInput) => {
     try {
@@ -135,7 +168,7 @@ export function AgentFormSheet({
             control={form.control}
             name="name"
             label="Name"
-            placeholder="Health grants in East Africa"
+            placeholder={hints.name}
             autoComplete="off"
             required
           />
@@ -143,7 +176,7 @@ export function AgentFormSheet({
             control={form.control}
             name="description"
             label="Description"
-            placeholder="What this worker looks for, in a sentence"
+            placeholder={hints.description}
             rows={2}
           />
           <FormTextareaField
@@ -151,9 +184,30 @@ export function AgentFormSheet({
             name="instructions"
             label="Worker brief"
             description="Specific guidance or focus areas for this worker to follow during searches and evaluation."
-            placeholder="Give a specific brief to guide this worker (e.g. Focus on grants supporting climate resilience in East Africa, avoid matching equity requirements, prioritize calls with deadlines at least 30 days away)."
+            placeholder={hints.brief}
             rows={3}
           />
+          {goal === 'clients' && (
+            <>
+              <FormPickerField
+                control={form.control}
+                name="customerTypes"
+                label="Kinds of customer"
+                description="Only these, for this worker. Leave empty to use your Clients brief."
+                placeholder="From your Clients brief"
+                options={businessCategories}
+                multi
+                optionStyle="checkbox"
+              />
+              <FormTagInputField
+                control={form.control}
+                name="places"
+                label="Places (empty: your Clients brief's cities)"
+                placeholder="e.g. Nairobi, then Enter"
+                maxTags={10}
+              />
+            </>
+          )}
           <FormPickerField
             control={form.control}
             name="schedule"

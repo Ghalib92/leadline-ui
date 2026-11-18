@@ -11,12 +11,12 @@ import { Faq } from '~/components/marketing/faq';
 
 export function meta() {
   return generateSEOTags({
-    title: 'Leadline | AI Agents That Find Grants and Tenders',
+    title: 'Leadline | AI Agents That Find Clients, Tenders and Grants',
     description:
-      'Leadline’s AI agents find grants, tenders, partnerships and events that fit your organization, ranked and explained.',
+      'Leadline’s AI agents find businesses that need what you sell, tenders you can win and grants that fit, then write the pitch or the bid.',
     url: '/',
     keywords:
-      'grants, tenders, RFPs, funding opportunities, partnerships, AI agents, NGOs, startups, Africa',
+      'client leads, tenders, tenders.go.ke, bids, grants, sales prospecting, AI agents, Kenya, Africa',
     jsonLd: [organizationSchema(), websiteSchema()],
   });
 }
@@ -33,7 +33,7 @@ export default function HomePage() {
       <section className="container mx-auto px-6 pb-24">
         <div className="rounded-2xl bg-primary px-8 py-14 text-center text-primary-foreground">
           <h2 className="text-3xl font-bold tracking-tight">
-            Your next grant is already out there.
+            Your next client is already out there.
           </h2>
           <p className="mx-auto mt-3 max-w-xl opacity-90">
             Set up your organization and let the agents do the searching.

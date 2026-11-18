@@ -504,7 +504,7 @@ export default function RunDetailPage() {
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
             Every page the agent read, scored against your profile. Only matches
-            at or above 55% are added.
+            at or above {run.outcome?.matchThreshold ?? 55}% are added.
           </p>
 
           {!matchReached ? (

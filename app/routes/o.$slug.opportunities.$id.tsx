@@ -280,7 +280,13 @@ export default function OpportunityDetailPage() {
                     name="notes"
                     label="Team notes"
                     rows={5}
-                    placeholder="Owner, next steps, questions for the funder…"
+                    placeholder={
+                      opp.type === 'client'
+                        ? 'Who to ask for, best time to call, what they said…'
+                        : opp.type === 'tender'
+                          ? 'Owner, next steps, questions for the buyer…'
+                          : 'Owner, next steps, questions for the funder…'
+                    }
                   />
                   <Button
                     type="submit"
@@ -301,7 +307,7 @@ export default function OpportunityDetailPage() {
               <>
                 <Fact label="Amount">{formatAmount(opp.amount)}</Fact>
                 <Fact label="Deadline">
-                  <DeadlineBadge deadline={opp.deadline} />
+                  <DeadlineBadge deadline={opp.deadline} type={opp.type} />
                 </Fact>
               </>
             )}

@@ -52,6 +52,23 @@ describe('PitchCard', () => {
     expect(screen.getByText(/Nothing is sent by Leadline/)).toBeInTheDocument();
   });
 
+  it('asks to fill in the name only when it is missing', async () => {
+    server.use(
+      http.get(PITCH_URL, () =>
+        HttpResponse.json({
+          ...pitch,
+          whatsapp: pitch.whatsapp.replace('[Your name]', 'Amina'),
+          email_body: pitch.email_body.replace('[Your name]', 'Amina'),
+        })
+      )
+    );
+    renderCard();
+    expect(
+      await screen.findByText(/Nothing is sent by Leadline/)
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Fill in \[Your name\]/)).toBeNull();
+  });
+
   it('asks for approval first', () => {
     renderCard({ ...lead, status: 'new' });
     expect(screen.getByText(/Approve this lead/)).toBeInTheDocument();

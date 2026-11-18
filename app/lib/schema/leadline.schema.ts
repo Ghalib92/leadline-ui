@@ -568,8 +568,17 @@ export const deadlineDtoSchema = z
 export type Deadline = z.infer<typeof deadlineDtoSchema>;
 
 export const reminderPreferenceSchema = z
-  .object({ enabled: z.boolean(), days_before: z.array(z.number()) })
-  .transform((dto) => ({ enabled: dto.enabled, daysBefore: dto.days_before }));
+  .object({
+    enabled: z.boolean(),
+    days_before: z.array(z.number()),
+    weekly_digest: z.boolean().catch(true).default(true),
+  })
+  .transform((dto) => ({
+    enabled: dto.enabled,
+    daysBefore: dto.days_before,
+    // The Monday summary email: new matches, what's closing, who to call back.
+    weeklyDigest: dto.weekly_digest,
+  }));
 export type ReminderPreference = z.infer<typeof reminderPreferenceSchema>;
 
 export const sectionEditSchema = z.object({

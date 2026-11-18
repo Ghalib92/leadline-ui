@@ -184,7 +184,11 @@ function ReminderCard({ orgId }: Readonly<{ orgId: string }>) {
   const { data: preference } = useReminderPreference(orgId);
   const update = useUpdateReminderPreference(orgId);
   if (!preference) return null;
-  const save = (input: { enabled?: boolean; days_before?: number[] }) =>
+  const save = (input: {
+    enabled?: boolean;
+    days_before?: number[];
+    weekly_digest?: boolean;
+  }) =>
     update.mutate(input, {
       onError: (error) => toastUtils.error('Not saved', extractError(error)),
     });
@@ -234,6 +238,19 @@ function ReminderCard({ orgId }: Readonly<{ orgId: string }>) {
             </button>
           );
         })}
+      </div>
+      <div className="mt-5 flex items-start justify-between gap-3 border-t border-border pt-4 text-sm">
+        <label htmlFor="weekly-digest">
+          Monday summary
+          <span className="block text-xs text-muted-foreground">
+            The week&apos;s best finds, what closes soon and who to call back.
+          </span>
+        </label>
+        <Switch
+          id="weekly-digest"
+          checked={preference.weeklyDigest}
+          onCheckedChange={(weekly_digest) => save({ weekly_digest })}
+        />
       </div>
     </AppCard>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import {
   Activity,
@@ -85,6 +85,16 @@ export default function OpportunitiesPage() {
     onUpdate,
     canTriage: can('opportunities.triage'),
   });
+
+  // Links from emails (the weekly digest) open the list on "To review": ?review=1.
+  const reviewParam = searchParams.get('review');
+  useEffect(() => {
+    if (!reviewParam) return;
+    filters.setFilter('review', 'pending');
+    const next = new URLSearchParams(searchParams);
+    next.delete('review');
+    setSearchParams(next, { replace: true });
+  }, [reviewParam, filters, searchParams, setSearchParams]);
 
   const clearRunFilter = useCallback(() => {
     const next = new URLSearchParams(searchParams);

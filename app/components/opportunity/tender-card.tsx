@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { Opportunity } from '~/lib/schema';
 import { cn } from '~/lib/utils';
+import { calendarDaysUntil } from '~/lib/utils/format';
 import { AppCard } from '~/components/composed';
 
 type Tender = NonNullable<Opportunity['tender']>;
@@ -36,7 +37,7 @@ function Closing({
 }: Readonly<{ closesAt: string; now?: Date }>) {
   const closes = new Date(closesAt);
   if (Number.isNaN(closes.getTime())) return null;
-  const days = Math.floor((closes.getTime() - now.getTime()) / 86_400_000);
+  const days = calendarDaysUntil(closesAt, now.getTime());
   const when = closes.toLocaleString('en-KE', {
     weekday: 'short',
     day: 'numeric',

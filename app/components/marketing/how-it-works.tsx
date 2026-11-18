@@ -4,17 +4,17 @@ const STEPS = [
   {
     icon: Building2,
     title: 'Describe your organization',
-    body: 'Sector, regions, size and what you’re after. Takes two minutes.',
+    body: 'What you sell, who buys it, where, and the tenders you bid for. Takes five minutes.',
   },
   {
     icon: Bot,
     title: 'Agents scan the sources',
-    body: 'Funder sites, grant databases, procurement portals and news — daily or weekly, on autopilot.',
+    body: 'Business directories, tender portals, government sites and funders, every day or week, on their own.',
   },
   {
     icon: Target,
-    title: 'Review and pursue',
-    body: 'Every match is scored and explained. Save it, assign it, track it to a win.',
+    title: 'Approve and win',
+    body: 'Every match is scored and explained. Approve one and Leadline writes the pitch or the bid.',
   },
 ];
 

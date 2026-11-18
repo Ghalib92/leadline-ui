@@ -15,6 +15,8 @@ const sampleAgent: Agent = {
   sources: [],
   folders: [],
   links: [],
+  customerTypes: [],
+  places: [],
   depth: '',
   schedule: 'daily',
   enabled: true,

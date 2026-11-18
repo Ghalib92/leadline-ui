@@ -117,7 +117,12 @@ export function useOpportunityColumns({
       {
         accessorKey: 'deadline',
         header: 'Deadline',
-        cell: ({ row }) => <DeadlineBadge deadline={row.original.deadline} />,
+        cell: ({ row }) => (
+          <DeadlineBadge
+            deadline={row.original.deadline}
+            type={row.original.type}
+          />
+        ),
       },
       {
         accessorKey: 'status',

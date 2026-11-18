@@ -21,7 +21,7 @@ vi.mock('~/lib/org/org-context', () => ({
 
 const agent = { ...agentDtoSchema.parse(agents[0]), orgId: ORG };
 
-function renderSettings(canManage = true) {
+function renderSettings(canManage = true, worker = agent) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -31,7 +31,7 @@ function renderSettings(canManage = true) {
         <Routes>
           <Route
             path="/o/:slug/agents/:id"
-            element={<AgentSettings agent={agent} canManage={canManage} />}
+            element={<AgentSettings agent={worker} canManage={canManage} />}
           />
         </Routes>
       </MemoryRouter>
@@ -51,6 +51,49 @@ beforeEach(() => {
 });
 
 describe('automation settings', () => {
+  it('lets a clients worker narrow its customers and places', async () => {
+    let sent: Record<string, unknown> | undefined;
+    server.use(
+      http.patch(
+        `*/api/organizations/${ORG}/agents/${agent.id}`,
+        async ({ request }) => {
+          sent = (await request.json()) as Record<string, unknown>;
+          return HttpResponse.json(agents[0]);
+        }
+      )
+    );
+    renderSettings(true, {
+      ...agent,
+      goal: 'clients',
+      customerTypes: ['hospitality'],
+      places: [],
+    });
+    expect(
+      screen.getByText('Hotels, lodges & guest houses')
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Clients brief's cities/)).toBeInTheDocument();
+    const user = userEvent.setup();
+    await user.click(
+      screen.getByRole('button', { name: 'Edit customers and places' })
+    );
+    const places = await screen.findByPlaceholderText(
+      'e.g. Nairobi, then Enter'
+    );
+    await user.type(places, 'Nairobi{Enter}');
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
+    await waitFor(() =>
+      expect(sent).toEqual({
+        customer_types: ['hospitality'],
+        places: ['Nairobi'],
+      })
+    );
+  });
+
+  it('shows customers and places only for clients workers', () => {
+    renderSettings();
+    expect(screen.queryByText('Customers and places')).toBeNull();
+  });
+
   it('shows the saved settings, not a form', () => {
     renderSettings();
     expect(screen.queryByRole('textbox')).toBeNull();

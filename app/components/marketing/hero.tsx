@@ -31,16 +31,17 @@ export function Hero() {
       <div className="container relative mx-auto grid items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:py-28">
         <div className="animate-fade-up">
           <p className="mb-4 inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
-            AI agents for grants, tenders & partnerships
+            AI agents for clients, tenders & grants
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             Stop searching.{' '}
             <span className="text-primary">Start pursuing.</span>
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-            Leadline’s agents scan funder sites, procurement portals and partner
-            calls every day, then rank what they find against your organization
-            — so your team spends its time applying, not hunting.
+            Leadline’s agents find businesses that need what you sell, tenders
+            you can win and grants that fit, explain why each one fits, then
+            write the pitch or the bid. Your team spends its time closing, not
+            hunting.
           </p>
           {isAuthenticated ? (
             <Button size="lg" className="mt-8" onClick={() => navigate('/app')}>

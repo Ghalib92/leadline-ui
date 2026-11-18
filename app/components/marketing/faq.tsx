@@ -1,11 +1,11 @@
 const FAQS = [
   {
     q: 'Where do the agents look?',
-    a: 'Public funder websites, grant databases, procurement portals and news. Sources are built in — there is nothing to set up before your first agent runs.',
+    a: 'Business directories and the web for client leads, tenders.go.ke and government websites for tenders, and funder sites and grant databases for funding. Sources are built in: there is nothing to set up before your first run.',
   },
   {
     q: 'How are matches ranked?',
-    a: 'Each result is scored against your sectors, regions, the opportunity types you want and your agent’s keywords. Every score comes with the reasons behind it.',
+    a: 'Each result is scored against your brief: what you sell and to whom, the tenders you can bid for, your sectors and regions. Every score comes with the reasons behind it.',
   },
   {
     q: 'Can my whole team use it?',

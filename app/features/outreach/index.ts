@@ -322,6 +322,7 @@ export const useUpdateReminderPreference = (orgId: string) => {
     mutationFn: async (input: {
       enabled?: boolean;
       days_before?: number[];
+      weekly_digest?: boolean;
     }): Promise<ReminderPreference> => {
       const { data } = await apiClient.patch(
         orgApi(orgId, '/reminders'),

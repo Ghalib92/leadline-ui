@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { AGENT_SOURCES, OPPORTUNITY_TYPES, labelOf } from '~/data';
+import { businessCategories } from '~/data/org-taxonomy';
 import {
   agentInputResolver,
   toAgentInput,
@@ -50,6 +51,12 @@ const sections = {
     description:
       'Specific guidance and focus areas to steer this worker during searches and evaluation.',
     fields: ['instructions'],
+  },
+  customers: {
+    title: 'Customers and places',
+    description:
+      'Which businesses and places this worker searches. Empty uses your Clients brief.',
+    fields: ['customerTypes', 'places'],
   },
   sources: {
     title: 'Sources',
@@ -252,6 +259,33 @@ export function AgentSettings({
           </Row>
         </>
       )}
+
+      {agent.goal === 'clients' &&
+        section(
+          'customers',
+          <>
+            <Row label="Kinds of customer">
+              {agent.customerTypes.length ? (
+                agent.customerTypes
+                  .map((v) => labelOf(businessCategories, v))
+                  .join(', ')
+              ) : (
+                <span className="text-muted-foreground">
+                  From your Clients brief
+                </span>
+              )}
+            </Row>
+            <Row label="Places">
+              {agent.places.length ? (
+                agent.places.join(', ')
+              ) : (
+                <span className="text-muted-foreground">
+                  Your Clients brief&apos;s cities
+                </span>
+              )}
+            </Row>
+          </>
+        )}
 
       {section(
         'sources',
@@ -500,6 +534,27 @@ function AgentSettingsSheet({
               placeholder="e.g. Focus on grants supporting climate resilience in East Africa, avoid matching equity requirements, prioritize calls with deadlines at least 30 days away."
               rows={6}
             />
+          )}
+
+          {section === 'customers' && (
+            <>
+              <FormPickerField
+                control={form.control}
+                name="customerTypes"
+                label="Kinds of customer"
+                placeholder="From your Clients brief"
+                options={businessCategories}
+                multi
+                optionStyle="checkbox"
+              />
+              <FormTagInputField
+                control={form.control}
+                name="places"
+                label="Places (empty: your Clients brief's cities)"
+                placeholder="e.g. Nairobi, then Enter"
+                maxTags={10}
+              />
+            </>
           )}
 
           {section === 'sources' && (

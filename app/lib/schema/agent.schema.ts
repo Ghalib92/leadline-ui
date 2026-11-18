@@ -59,6 +59,9 @@ export const agentSchema = z.object({
   sources: z.array(z.string()),
   folders: z.array(z.object({ id: z.string(), name: z.string() })),
   links: z.array(agentLinkSchema),
+  /** Clients workers: narrow the clients brief to these customers and places. */
+  customerTypes: z.array(z.string()),
+  places: z.array(z.string()),
   /** Empty: the organization's depth. */
   depth: z.enum(['', ...runDepths]),
   effective: agentScopeSchema.optional(),
@@ -93,6 +96,11 @@ export const agentInputSchema = z.object({
   sources: z.array(z.string()),
   folders: z.array(z.string()),
   links: z.array(agentLinkSchema).max(30, 'Use up to 30 websites'),
+  /** Clients workers only; empty uses the clients brief. */
+  customerTypes: z.array(z.string()).max(10, 'Pick up to 10 kinds'),
+  places: z
+    .array(z.string().trim().min(1).max(80))
+    .max(10, 'Use up to 10 places'),
   /** null: the organization's depth (the picker writes null when cleared). */
   depth: z.enum(runDepths).nullable(),
   schedule: agentScheduleSchema,

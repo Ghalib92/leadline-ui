@@ -246,7 +246,11 @@ function PitchView({
         {pitch.editedBy
           ? `Edited by ${pitch.editedBy.name} ${timeAgo(pitch.editedAt ?? pitch.updatedAt)}`
           : `Written by AI ${timeAgo(pitch.updatedAt)}`}
-        . Fill in [Your name] before sending. Nothing is sent by Leadline.
+        .
+        {[pitch.whatsapp, pitch.emailBody].some((text) =>
+          text.includes('[Your name]')
+        ) && ' Fill in [Your name] before sending.'}{' '}
+        Nothing is sent by Leadline.
       </p>
     </div>
   );

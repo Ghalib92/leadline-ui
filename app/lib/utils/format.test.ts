@@ -1,7 +1,42 @@
 import { describe, expect, it } from 'vitest';
-import { daysUntil, formatAmount, initials, timeAgo } from './format';
+import {
+  calendarDaysUntil,
+  daysUntil,
+  formatAmount,
+  initials,
+  timeAgo,
+} from './format';
 
 const now = Date.parse('2026-09-23T12:00:00Z');
+
+describe('calendarDaysUntil', () => {
+  it('counts Kenyan calendar days, not 24-hour blocks', () => {
+    const at = (iso: string) => Date.parse(iso);
+    // 10:00 tomorrow is "1" at 10:30 today, and still "1" late tonight.
+    expect(
+      calendarDaysUntil(
+        '2026-11-19T10:00:00+03:00',
+        at('2026-11-18T10:30:00+03:00')
+      )
+    ).toBe(1);
+    expect(
+      calendarDaysUntil(
+        '2026-11-19T00:30:00+03:00',
+        at('2026-11-18T23:30:00+03:00')
+      )
+    ).toBe(1);
+    // A deadline stored at 23:59 Nairobi (20:59 UTC) is that day, not the next.
+    expect(
+      calendarDaysUntil('2026-11-19T20:59:00Z', at('2026-11-18T09:00:00+03:00'))
+    ).toBe(1);
+    expect(
+      calendarDaysUntil(
+        '2026-11-18T08:00:00+03:00',
+        at('2026-11-18T09:00:00+03:00')
+      )
+    ).toBe(0);
+  });
+});
 
 describe('format helpers', () => {
   it('formats ranges, caps and missing amounts', () => {

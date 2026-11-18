@@ -3,7 +3,7 @@ import {
   type OpportunityStatus,
   type OpportunityType,
 } from '~/lib/schema';
-import { daysUntil, formatDate } from '~/lib/utils/format';
+import { calendarDaysUntil, formatDate } from '~/lib/utils/format';
 import { cn } from '~/lib/utils';
 
 const TYPE_META: Record<OpportunityType, { label: string; className: string }> =
@@ -82,11 +82,19 @@ export function MatchScore({ score }: Readonly<{ score: number }>) {
 }
 
 /** Renders client-side only (org pages resolve after hydration), so `Date.now()` is safe. */
-export function DeadlineBadge({ deadline }: Readonly<{ deadline?: string }>) {
+export function DeadlineBadge({
+  deadline,
+  type,
+}: Readonly<{ deadline?: string; type?: string }>) {
   if (!deadline) {
-    return <span className="text-xs text-muted-foreground">Rolling</span>;
+    // A business has no deadline; "Rolling" is for calls that stay open.
+    return (
+      <span className="text-xs text-muted-foreground">
+        {type === 'client' ? '—' : 'Rolling'}
+      </span>
+    );
   }
-  const days = daysUntil(deadline);
+  const days = calendarDaysUntil(deadline);
   if (days < 0) {
     return (
       <span className="text-xs text-muted-foreground">
@@ -101,7 +109,8 @@ export function DeadlineBadge({ deadline }: Readonly<{ deadline?: string }>) {
         days <= 7 ? 'font-medium text-destructive' : 'text-muted-foreground'
       )}
     >
-      {days === 0 ? 'Due today' : `${days}d left`} · {formatDate(deadline)}
+      {days === 0 ? 'Due today' : days === 1 ? 'Due tomorrow' : `${days}d left`}{' '}
+      · {formatDate(deadline)}
     </span>
   );
 }

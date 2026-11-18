@@ -48,7 +48,7 @@ function OpportunityRow({
       </div>
       <TypeBadge type={opp.type} />
       {detail === 'deadline' ? (
-        <DeadlineBadge deadline={opp.deadline} />
+        <DeadlineBadge deadline={opp.deadline} type={opp.type} />
       ) : (
         <span className="text-xs text-muted-foreground">
           {timeAgo(opp.foundAt)}

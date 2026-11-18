@@ -316,6 +316,8 @@ export const agentDtoSchema = z
         })
       )
       .default([]),
+    customer_types: z.array(z.string()).catch([]).default([]),
+    places: z.array(z.string()).catch([]).default([]),
     depth: z.enum(['', ...runDepths]).catch(''),
     effective: agentScopeDtoSchema.nullish(),
     can_manage: z.boolean(),
@@ -334,6 +336,8 @@ export const agentDtoSchema = z
       sources: dto.sources,
       folders: dto.folders,
       links: dto.links,
+      customerTypes: dto.customer_types,
+      places: dto.places,
       depth: dto.depth,
       effective: dto.effective ?? undefined,
       schedule: dto.schedule,
@@ -350,9 +354,10 @@ export const agentDtoSchema = z
   );
 
 export function toAgentBody(input: Partial<AgentInput>) {
-  const { opportunityTypes, depth, ...rest } = input;
+  const { opportunityTypes, depth, customerTypes, ...rest } = input;
   return {
     ...rest,
+    ...(customerTypes ? { customer_types: customerTypes } : {}),
     ...(opportunityTypes
       ? { opportunity_types: toBackendKinds(opportunityTypes) }
       : {}),
@@ -371,6 +376,8 @@ export const toAgentInput = (agent: Agent): AgentInput => ({
   sources: agent.sources,
   folders: agent.folders.map((f) => f.id),
   links: agent.links,
+  customerTypes: agent.customerTypes,
+  places: agent.places,
   depth: agent.depth || null,
   schedule: agent.schedule,
   enabled: agent.enabled,

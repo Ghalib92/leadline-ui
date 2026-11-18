@@ -39,6 +39,17 @@ export function daysUntil(iso: string, now = Date.now()): number {
   return Math.round((Date.parse(iso) - now) / DAY);
 }
 
+const nairobiDay = (time: number) =>
+  new Date(time).toLocaleDateString('en-CA', { timeZone: 'Africa/Nairobi' });
+
+/** Calendar days from today until `iso`'s day, both in Kenya time: a deadline at
+ * 10:00 tomorrow is 1 ("tomorrow"), whatever the hour now (negative = past). */
+export function calendarDaysUntil(iso: string, now = Date.now()): number {
+  const target = Date.parse(nairobiDay(Date.parse(iso)));
+  const today = Date.parse(nairobiDay(now));
+  return Math.round((target - today) / DAY);
+}
+
 export function timeAgo(iso: string, now = Date.now()): string {
   const minutes = Math.floor((now - Date.parse(iso)) / 60_000);
   if (minutes < 1) return 'just now';
