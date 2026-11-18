@@ -44,6 +44,9 @@ import { Button } from '~/components/ui/button';
 import { Form } from '~/components/ui/form';
 import { FormTextareaField } from '~/components/form-fields';
 import { SectionContent } from '~/components/proposal/section-content';
+import { BidChecklist } from '~/components/proposal/bid-checklist';
+import { BidPlanCard } from '~/components/proposal/bid-plan';
+import { jobSteps } from '~/components/proposal/job-steps';
 import { ProposalEditor } from '~/components/proposal/proposal-editor';
 import { EmptyState, Page } from '~/components/dashboard/page';
 import { PageHeader } from '~/components/dashboard/page-header';
@@ -57,14 +60,6 @@ export function meta() {
     noIndex: true,
   });
 }
-
-const STEPS = [
-  { key: 'requirements', label: 'Reading what the call asks for' },
-  { key: 'outline', label: 'Planning the sections' },
-  { key: 'evidence', label: 'Finding evidence in your documents' },
-  { key: 'draft', label: 'Writing each section' },
-  { key: 'review', label: 'Checking it against the requirements' },
-];
 
 const SOURCE_LABEL: Record<string, string> = {
   ai_draft: 'AI draft',
@@ -120,19 +115,25 @@ export default function ProposalPage() {
   const section =
     proposal.sections.find((s) => s.key === active) ?? proposal.sections[0];
   const busy = isProposalBusy(proposal);
+  const showBid =
+    proposal.isTender &&
+    (proposal.checklist.length > 0 || proposal.bidPlan !== null);
 
   return (
     <Page width="wide">
       <PageHeader
         back={back}
-        title={`Proposal: ${proposal.opportunity.title}`}
+        title={`${proposal.isTender ? 'Bid' : 'Proposal'}: ${proposal.opportunity.title}`}
         meta={
           <>
             {proposal.opportunity.funder && (
               <span>{proposal.opportunity.funder}</span>
             )}
             {proposal.opportunity.deadline && (
-              <span>Due {formatDate(proposal.opportunity.deadline)}</span>
+              <span>
+                {proposal.isTender ? 'Closes' : 'Due'}{' '}
+                {formatDate(proposal.opportunity.deadline)}
+              </span>
             )}
             <span>Version {proposal.version}</span>
             {proposal.draftedAt && <span>{timeAgo(proposal.draftedAt)}</span>}
@@ -182,6 +183,20 @@ export default function ProposalPage() {
       )}
 
       {busy && <DraftingProgress orgId={org.id} proposal={proposal} />}
+
+      {showBid && (
+        <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+          {proposal.bidPlan ? <BidPlanCard plan={proposal.bidPlan} /> : <div />}
+          {proposal.checklist.length > 0 && (
+            <BidChecklist
+              orgId={org.id}
+              oppId={id}
+              proposal={proposal}
+              busy={busy}
+            />
+          )}
+        </div>
+      )}
 
       {proposal.sections.length > 0 && section && (
         <div className="mt-6 grid gap-6 lg:grid-cols-[220px_1fr_300px]">
@@ -249,12 +264,16 @@ function DraftingProgress({
   const events = data?.events ?? [];
   const seen = new Set(events.map((e) => e.step));
   const current = events.at(-1)?.step;
-  const steps =
-    proposal.job?.kind === 'section'
-      ? STEPS.filter((s) => s.key === 'evidence' || s.key === 'draft')
-      : STEPS;
+  const steps = jobSteps(proposal);
   return (
-    <AppCard className="mt-6" title="The Proposal Writer is working">
+    <AppCard
+      className="mt-6"
+      title={
+        proposal.isTender
+          ? 'The bid writer is working'
+          : 'The Proposal Writer is working'
+      }
+    >
       <ol className="space-y-2">
         {steps.map((step) => {
           const done = seen.has(step.key) && step.key !== current;
@@ -581,16 +600,42 @@ function RequirementsPanel({ proposal }: Readonly<{ proposal: Proposal }>) {
   const req = proposal.requirements;
   if (!req) return null;
   const groups: [string, string[] | undefined][] = [
-    ['Documents required', req.documents_required],
+    // A bid's documents are in its checklist.
+    ['Documents required', proposal.isTender ? [] : req.documents_required],
     ['How it is judged', req.evaluation_criteria],
+    ['How to submit', req.submission],
     ['Eligibility', req.eligibility],
     ['Budget rules', req.budget_rules],
     ['Format', req.format_rules],
   ];
+  const facts: [string, string | undefined][] = [
+    ['Tender no.', req.reference],
+    ['Pass mark', req.pass_mark],
+    ['Bid security', req.bid_security],
+    ['Bids valid for', req.validity],
+  ];
   return (
-    <AppCard title="What the call asks for">
+    <AppCard
+      title={
+        proposal.isTender
+          ? 'What the tender asks for'
+          : 'What the call asks for'
+      }
+    >
       {req.summary && (
         <p className="text-sm text-muted-foreground">{req.summary}</p>
+      )}
+      {facts.some(([, value]) => value) && (
+        <dl className="mt-3 space-y-1.5 text-sm">
+          {facts
+            .filter(([, value]) => value)
+            .map(([label, value]) => (
+              <div key={label}>
+                <dt className="text-xs text-muted-foreground">{label}</dt>
+                <dd className="break-words">{value}</dd>
+              </div>
+            ))}
+        </dl>
       )}
       <div className="mt-3 space-y-3">
         {groups

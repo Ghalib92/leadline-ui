@@ -163,10 +163,104 @@ const requirementsSchema = z
     budget_rules: texts,
     format_rules: texts,
     deadline: text,
+    // Tenders (bids) only.
+    reference: text,
+    key_dates: z
+      .array(
+        z.object({
+          event: z.string(),
+          date: z.string(),
+          time: text,
+          kind: text,
+        })
+      )
+      .catch([]),
+    submission: texts,
+    pass_mark: text,
+    bid_security: text,
+    validity: text,
   })
   .partial()
   .nullish()
   .catch(null);
+
+export const checklistStatuses = [
+  'ready',
+  'check',
+  'missing',
+  'prepare',
+] as const;
+export type ChecklistStatus = (typeof checklistStatuses)[number];
+
+/** A tender requirement against the organization's documents. */
+const checklistItemSchema = z
+  .object({
+    key: z.string(),
+    n: z.number().catch(0),
+    code: text,
+    requirement: z.string(),
+    kind: text,
+    status: z.enum(checklistStatuses).catch('check'),
+    documents: z
+      .array(z.object({ id: z.string(), title: z.string() }))
+      .catch([]),
+    note: text,
+    done: z.boolean().catch(false),
+    done_at: z.string().nullish(),
+  })
+  .transform((dto) => ({
+    key: dto.key,
+    n: dto.n,
+    code: dto.code,
+    requirement: dto.requirement,
+    kind: dto.kind,
+    status: dto.status,
+    documents: dto.documents,
+    note: dto.note,
+    done: dto.done,
+    doneAt: dto.done_at ?? null,
+  }));
+export type ChecklistItem = z.infer<typeof checklistItemSchema>;
+
+export const bidStepStates = ['done', 'past', 'today', 'upcoming'] as const;
+
+/** The steps to a submitted bid, counted back from closing (worked out by the server). */
+const bidPlanSchema = z
+  .object({
+    closes_at: z.string(),
+    days_left: z.number(),
+    closed: z.boolean().catch(false),
+    tight: z.boolean().catch(false),
+    steps: z
+      .array(
+        z.object({
+          key: z.string(),
+          title: z.string(),
+          due: z.string(),
+          time: text,
+          from_tender: z.boolean().catch(false),
+          note: text,
+          state: z.enum(bidStepStates).catch('upcoming'),
+        })
+      )
+      .catch([]),
+  })
+  .transform((dto) => ({
+    closesAt: dto.closes_at,
+    daysLeft: dto.days_left,
+    closed: dto.closed,
+    tight: dto.tight,
+    steps: dto.steps.map((step) => ({
+      key: step.key,
+      title: step.title,
+      due: step.due,
+      time: step.time,
+      fromTender: step.from_tender,
+      note: step.note,
+      state: step.state,
+    })),
+  }));
+export type BidPlan = z.infer<typeof bidPlanSchema>;
 
 const reviewSchema = z
   .object({
@@ -189,6 +283,7 @@ export const proposalDtoSchema = z
       funder: text,
       deadline: z.string().nullable(),
       status: z.string(),
+      opportunity_type: text,
     }),
     status: z.enum(proposalStatuses).catch('failed'),
     job: z
@@ -206,6 +301,9 @@ export const proposalDtoSchema = z
     drafted_at: z.string().nullable(),
     sections: z.array(sectionSchema).default([]),
     requirements: requirementsSchema,
+    checklist: z.array(checklistItemSchema).catch([]).default([]),
+    checked_at: z.string().nullish(),
+    bid_plan: bidPlanSchema.nullish().catch(null),
     review: reviewSchema,
     models_used: z.record(z.string(), z.string()).catch({}),
     usage: z.record(z.string(), z.number()).catch({}),
@@ -231,6 +329,11 @@ export const proposalDtoSchema = z
     draftedAt: dto.drafted_at,
     sections: dto.sections,
     requirements: dto.requirements ?? null,
+    // Tenders are bids: a compliance checklist and a deadline plan come with them.
+    isTender: dto.opportunity.opportunity_type === 'tender',
+    checklist: dto.checklist,
+    checkedAt: dto.checked_at ?? null,
+    bidPlan: dto.bid_plan ?? null,
     review: dto.review ?? null,
     modelsUsed: dto.models_used,
     usage: dto.usage,

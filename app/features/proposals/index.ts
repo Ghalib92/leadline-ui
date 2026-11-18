@@ -160,6 +160,43 @@ export const useRewriteSection = (orgId: string, oppId: string) => {
   });
 };
 
+/** Tick a bid requirement as in hand for this bid, or untick it. */
+export const useTickChecklistItem = (orgId: string, oppId: string) => {
+  const set = useSetProposal(orgId, oppId);
+  return useMutation({
+    mutationFn: async ({
+      proposal,
+      key,
+      done,
+    }: {
+      proposal: Proposal;
+      key: string;
+      done: boolean;
+    }): Promise<Proposal> => {
+      const { data } = await apiClient.patch(
+        orgApi(orgId, `/proposals/${proposal.id}/checklist/${key}`),
+        { done }
+      );
+      return proposalDtoSchema.parse(data);
+    },
+    onSuccess: set,
+  });
+};
+
+/** Check the tender's requirements against company documents again (after uploads). */
+export const useRecheckDocuments = (orgId: string, oppId: string) => {
+  const set = useSetProposal(orgId, oppId);
+  return useMutation({
+    mutationFn: async (proposal: Proposal): Promise<Proposal> => {
+      const { data } = await apiClient.post(
+        orgApi(orgId, `/proposals/${proposal.id}/checklist/recheck`)
+      );
+      return proposalDtoSchema.parse(data);
+    },
+    onSuccess: set,
+  });
+};
+
 export const useVersions = (orgId: string, proposalId: string | undefined) =>
   useQuery({
     queryKey: proposalKeys.versions(orgId, proposalId ?? ''),

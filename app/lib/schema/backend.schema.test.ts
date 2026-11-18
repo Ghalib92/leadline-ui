@@ -11,6 +11,7 @@ import review from './__fixtures__/backend/review.json';
 import reviews from './__fixtures__/backend/reviews.json';
 import insights from './__fixtures__/backend/insights.json';
 import proposal from './__fixtures__/backend/proposal.json';
+import bid from './__fixtures__/backend/bid.json';
 import proposalEvents from './__fixtures__/backend/proposal_events.json';
 import versions from './__fixtures__/backend/versions.json';
 import contacts from './__fixtures__/backend/contacts.json';
@@ -133,6 +134,33 @@ describe('backend contract', () => {
     expect(parsed.review?.score).toBeTypeOf('number');
     proposalEventsDtoSchema.parse(proposalEvents);
     expect(versionSummarySchema.array().parse(versions)[0].number).toBe(1);
+  });
+
+  it('parses a bid: its checklist and deadline plan', () => {
+    const parsed = proposalDtoSchema.parse(bid);
+    expect(parsed.isTender).toBe(true);
+    expect(parsed.requirements?.pass_mark).toBe('60/80');
+    expect(parsed.requirements?.key_dates?.[0].kind).toBe('clarification');
+    expect(parsed.checklist).toHaveLength(12);
+    expect(parsed.checklist[0]).toMatchObject({
+      key: 'r1',
+      status: 'check',
+      done: false,
+      doneAt: null,
+    });
+    expect(parsed.checklist[0].documents[0].title).toMatch(/Incorporation/);
+    expect(parsed.checklist[2].done).toBe(true);
+    expect(parsed.bidPlan?.daysLeft).toBe(8);
+    expect(parsed.bidPlan?.steps.at(-1)).toMatchObject({
+      key: 'closing',
+      time: '10:00',
+      fromTender: true,
+    });
+    // A plain proposal is not a bid.
+    const plain = proposalDtoSchema.parse(proposal);
+    expect(plain.isTender).toBe(false);
+    expect(plain.checklist).toEqual([]);
+    expect(plain.bidPlan).toBeNull();
   });
 
   it('parses contacts, outreach and deadlines', () => {

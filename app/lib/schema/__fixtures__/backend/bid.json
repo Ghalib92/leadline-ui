@@ -1,0 +1,503 @@
+{
+  "id": "RmifC97Z35Pq",
+  "opportunity": {
+    "id": "YRsr6KgngLMW",
+    "title": "Proposed development of projects monitoring system (investment dashboard)",
+    "funder": "County Government of Kwale",
+    "deadline": "2026-11-26T10:00:00+03:00",
+    "status": "pursuing",
+    "opportunity_type": "tender"
+  },
+  "status": "ready",
+  "job": {
+    "kind": "draft",
+    "section": "",
+    "instructions": "",
+    "queued_at": "2026-11-18T09:01:25.078316+03:00",
+    "started_at": null
+  },
+  "version": 1,
+  "warning": "",
+  "error": "",
+  "drafted_at": "2026-11-18T09:01:25.689565+03:00",
+  "created_at": "2026-11-18T09:01:25.078608+03:00",
+  "updated_at": "2026-11-18T09:01:25.724719+03:00",
+  "sections": [
+    {
+      "key": "summary",
+      "title": "Executive summary",
+      "purpose": "Sample purpose of the executive summary section.",
+      "key_points": ["Sample point"],
+      "target_words": 200,
+      "content": "[Sample] Acme Africa proposes work that answers “Proposed development of projects monitoring system (investment dashboard)” from County Government of Kwale.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "problem",
+      "title": "Problem and need",
+      "purpose": "Sample purpose of the problem and need section.",
+      "key_points": ["Sample point"],
+      "target_words": 350,
+      "content": "[Sample] Acme Africa proposes work that answers “Proposed development of projects monitoring system (investment dashboard)” from County Government of Kwale.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "approach",
+      "title": "Approach and activities",
+      "purpose": "Sample purpose of the approach and activities section.",
+      "key_points": ["Sample point"],
+      "target_words": 450,
+      "content": "[Sample] Acme Africa proposes work that answers “Proposed development of projects monitoring system (investment dashboard)” from County Government of Kwale.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "results",
+      "title": "Expected results and monitoring",
+      "purpose": "Sample purpose of the expected results and monitoring section.",
+      "key_points": ["Sample point"],
+      "target_words": 300,
+      "content": "[Sample] Acme Africa proposes work that answers “Proposed development of projects monitoring system (investment dashboard)” from County Government of Kwale.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "team",
+      "title": "Team and track record",
+      "purpose": "Sample purpose of the team and track record section.",
+      "key_points": ["Sample point"],
+      "target_words": 250,
+      "content": "[Sample] Acme Africa proposes work that answers “Proposed development of projects monitoring system (investment dashboard)” from County Government of Kwale.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    },
+    {
+      "key": "budget",
+      "title": "Budget overview",
+      "purpose": "Sample purpose of the budget overview section.",
+      "key_points": ["Sample point"],
+      "target_words": 200,
+      "content": "[Sample] Acme Africa proposes work that answers “Proposed development of projects monitoring system (investment dashboard)” from County Government of Kwale.\n\n- Sample point grounded in the organization profile [1]\n- [TODO: add a figure from your latest annual report]\n\nThis is sample text from the test writer, not a real draft.",
+      "evidence": [
+        {
+          "n": 1,
+          "document_id": "",
+          "document_title": "Organization profile (sample)",
+          "location": "",
+          "excerpt": "Sample evidence passage."
+        }
+      ],
+      "missing_information": ["A figure from your latest annual report"],
+      "drafted": true
+    }
+  ],
+  "knowledge": {
+    "source": "run",
+    "mode": "all",
+    "folders": []
+  },
+  "requirements": {
+    "summary": "Kwale County Government seeks the design, development and implementation of a County Investment Dashboard (Projects Monitoring System). The system will monitor and report on county investment projects.",
+    "deadline": "2026-11-19",
+    "sections": [
+      {
+        "title": "Experience – Similar Magnitude System Development",
+        "guidance": "Provide details of at least two previous ICT system development projects of similar nature and magnitude (KES 3 million+ or comparable), including award letters, contracts, completion certificates or user acceptance reports.",
+        "word_limit": null
+      },
+      {
+        "title": "Methodology – Work Plan and Technical Approach",
+        "guidance": "Present a work plan schedule indicating timelines and key deliverables, and describe the technical approach, design methodology and models to be used.",
+        "word_limit": null
+      },
+      {
+        "title": "Key Personnel/Experts – Project Leader, System Developer, Programmer/Tester",
+        "guidance": "Attach academic certificates, CVs and reference letters for each key person. Detail experience levels as per scoring matrix (Project Leader up to 10 points, System Developer up to 5 points, Programmer/Tester up to 5 points).",
+        "word_limit": null
+      }
+    ],
+    "validity": "126 days",
+    "key_dates": [
+      {
+        "date": "2026-11-15",
+        "kind": "clarification",
+        "time": "",
+        "event": "Clarification deadline"
+      },
+      {
+        "date": "2026-11-19",
+        "kind": "closing",
+        "time": "10:00",
+        "event": "Tender submission closing"
+      },
+      {
+        "date": "2026-11-19",
+        "kind": "opening",
+        "time": "10:00",
+        "event": "Tender opening"
+      }
+    ],
+    "pass_mark": "60/80",
+    "reference": "CGK-2681816-2026/2027",
+    "submission": [
+      "Electronic submission via iSourcing (www.supplier.treasury.go.ke)",
+      "Physical submission to: Attention: MEBAKARI MWATABU, PUBLIC SERVICE AND ADMINISTRATION, OFFICE OF THE CHIEF OFFICER, P.O BOX 4 -80403, KWALE, KENYA"
+    ],
+    "eligibility": [],
+    "bid_security": "KES 68,000 (Sixty eight thousand shillings only)",
+    "budget_rules": [],
+    "format_rules": [],
+    "documents_required": [
+      "Power of attorney (duly filled, valid and commissioned)"
+    ],
+    "evaluation_criteria": [
+      "Preliminary level – registration, tax compliance, bid security, completeness of forms, affidavits, trade licence, proof of hosting space, liquidity letter and serialization (disqualifying criteria – must be satisfied).",
+      "Technical Level – Experience – up to 20 points",
+      "Technical Level – Methodology – Work Plan Schedule (5 points) and Technical Approach (5 points) – total 10 points",
+      "Technical Level – Key Personnel – Project Leader (up to 10 points), System Developer (up to 5 points), Programmer/Tester (up to 5 points) – total 20 points"
+    ],
+    "mandatory_requirements": [
+      {
+        "code": "",
+        "kind": "certificate",
+        "requirement": "Copy of a Valid Certificate of Incorporation or Business Registration Certificate with CR12 document dated not earlier than July 2026 alongside clear national identity cards/passports of the directors."
+      },
+      {
+        "code": "",
+        "kind": "certificate",
+        "requirement": "Valid Tax Compliance Certificate (ITAX)."
+      },
+      {
+        "code": "",
+        "kind": "security",
+        "requirement": "Bid bond of KES 68,000 from authorized providers listed by PPRA."
+      },
+      {
+        "code": "",
+        "kind": "form",
+        "requirement": "Dully filled bid document submitted as PDF with all attachments serialized; no external links allowed."
+      },
+      {
+        "code": "",
+        "kind": "form",
+        "requirement": "Sworn affidavits covering bidder’s litigation history and declaration of no involvement in corruption or fraud, and confirmation of not being debarred."
+      },
+      {
+        "code": "",
+        "kind": "certificate",
+        "requirement": "Valid Single Business Permit (Trade License)."
+      },
+      {
+        "code": "",
+        "kind": "certificate",
+        "requirement": "Proof of hosting space with an active domain."
+      },
+      {
+        "code": "",
+        "kind": "financial",
+        "requirement": "Letter from bank on letterhead confirming good standing and liquidity."
+      },
+      {
+        "code": "",
+        "kind": "other",
+        "requirement": "All attachments must be serialized."
+      },
+      {
+        "code": "",
+        "kind": "form",
+        "requirement": "Duly filled, valid and commissioned power of attorney as written confirmation of authorization to sign on behalf of the Tenderer."
+      },
+      {
+        "code": "",
+        "kind": "other",
+        "requirement": "Submit original tender plus ONE (1) copy."
+      }
+    ]
+  },
+  "checklist": [
+    {
+      "key": "r1",
+      "n": 1,
+      "code": "",
+      "requirement": "Copy of a Valid Certificate of Incorporation or Business Registration Certificate with CR12 document dated not earlier than July 2026 alongside clear national identity cards/passports of the directors.",
+      "kind": "certificate",
+      "status": "check",
+      "documents": [
+        {
+          "id": "tGN9VDYitZeS",
+          "title": "Certificate of Incorporation - Digital Appex Ltd"
+        }
+      ],
+      "note": "Confirm issuance date is July 2026 or later and obtain directors' IDs.",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r2",
+      "n": 2,
+      "code": "",
+      "requirement": "Valid Tax Compliance Certificate (ITAX).",
+      "kind": "certificate",
+      "status": "missing",
+      "documents": [],
+      "note": "Obtain a valid Tax Compliance Certificate (ITAX).",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r3",
+      "n": 3,
+      "code": "",
+      "requirement": "Bid bond of KES 68,000 from authorized providers listed by PPRA.",
+      "kind": "security",
+      "status": "missing",
+      "documents": [],
+      "note": "Secure a KES 68,000 bid bond from an authorized provider.",
+      "done": true,
+      "done_at": "2026-11-18T09:12:00+03:00"
+    },
+    {
+      "key": "r4",
+      "n": 4,
+      "code": "",
+      "requirement": "Dully filled bid document submitted as PDF with all attachments serialized; no external links allowed.",
+      "kind": "form",
+      "status": "prepare",
+      "documents": [],
+      "note": "Prepare the fully filled bid document PDF with all attachments.",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r5",
+      "n": 5,
+      "code": "",
+      "requirement": "Sworn affidavits covering bidder’s litigation history and declaration of no involvement in corruption or fraud, and confirmation of not being debarred.",
+      "kind": "form",
+      "status": "missing",
+      "documents": [],
+      "note": "Obtain sworn affidavits covering litigation history and corruption declaration.",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r6",
+      "n": 6,
+      "code": "",
+      "requirement": "Valid Single Business Permit (Trade License).",
+      "kind": "certificate",
+      "status": "missing",
+      "documents": [],
+      "note": "Obtain a valid Single Business Permit (Trade License).",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r7",
+      "n": 7,
+      "code": "",
+      "requirement": "Proof of hosting space with an active domain.",
+      "kind": "certificate",
+      "status": "missing",
+      "documents": [],
+      "note": "Provide proof of hosting space with an active domain.",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r8",
+      "n": 8,
+      "code": "",
+      "requirement": "Letter from bank on letterhead confirming good standing and liquidity.",
+      "kind": "financial",
+      "status": "missing",
+      "documents": [],
+      "note": "Obtain a bank letter on official letterhead confirming good standing.",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r9",
+      "n": 9,
+      "code": "",
+      "requirement": "All attachments must be serialized.",
+      "kind": "other",
+      "status": "prepare",
+      "documents": [],
+      "note": "Ensure all attachments are serialized as required.",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r10",
+      "n": 10,
+      "code": "",
+      "requirement": "Duly filled, valid and commissioned power of attorney as written confirmation of authorization to sign on behalf of the Tenderer.",
+      "kind": "form",
+      "status": "missing",
+      "documents": [],
+      "note": "Prepare a duly filled, valid, commissioned power of attorney.",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r11",
+      "n": 11,
+      "code": "",
+      "requirement": "Submit original tender plus ONE (1) copy.",
+      "kind": "other",
+      "status": "prepare",
+      "documents": [],
+      "note": "Prepare the original tender and one copy.",
+      "done": false,
+      "done_at": null
+    },
+    {
+      "key": "r12",
+      "n": 12,
+      "code": "",
+      "requirement": "Power of attorney (duly filled, valid and commissioned)",
+      "kind": "other",
+      "status": "missing",
+      "documents": [],
+      "note": "Obtain a duly filled, valid, commissioned power of attorney.",
+      "done": false,
+      "done_at": null
+    }
+  ],
+  "checked_at": "2026-11-18T09:01:25.689763+03:00",
+  "bid_plan": {
+    "closes_at": "2026-11-26T10:00:00+03:00",
+    "days_left": 8,
+    "closed": false,
+    "tight": false,
+    "steps": [
+      {
+        "key": "tender_1",
+        "title": "Clarification deadline",
+        "due": "2026-11-15",
+        "time": "",
+        "from_tender": true,
+        "note": "",
+        "state": "past"
+      },
+      {
+        "key": "bid_security",
+        "title": "Get the bid security from your bank or insurer",
+        "due": "2026-11-19",
+        "time": "",
+        "from_tender": false,
+        "note": "KES 68,000 (Sixty eight thousand shillings only).",
+        "state": "done"
+      },
+      {
+        "key": "documents",
+        "title": "Collect the missing documents",
+        "due": "2026-11-20",
+        "time": "",
+        "from_tender": false,
+        "note": "7 missing: Valid Tax Compliance Certificate (ITAX); Sworn affidavits covering bidder’s litigation history and…; Valid Single Business Permit (Trade License); and 4 more.",
+        "state": "upcoming"
+      },
+      {
+        "key": "draft",
+        "title": "Finish the technical proposal",
+        "due": "2026-11-23",
+        "time": "",
+        "from_tender": false,
+        "note": "",
+        "state": "upcoming"
+      },
+      {
+        "key": "review",
+        "title": "Read it through, sign and stamp every page",
+        "due": "2026-11-24",
+        "time": "",
+        "from_tender": false,
+        "note": "",
+        "state": "upcoming"
+      },
+      {
+        "key": "submit",
+        "title": "Submit the bid",
+        "due": "2026-11-25",
+        "time": "",
+        "from_tender": false,
+        "note": "Electronic submission via iSourcing (www.supplier.treasury.go.ke); Physical submission to: Attention: MEBAKARI MWATABU, PUBLIC SERVICE AND ADMINISTRATION, OFFICE OF THE CHIEF OFFICER, P.O BOX 4 -80403, KWALE, KENYA",
+        "state": "upcoming"
+      },
+      {
+        "key": "closing",
+        "title": "Tender closes",
+        "due": "2026-11-26",
+        "time": "10:00",
+        "from_tender": true,
+        "note": "",
+        "state": "upcoming"
+      }
+    ]
+  },
+  "review": {
+    "score": 62,
+    "issues": [
+      {
+        "issue": "Sample issue",
+        "section": "budget",
+        "suggestion": "Add the cost breakdown."
+      }
+    ],
+    "strengths": ["Sample strength"],
+    "missing_requirements": ["Registration certificate"]
+  },
+  "prompt_versions": {},
+  "models_used": {},
+  "usage": {},
+  "last_event_seq": 18
+}
