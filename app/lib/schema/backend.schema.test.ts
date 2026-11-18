@@ -201,6 +201,13 @@ describe('backend contract', () => {
     });
   });
 
+  it('lists the best matches first by default', () => {
+    expect(toOpportunityQuery({}).query.sort).toBe('-match_score');
+    expect(toOpportunityQuery({ sort: 'foundAt:desc' }).query.sort).toBe(
+      '-found_at'
+    );
+  });
+
   it('prefills "Configure this search" from the search settings', () => {
     const settings = runSettingsDtoSchema.parse(runSettings);
     expect(toRunSettingsForm(settings)).toEqual({

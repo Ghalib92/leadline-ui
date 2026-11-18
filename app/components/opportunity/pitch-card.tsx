@@ -115,7 +115,9 @@ export function PitchCard({
     body = (
       <p className="flex items-center gap-2 text-sm">
         <Loader2 className="h-4 w-4 animate-spin text-primary" />
-        Writing the pitch…
+        {opp.business?.websiteStatus === 'unknown'
+          ? 'Checking their website, then writing the pitch…'
+          : 'Writing the pitch…'}
       </p>
     );
   } else if (pitch.status === 'failed' && !pitch.whatsapp) {

@@ -993,7 +993,7 @@ export function toOpportunityQuery(params: Params = {}) {
   const review = first(params.review);
   if (review) query.review = String(review);
   const sort = first(params.sort);
-  query.sort = SORTS[String(sort)] ?? '-found_at';
+  query.sort = SORTS[String(sort)] ?? '-match_score';
   return { query, page, limit };
 }
 

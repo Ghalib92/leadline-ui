@@ -16,6 +16,7 @@ import {
   type LogActivityFormInput,
   type PitchFormInput,
 } from '~/lib/schema';
+import { opportunityKeys } from '../opportunities/query-keys';
 
 /** Client leads after approval: the pitch, calls and messages, and the call list. */
 export const leadKeys = {
@@ -39,14 +40,26 @@ export const isPitchBusy = (pitch: LeadPitch | null | undefined) =>
 // The pitch
 // ---------------------------------------------------------------------------
 
-/** The lead's pitch, or null when there is none yet. Polls while it is written. */
-export const usePitch = (orgId: string, oppId: string, enabled = true) =>
-  useQuery({
+/** The lead's pitch, or null when there is none yet. Polls while it is written. When
+ * writing ends, the lead is reloaded too: an unchecked lead is looked up first, so its
+ * website and evidence may have changed. */
+export const usePitch = (orgId: string, oppId: string, enabled = true) => {
+  const queryClient = useQueryClient();
+  return useQuery({
     queryKey: leadKeys.pitch(orgId, oppId),
     queryFn: async (): Promise<LeadPitch | null> => {
+      const before = queryClient.getQueryData<LeadPitch | null>(
+        leadKeys.pitch(orgId, oppId)
+      );
       try {
         const { data } = await apiClient.get(orgApi(orgId, pitchPath(oppId)));
-        return pitchDtoSchema.parse(data);
+        const pitch = pitchDtoSchema.parse(data);
+        if (isPitchBusy(before) && !isPitchBusy(pitch)) {
+          queryClient.invalidateQueries({
+            queryKey: opportunityKeys.detail(orgId, oppId),
+          });
+        }
+        return pitch;
       } catch (error) {
         if (isAxiosError(error) && error.response?.status === 404) return null;
         throw error;
@@ -56,6 +69,7 @@ export const usePitch = (orgId: string, oppId: string, enabled = true) =>
     refetchInterval: (query) =>
       isPitchBusy(query.state.data) ? POLL_MS : false,
   });
+};
 
 function usePitchMutation<T>(
   orgId: string,

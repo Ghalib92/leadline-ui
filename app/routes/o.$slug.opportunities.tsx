@@ -48,9 +48,10 @@ export function meta() {
   });
 }
 
+const DEFAULT_SORT = 'matchScore:desc';
 const SORTS = [
-  { value: 'foundAt:desc', label: 'Newest first' },
   { value: 'matchScore:desc', label: 'Best match' },
+  { value: 'foundAt:desc', label: 'Newest first' },
   { value: 'deadline:asc', label: 'Deadline soonest' },
 ];
 
@@ -114,7 +115,8 @@ export default function OpportunitiesPage() {
   const setOrClear = (key: string, value: string | null) =>
     value ? filters.setFilter(key, value) : filters.removeFilter(key);
   const sort = filters.state.sort[0];
-  const sortValue = sort ? `${sort.field}:${sort.direction}` : 'foundAt:desc';
+  // Best match first: a run finds everything at once, so "newest" orders nothing.
+  const sortValue = sort ? `${sort.field}:${sort.direction}` : DEFAULT_SORT;
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.limit)) : 1;
   const hasFilters =
     !!filters.state.search ||
@@ -257,7 +259,7 @@ export default function OpportunitiesPage() {
             value={sortValue}
             clearable={false}
             onChange={(v) => {
-              const [field, direction] = (v ?? 'foundAt:desc').split(':');
+              const [field, direction] = (v ?? DEFAULT_SORT).split(':');
               filters.setSort([
                 { field, direction: direction as 'asc' | 'desc' },
               ]);

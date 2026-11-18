@@ -420,6 +420,8 @@ function FolderDocuments({
   );
 }
 
+const MAX_UPLOAD_FILES = 10;
+
 function UploadSheet({
   open,
   folderId,
@@ -437,31 +439,67 @@ function UploadSheet({
     resolver: documentUploadFormResolver,
     defaultValues: { title: '', description: '', category: 'other', folderId },
   });
+  const [progress, setProgress] = useState<string | null>(null);
   const {
-    file,
+    files,
     addFiles,
+    remove,
     clear,
     error: fileError,
   } = useFileUpload({
+    multiple: true,
+    maxFiles: MAX_UPLOAD_FILES,
     accept: [...documentExtensions],
     maxSizeBytes: documentMaxMb * 1024 * 1024,
-    onFileChange: (files) => {
-      const picked = files[0]?.file;
-      form.setValue('file', picked as File, { shouldValidate: !!picked });
-      if (picked && !form.getValues('title'))
-        form.setValue('title', titleFrom(picked.name));
+    onFileChange: (picked) => {
+      const first = picked[0]?.file;
+      form.setValue('file', first as File, { shouldValidate: !!first });
+      // Several files are titled by their names; one gets an editable title.
+      if (first && (picked.length > 1 || !form.getValues('title')))
+        form.setValue('title', titleFrom(first.name), { shouldValidate: true });
     },
   });
+  const many = files.length > 1;
 
   const onOpened = useEffectEvent(() => {
     form.reset({ title: '', description: '', category: 'other', folderId });
     clear();
+    setProgress(null);
   });
   useEffect(() => {
     if (open) onOpened();
   }, [open]);
 
   const submit = form.handleSubmit(async (data) => {
+    if (many) {
+      // One after another: each is its own document, titled by its file name.
+      const failed: string[] = [];
+      for (const [index, entry] of files.entries()) {
+        setProgress(`Uploading ${index + 1} of ${files.length}…`);
+        try {
+          await upload.mutateAsync({
+            ...data,
+            file: entry.file,
+            title: titleFrom(entry.name),
+          });
+          remove(entry.key); // what's left is what to try again
+        } catch {
+          failed.push(entry.name);
+        }
+      }
+      setProgress(null);
+      const done = files.length - failed.length;
+      if (done) toastUtils.success(`${done} documents uploaded`);
+      if (failed.length) {
+        toastUtils.error(
+          'Some files were not uploaded',
+          `${failed.join(', ')}. They are still listed: try again.`
+        );
+        return;
+      }
+      onClose();
+      return;
+    }
     try {
       await upload.mutateAsync(data);
       toastUtils.success('Document uploaded');
@@ -481,8 +519,8 @@ function UploadSheet({
       open={open}
       onOpenChange={(next) => !next && onClose()}
       dismissible={false}
-      title="Upload a document"
-      description={`Up to ${documentMaxMb} MB. The AI reads PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), text and CSV files; other types are stored but not read yet.`}
+      title="Upload documents"
+      description={`Up to ${MAX_UPLOAD_FILES} files of ${documentMaxMb} MB each. The AI reads PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), text and CSV files; other types are stored but not read yet.`}
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
@@ -491,9 +529,16 @@ function UploadSheet({
           <Button
             type="submit"
             form="upload-form"
-            disabled={upload.isPending || !file || folders.length === 0}
+            disabled={
+              upload.isPending || files.length === 0 || folders.length === 0
+            }
           >
-            {upload.isPending ? 'Uploading…' : 'Upload'}
+            {progress ??
+              (upload.isPending
+                ? 'Uploading…'
+                : many
+                  ? `Upload ${files.length} files`
+                  : 'Upload')}
           </Button>
         </>
       }
@@ -505,31 +550,35 @@ function UploadSheet({
           onSubmit={submit}
           className="space-y-4"
         >
-          {file ? (
-            <div className="flex items-center gap-3 rounded-lg border p-3">
+          {files.map((entry) => (
+            <div
+              key={entry.key}
+              className="flex items-center gap-3 rounded-lg border p-3"
+            >
               <FileText className="h-5 w-5 shrink-0 text-primary" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{file.name}</p>
+                <p className="truncate text-sm font-medium">{entry.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {sizeLabel(file.size)}
+                  {sizeLabel(entry.size)}
                 </p>
               </div>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                aria-label={`Remove ${file.name}`}
-                onClick={clear}
+                aria-label={`Remove ${entry.name}`}
+                onClick={() => remove(entry.key)}
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
-          ) : (
+          ))}
+          {files.length < MAX_UPLOAD_FILES && (
             <DropZone
               onFiles={addFiles}
               accept={documentExtensions.join(',')}
-              multiple={false}
-              hint={`Max ${documentMaxMb} MB`}
+              multiple
+              hint={`Up to ${MAX_UPLOAD_FILES} files, ${documentMaxMb} MB each`}
             />
           )}
           {fileMessage && (
@@ -551,19 +600,25 @@ function UploadSheet({
               required
             />
           )}
-          <FormTextField
-            control={form.control}
-            name="title"
-            autoComplete="off"
-            placeholder="e.g. Annual report 2025"
-            label="Title"
-            required
-          />
+          {many ? (
+            <p className="text-sm text-muted-foreground">
+              Each file is titled by its name; rename any of them later.
+            </p>
+          ) : (
+            <FormTextField
+              control={form.control}
+              name="title"
+              autoComplete="off"
+              placeholder="e.g. Annual report 2025"
+              label="Title"
+              required
+            />
+          )}
           <FormPickerField
             control={form.control}
             name="category"
             placeholder="What kind of document?"
-            label="Category"
+            label={many ? 'Category (all files)' : 'Category'}
             options={documentCategories}
             clearable={false}
           />
