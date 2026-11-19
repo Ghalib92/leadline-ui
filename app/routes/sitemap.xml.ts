@@ -23,6 +23,7 @@ interface SitemapRoute {
 const routes: SitemapRoute[] = [
   { path: '/', priority: 1.0, changefreq: 'weekly' },
   { path: '/about', priority: 0.7, changefreq: 'monthly' },
+  { path: '/privacy', priority: 0.3, changefreq: 'yearly' },
 ];
 
 function escapeXml(s: string): string {

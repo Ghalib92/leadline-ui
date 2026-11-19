@@ -172,6 +172,12 @@ function Footer() {
             About
           </Link>
           <Link
+            to="/privacy"
+            className="block text-muted-foreground hover:text-foreground"
+          >
+            Privacy
+          </Link>
+          <Link
             to="/auth/login"
             className="block text-muted-foreground hover:text-foreground"
           >
@@ -187,7 +193,8 @@ function Footer() {
       </div>
       <div className="border-t border-border">
         <p className="container mx-auto px-6 py-5 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Leadline. All rights reserved.
+          © {new Date().getFullYear()} Leadline, by Digital Appex Limited. All
+          rights reserved.
         </p>
       </div>
     </footer>

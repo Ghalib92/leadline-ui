@@ -12,6 +12,7 @@ export default [
   layout('components/root-layout.tsx', [
     index('routes/home.tsx'),
     route('about', 'routes/about.tsx'),
+    route('privacy', 'routes/privacy.tsx'),
   ]),
 
   // Split-screen auth shell: sign-in, sign-up, password reset, invites.

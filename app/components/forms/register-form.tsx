@@ -114,6 +114,17 @@ export function RegisterForm() {
             <UserPlus className="w-4 h-4" />
             {register.isPending ? 'Creating account…' : 'Create account'}
           </Button>
+          <p className="text-center text-xs text-muted-foreground">
+            See how we handle your data in our{' '}
+            <Link
+              to="/privacy"
+              target="_blank"
+              className="font-medium text-primary hover:underline"
+            >
+              privacy page
+            </Link>
+            .
+          </p>
         </form>
       </Form>
 
