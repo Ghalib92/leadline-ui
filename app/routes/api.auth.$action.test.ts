@@ -12,7 +12,12 @@ const backendUser = {
   last_name: 'Wanjiru',
 };
 
-let calls: { path: string; body: unknown; auth: string | null }[] = [];
+let calls: {
+  path: string;
+  body: unknown;
+  auth: string | null;
+  visitor: string | null;
+}[] = [];
 let reply: (path: string) => Response;
 
 beforeEach(() => {
@@ -25,6 +30,7 @@ beforeEach(() => {
       path,
       body: init.body ? JSON.parse(String(init.body)) : undefined,
       auth: headers.get('Authorization'),
+      visitor: headers.get('X-Leadline-Client-IP'),
     });
     return reply(path);
   });
@@ -120,6 +126,17 @@ describe('/api/auth/:action', () => {
       })
     );
     expect(stored).toEqual({ token: 'A1', refresh: 'R1' });
+  });
+
+  it('signs in as the visitor, so each one has their own attempt limit', async () => {
+    vi.stubEnv('UI_PROXY_SECRET', 's3cret');
+    reply = () => Response.json({ detail: 'Wrong password' }, { status: 401 });
+    await run(
+      'login',
+      { email: 'amina@kijanihealth.org', password: 'password123' },
+      { headers: { 'x-real-ip': '41.90.1.1' } }
+    );
+    expect(calls[0].visitor).toBe('41.90.1.1');
   });
 
   it('passes the unverified-email answer through so the UI can ask for the code', async () => {

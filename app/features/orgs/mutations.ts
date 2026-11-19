@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '~/lib/api/client';
+import { downloadFile, uploadFile } from '~/lib/api/transfer';
 import {
   documentDtoSchema,
   dossierDtoSchema,
@@ -42,7 +43,6 @@ import { orgKeys } from './query-keys';
 
 const base = (orgId: string) => `/organizations/${orgId}`;
 /** Up to 25 MB on a slow uplink takes minutes, not the default 30 s. */
-const fileTransferTimeout = 5 * 60_000;
 
 /** Refresh everything org-level, incl. the setup checklist. */
 /** Org writes also refresh agents: each shows the org's settings it adds to. */
@@ -290,11 +290,7 @@ export const useUploadDocument = (orgId: string) => {
       form.append('category', input.category);
       form.append('folder_id', input.folderId);
       form.append('file', input.file);
-      const { data } = await apiClient.post(`${base(orgId)}/documents`, form, {
-        // Let the browser set the multipart boundary.
-        headers: { 'Content-Type': undefined },
-        timeout: fileTransferTimeout,
-      });
+      const data = await uploadFile(`${base(orgId)}/documents`, form);
       return documentDtoSchema.parse(data);
     },
     onSuccess: refresh,
@@ -422,16 +418,7 @@ export const useRegenerateDossier = (orgId: string) => {
 
 /** Files are served only through the member-checked download endpoint. */
 export async function downloadDocument(orgId: string, doc: OrgDocument) {
-  const { data } = await apiClient.get<Blob>(
-    `${base(orgId)}/documents/${doc.id}/download`,
-    { responseType: 'blob', timeout: fileTransferTimeout }
-  );
-  const url = URL.createObjectURL(data);
-  const link = globalThis.document.createElement('a');
-  link.href = url;
-  link.download = doc.fileName;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  await downloadFile(`${base(orgId)}/documents/${doc.id}/download`);
 }
 
 export const useUpdateClientBrief = (orgId: string) => {

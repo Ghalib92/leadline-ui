@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
   // hand them to process.env for the `lib/auth/*.server.ts` modules in
   // dev/preview. A real environment variable always wins.
   const fileEnv = loadEnv(mode, process.cwd(), '');
-  for (const key of ['SESSION_SECRET', 'API_URL']) {
+  for (const key of ['SESSION_SECRET', 'API_URL', 'UI_PROXY_SECRET']) {
     if (!process.env[key] && fileEnv[key]) process.env[key] = fileEnv[key];
   }
 

@@ -1,11 +1,12 @@
 // @vitest-environment node
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   backendUrl,
   callBackend,
   isExpired,
   normalizeBackendError,
   toAuthUser,
+  visitorHeaders,
 } from './backend.server';
 
 const jwt = (payload: object) =>
@@ -139,5 +140,51 @@ describe('callBackend', () => {
     }) as typeof fetch;
     const res = await callBackend('http://api', '/auth/login/', { fetchImpl });
     expect(res.status).toBe(503);
+  });
+});
+
+describe('visitorHeaders', () => {
+  const request = (headers: Record<string, string>) =>
+    new Request('https://leadline.test/api/x', { headers });
+
+  it('vouches for the visitor’s address with the shared secret', () => {
+    const env = { UI_PROXY_SECRET: 's3cret' };
+    expect(visitorHeaders(request({ 'x-real-ip': '41.90.1.1' }), env)).toEqual({
+      'X-Leadline-Proxy': 's3cret',
+      'X-Leadline-Client-IP': '41.90.1.1',
+    });
+    // No x-real-ip: the first x-forwarded-for address.
+    expect(
+      visitorHeaders(
+        request({ 'x-forwarded-for': '41.90.2.2, 10.0.0.1' }),
+        env
+      )['X-Leadline-Client-IP']
+    ).toBe('41.90.2.2');
+  });
+
+  it('sends nothing without a secret or an address', () => {
+    expect(visitorHeaders(request({ 'x-real-ip': '41.90.1.1' }), {})).toEqual(
+      {}
+    );
+    expect(visitorHeaders(request({}), { UI_PROXY_SECRET: 's3cret' })).toEqual(
+      {}
+    );
+  });
+
+  it('is added to backend calls made for a visitor', async () => {
+    vi.stubEnv('UI_PROXY_SECRET', 's3cret');
+    let seen: Request | undefined;
+    const fetchImpl = (async (url: string, init?: RequestInit) => {
+      seen = new Request(url, init);
+      return Response.json({});
+    }) as typeof fetch;
+    await callBackend('http://api', '/auth/login/', {
+      body: {},
+      request: request({ 'x-real-ip': '41.90.1.1' }),
+      fetchImpl,
+    });
+    expect(seen?.headers.get('X-Leadline-Client-IP')).toBe('41.90.1.1');
+    expect(seen?.headers.get('X-Leadline-Proxy')).toBe('s3cret');
+    vi.unstubAllEnvs();
   });
 });

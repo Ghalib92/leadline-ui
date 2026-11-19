@@ -264,4 +264,16 @@ describe('/api/* backend proxy', () => {
     expect(spy.mock.lastCall?.[0]).toBeGreaterThanOrEqual(300_000);
     spy.mockRestore();
   });
+
+  it('passes the visitor’s address on, vouched for by the shared secret', async () => {
+    vi.stubEnv('UI_PROXY_SECRET', 's3cret');
+    let headers: Headers | undefined;
+    vi.stubGlobal('fetch', async (_url: string, init: RequestInit = {}) => {
+      headers = new Headers(init.headers);
+      return Response.json({ ok: true });
+    });
+    await call('organizations', { headers: { 'x-real-ip': '41.90.1.1' } });
+    expect(headers?.get('X-Leadline-Client-IP')).toBe('41.90.1.1');
+    expect(headers?.get('X-Leadline-Proxy')).toBe('s3cret');
+  });
 });

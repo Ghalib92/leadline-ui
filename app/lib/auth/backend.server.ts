@@ -19,6 +19,26 @@ export function backendUrl(env: Env = process.env): string {
   return url.replace(/\/+$/, '');
 }
 
+/**
+ * Who the visitor is, for the API's throttles. Every call reaches the API from
+ * this server, so without this all visitors would share one limit (5 sign-in
+ * attempts a minute, for everyone). Vercel puts the visitor's address in
+ * `x-real-ip` (and overwrites `x-forwarded-for`, so neither can be forged
+ * there). The shared `UI_PROXY_SECRET` tells the API the address is ours to
+ * vouch for; without it the API ignores the address.
+ */
+export function visitorHeaders(
+  request: Request,
+  env: Env = process.env
+): Record<string, string> {
+  const secret = env.UI_PROXY_SECRET?.trim();
+  const address =
+    request.headers.get('x-real-ip')?.trim() ||
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+  if (!secret || !address) return {};
+  return { 'X-Leadline-Proxy': secret, 'X-Leadline-Client-IP': address };
+}
+
 export interface BackendUser {
   id: string | number;
   email: string;
@@ -119,6 +139,8 @@ interface CallOptions {
   method?: 'GET' | 'POST' | 'PATCH';
   body?: unknown;
   access?: string;
+  /** The visitor's request: passes their address on (`visitorHeaders`). */
+  request?: Request;
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
 }
@@ -130,6 +152,7 @@ export async function callBackend(
     method = 'POST',
     body,
     access,
+    request,
     fetchImpl = fetch,
     timeoutMs = 8000,
   }: CallOptions = {}
@@ -138,6 +161,7 @@ export async function callBackend(
     const res = await fetchImpl(`${base}${path}`, {
       method,
       headers: {
+        ...(request ? visitorHeaders(request) : {}),
         Accept: 'application/json',
         ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
         ...(access ? { Authorization: `Bearer ${access}` } : {}),

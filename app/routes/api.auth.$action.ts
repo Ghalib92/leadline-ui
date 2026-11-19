@@ -216,6 +216,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
     method: endpoint.method,
     body: endpoint.toBackend(parsed.data as never),
     access: endpoint.auth ? session?.token : undefined,
+    request,
   });
 
   if (status >= 400) {

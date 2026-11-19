@@ -7,7 +7,6 @@ import { http, HttpResponse } from 'msw';
 import { server } from '~/test/msw';
 import folders from '~/lib/schema/__fixtures__/backend/folders.json';
 import documents from '~/lib/schema/__fixtures__/backend/documents.json';
-import { apiClient } from '~/lib/api/client';
 import { DocumentsTab } from './documents-tab';
 
 const ORG = 'Kq7vB2mXp9Lt';
@@ -17,6 +16,17 @@ vi.mock('~/lib/org/org-context', () => ({
     view: { id: 'Kq7vB2mXp9Lt', myRole: 'admin', isArchived: false },
   }),
 }));
+
+// Uploads go straight to the API with a ticket (lib/api/transfer, tested there).
+const { uploadFile } = vi.hoisted(() => ({ uploadFile: vi.fn() }));
+vi.mock('~/lib/api/transfer', () => ({ uploadFile, downloadFile: vi.fn() }));
+
+function acceptUploads(handle: (form: FormData) => unknown) {
+  uploadFile.mockImplementation(async (path: string, form: FormData) => {
+    expect(path).toBe(`/organizations/${ORG}/documents`);
+    return handle(form);
+  });
+}
 
 function renderUpload() {
   const client = new QueryClient({
@@ -42,17 +52,14 @@ describe('uploading documents', () => {
         HttpResponse.json(documents)
       )
     );
-    const post = vi
-      .spyOn(apiClient, 'post')
-      .mockImplementation(async (_url, body) => {
-        const form = body as FormData;
-        sent.push({
-          title: String(form.get('title')),
-          file: (form.get('file') as File).name,
-          category: String(form.get('category')),
-        });
-        return { data: documents.results[0] };
+    acceptUploads((form) => {
+      sent.push({
+        title: String(form.get('title')),
+        file: (form.get('file') as File).name,
+        category: String(form.get('category')),
       });
+      return documents.results[0];
+    });
     renderUpload();
     const user = userEvent.setup();
     // The sheet opens again once the folders load: use that one.
@@ -82,7 +89,6 @@ describe('uploading documents', () => {
       'CR12_2026.pdf',
     ]);
     expect(sent[0].title).toMatch(/KRA tax compliance/i);
-    post.mockRestore();
   });
 
   it('keeps only the files that failed, to try again', async () => {
@@ -94,13 +100,12 @@ describe('uploading documents', () => {
         HttpResponse.json(documents)
       )
     );
-    const post = vi
-      .spyOn(apiClient, 'post')
-      .mockImplementation(async (_url, body) => {
-        const name = ((body as FormData).get('file') as File).name;
-        if (name === 'broken.pdf') throw new Error('Upload failed');
-        return { data: documents.results[0] };
-      });
+    acceptUploads((form) => {
+      if ((form.get('file') as File).name === 'broken.pdf') {
+        throw new Error('Upload failed');
+      }
+      return documents.results[0];
+    });
     renderUpload();
     await waitFor(() =>
       expect(screen.getByRole('dialog')).toHaveTextContent('Past proposals')
@@ -122,6 +127,5 @@ describe('uploading documents', () => {
     );
     await waitFor(() => expect(screen.queryByText('good.pdf')).toBeNull());
     expect(screen.getByText('broken.pdf')).toBeInTheDocument();
-    post.mockRestore();
   });
 });

@@ -1,5 +1,5 @@
 import type { Route } from './+types/api.$';
-import { backendUrl } from '~/lib/auth/backend.server';
+import { backendUrl, visitorHeaders } from '~/lib/auth/backend.server';
 import { backendSessionContext } from '~/lib/auth/middleware.server';
 import { isCrossSite } from '~/lib/auth/same-site.server';
 
@@ -69,6 +69,7 @@ async function proxy({ request, params, context }: Route.LoaderArgs) {
     res = await fetch(`${base}/${path}/${search}`, {
       method: request.method,
       headers: {
+        ...visitorHeaders(request),
         Accept: 'application/json',
         ...(hasBody
           ? { 'Content-Type': multipart ? contentType : 'application/json' }
