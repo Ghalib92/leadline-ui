@@ -278,7 +278,7 @@ export function DashboardSidebar({
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent"
+            className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             onClick={handleLogout}
             disabled={logout.isPending}
           >

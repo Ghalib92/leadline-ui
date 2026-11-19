@@ -14,7 +14,7 @@ const TYPE_META: Record<OpportunityType, { label: string; className: string }> =
     },
     tender: {
       label: 'Tender',
-      className: 'bg-sky-500/10 text-sky-700 dark:text-sky-400',
+      className: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300',
     },
     partnership: {
       label: 'Partnership',
@@ -26,11 +26,11 @@ const TYPE_META: Record<OpportunityType, { label: string; className: string }> =
     },
     client: {
       label: 'Client lead',
-      className: 'bg-rose-500/10 text-rose-700 dark:text-rose-400',
+      className: 'bg-sky-500/10 text-sky-700 dark:text-sky-300',
     },
     job: {
       label: 'Job',
-      className: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+      className: 'bg-teal-500/10 text-teal-700 dark:text-teal-300',
     },
   };
 
@@ -73,10 +73,9 @@ export function MatchScore({ score }: Readonly<{ score: number }>) {
       className={cn(
         pill,
         'tabular-nums',
-        score >= 80 && 'bg-primary/10 text-primary',
-        score >= 60 &&
-          score < 80 &&
-          'bg-amber-500/10 text-amber-700 dark:text-amber-400',
+        // Gold only for the best matches: the one accent, kept rare.
+        score >= 80 && 'bg-gold/15 text-gold-foreground ring-1 ring-gold/40',
+        score >= 60 && score < 80 && 'bg-secondary text-secondary-foreground',
         score < 60 && 'bg-muted text-muted-foreground'
       )}
     >

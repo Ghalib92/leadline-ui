@@ -2,22 +2,22 @@ import { Bot, Sparkles } from 'lucide-react';
 
 const FINDINGS = [
   {
-    title: 'Community Health Systems Innovation Grant',
-    funder: 'Harambee Health Fund',
-    score: 94,
-    tag: 'Grant',
+    title: 'Hotel group with no online booking',
+    funder: 'Nairobi · needs a website and payments',
+    score: 91,
+    tag: 'Client lead',
   },
   {
-    title: 'Call for Consortium Partners: Maternal Health',
-    funder: 'Umoja Development Partners',
-    score: 88,
-    tag: 'Partnership',
-  },
-  {
-    title: 'RFQ: Solar Water Pumping Systems',
-    funder: 'Rift Valley Water Board',
-    score: 76,
+    title: 'Supply and installation of an ERP system',
+    funder: 'A state corporation, Mombasa',
+    score: 84,
     tag: 'Tender',
+  },
+  {
+    title: 'Digital Skills for Youth Grant',
+    funder: 'A youth employment fund',
+    score: 72,
+    tag: 'Grant',
   },
 ];
 
@@ -30,14 +30,12 @@ export function AgentCard() {
           <Bot className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold">
-            Health &amp; WASH grants agent
-          </p>
+          <p className="text-sm font-semibold">Clients and tenders worker</p>
           <p className="text-xs text-muted-foreground">
             Scanned 42 sources · just now
           </p>
         </div>
-        <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600">
+        <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
           Running
         </span>
@@ -66,7 +64,13 @@ export function AgentCard() {
                 {item.tag} · {item.funder}
               </p>
             </div>
-            <span className="rounded-md bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
+            <span
+              className={
+                item.score >= 80
+                  ? 'rounded-md bg-gold/15 px-2 py-1 text-xs font-semibold text-gold-foreground ring-1 ring-gold/40'
+                  : 'rounded-md bg-muted px-2 py-1 text-xs font-semibold text-muted-foreground'
+              }
+            >
               {item.score}%
             </span>
           </li>

@@ -19,13 +19,14 @@ export function Logo({
       >
         <rect width="24" height="24" rx="7" fill="currentColor" />
         <path
-          d="M8 16 16 8M16 8h-5.5M16 8v5.5"
+          d="M7.5 16.5 15.5 8.5M15.5 8.5h-5.5M15.5 8.5V14"
           stroke="white"
           strokeWidth="2.2"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
+        <circle cx="18" cy="6" r="2" fill="var(--gold)" />
       </svg>
       {withText && <span className="text-lg">Leadline</span>}
     </span>

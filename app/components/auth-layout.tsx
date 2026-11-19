@@ -27,13 +27,24 @@ export default function AuthLayout() {
 
       <aside
         aria-hidden="true"
-        className="hidden flex-col items-center justify-center gap-8 bg-gradient-to-br from-primary/90 to-primary p-12 lg:flex"
+        className="relative hidden flex-col items-center justify-center gap-10 overflow-hidden bg-sidebar p-12 lg:flex"
       >
-        <AgentCard />
-        <p className="max-w-sm text-center text-lg font-medium text-primary-foreground">
-          Agents that find grants, tenders and partners for your organization —
-          while you do the work that matters.
-        </p>
+        {/* Ink, with an evergreen glow and a faint grid: calm, not loud. */}
+        <div className="pointer-events-none absolute -top-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-primary/40 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-48 -left-24 h-[24rem] w-[24rem] rounded-full bg-gold/15 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgb(255_255_255/0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255/0.04)_1px,transparent_1px)] bg-[size:48px_48px]" />
+        <div className="relative">
+          <AgentCard />
+        </div>
+        <div className="relative max-w-sm space-y-3 text-center">
+          <p className="text-xl font-semibold tracking-tight text-sidebar-foreground">
+            Clients, tenders, grants and jobs, found for you.
+          </p>
+          <p className="text-sm leading-relaxed text-sidebar-foreground/70">
+            Every find is scored and explained. You approve it, and Leadline
+            writes the pitch, the bid or the application.
+          </p>
+        </div>
       </aside>
     </div>
   );

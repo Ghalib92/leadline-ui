@@ -111,7 +111,7 @@ app/
     slices/        # auth, table-filters, modal
     filters/use-table-filters.ts
   root.tsx         # Session middleware + root loader + StoreProvider > QueryProvider
-  app.css          # Tailwind + shadcn CSS variables (brand blue primary)
+  app.css          # Tailwind + shadcn CSS variables ("Evergreen & Ink" palette)
 ```
 
 ## Key Patterns
@@ -134,7 +134,10 @@ setFilter, removeFilter, setSort, … }`. State lives in the `tableFilters` slic
   - Type-safe via `ModalRegistry` interface (declaration merging)
 - **Typed hooks**: use `useAppDispatch` and `useAppSelector` (not raw `useDispatch`)
 - There is **no live theme editor / hue system** — the palette is fixed in
-  `app.css` (brand blue primary in light + dark).
+  `app.css`, "Evergreen & Ink": evergreen primary, ink-navy text and sidebar,
+  warm ivory background with white cards, and one `gold` accent kept for the
+  best matches only. Status colours (emerald, amber, rose) mean done, waiting,
+  problem; don't use rose for anything that isn't a problem.
 
 ### Auth (httpOnly session cookie + middleware)
 

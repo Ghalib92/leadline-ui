@@ -31,14 +31,16 @@ export default function HomePage() {
       <IntegrationsStrip />
       <Faq />
       <section className="container mx-auto px-6 pb-24">
-        <div className="rounded-2xl bg-primary px-8 py-14 text-center text-primary-foreground">
-          <h2 className="text-3xl font-bold tracking-tight">
+        <div className="relative overflow-hidden rounded-2xl bg-sidebar px-8 py-16 text-center text-sidebar-foreground">
+          <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-[40rem] -translate-x-1/2 rounded-full bg-primary/40 blur-3xl" />
+          <div className="pointer-events-none absolute -right-16 -bottom-24 h-56 w-56 rounded-full bg-gold/20 blur-3xl" />
+          <h2 className="relative text-3xl font-bold tracking-tight">
             Your next client is already out there.
           </h2>
-          <p className="mx-auto mt-3 max-w-xl opacity-90">
+          <p className="relative mx-auto mt-3 max-w-xl text-sidebar-foreground/75">
             Set up your organization and let the agents do the searching.
           </p>
-          <Button asChild size="lg" variant="secondary" className="mt-8">
+          <Button asChild size="lg" className="relative mt-8">
             <Link to={isAuthenticated ? '/app' : '/auth/register'}>
               {isAuthenticated ? 'Open your workspace' : 'Get started free'}
             </Link>
