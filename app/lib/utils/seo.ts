@@ -21,7 +21,7 @@ const SITE_NAME = 'Leadline';
 
 const baseUrl = env.VITE_SITE_URL;
 
-const defaultImage = `${baseUrl}/favicon.ico`;
+const defaultImage = `${baseUrl}/og-image.png`;
 
 /**
  * Strip tracking query params and trailing slash for canonical URLs.

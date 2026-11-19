@@ -29,10 +29,6 @@ export default function AuthLayout() {
         aria-hidden="true"
         className="relative hidden flex-col items-center justify-center gap-10 overflow-hidden bg-sidebar p-12 lg:flex"
       >
-        {/* Ink, with an evergreen glow and a faint grid: calm, not loud. */}
-        <div className="pointer-events-none absolute -top-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-primary/40 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-48 -left-24 h-[24rem] w-[24rem] rounded-full bg-gold/15 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgb(255_255_255/0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255/0.04)_1px,transparent_1px)] bg-[size:48px_48px]" />
         <div className="relative">
           <AgentCard />
         </div>

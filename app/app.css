@@ -312,9 +312,75 @@ body {
   }
 }
 
+/* Landing: a gently floating card, scrolling source names, the hero's word. */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration, 45s) linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee var(--duration, 45s) linear infinite reverse;
+}
+
+.group:hover .animate-marquee,
+.group:hover .animate-marquee-reverse {
+  animation-play-state: paused;
+}
+
+/* Five stacked words (the first repeated last): each holds, then slides up. */
+@keyframes word-cycle {
+  0%,
+  18% {
+    transform: translateY(0);
+  }
+  25%,
+  43% {
+    transform: translateY(-20%);
+  }
+  50%,
+  68% {
+    transform: translateY(-40%);
+  }
+  75%,
+  93% {
+    transform: translateY(-60%);
+  }
+  100% {
+    transform: translateY(-80%);
+  }
+}
+
+.animate-word-cycle {
+  animation: word-cycle 10s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
-  .animate-grow-x {
+  .animate-grow-x,
+  .animate-float,
+  .animate-marquee,
+  .animate-marquee-reverse,
+  .animate-word-cycle {
     animation: none;
   }
 }

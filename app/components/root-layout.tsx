@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { Link, NavLink, Outlet } from 'react-router';
+import { Link, Outlet } from 'react-router';
 import { LayoutGrid, LogIn, Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { Logo } from './brand/logo';
 import { ErrorBoundary } from './error-boundary';
 import { LoadingIndicator } from './loading-indicator';
 import { useAuth } from '~/lib/auth/use-auth';
-import { cn } from '~/lib/utils';
 
 const NAV = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/about', label: 'About', end: false },
+  { to: '/#how', label: 'How it works' },
+  { to: '/#features', label: 'What it finds' },
+  { to: '/#faq', label: 'FAQ' },
+  { to: '/about', label: 'About' },
 ];
 
 /**
@@ -37,21 +38,13 @@ export default function RootLayout() {
             {/* Desktop nav */}
             <nav className="hidden items-center gap-1 md:flex">
               {NAV.map((item) => (
-                <NavLink
+                <Link
                   key={item.to}
                   to={item.to}
-                  end={item.end}
-                  className={({ isActive }) =>
-                    cn(
-                      'rounded-md px-4 py-2 text-sm font-medium transition-colors',
-                      isActive
-                        ? 'text-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    )
-                  }
+                  className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {item.label}
-                </NavLink>
+                </Link>
               ))}
             </nav>
 
@@ -78,22 +71,14 @@ export default function RootLayout() {
           <div className="border-t border-border bg-background md:hidden">
             <div className="container mx-auto space-y-1 px-6 py-4">
               {NAV.map((item) => (
-                <NavLink
+                <Link
                   key={item.to}
                   to={item.to}
-                  end={item.end}
                   onClick={() => setMobileOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      'block rounded-md px-4 py-3 text-sm font-medium transition-colors',
-                      isActive
-                        ? 'bg-muted text-foreground'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    )
-                  }
+                  className="block rounded-md px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                   {item.label}
-                </NavLink>
+                </Link>
               ))}
               <div className="flex flex-col gap-2 pt-3">
                 <AuthCta
@@ -157,22 +142,53 @@ function AuthCta({
 
 function Footer() {
   return (
-    <footer className="border-t border-border bg-muted/30">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-6 py-10 sm:flex-row">
-        <div className="flex items-center gap-2">
+    <footer className="border-t border-border bg-card">
+      <div className="container mx-auto grid gap-10 px-6 py-12 md:grid-cols-[1.5fr_1fr_1fr]">
+        <div>
           <Logo className="text-base" />
-          <span className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Leadline
-          </span>
+          <p className="mt-3 max-w-xs text-sm text-muted-foreground">
+            AI workers that find clients, tenders, grants and jobs, and write
+            the pitch, the bid or the application. Built in Kenya.
+          </p>
         </div>
-        <nav className="flex items-center gap-6 text-sm text-muted-foreground">
-          <Link to="/about" className="hover:text-foreground">
+        <nav aria-label="Product" className="space-y-2 text-sm">
+          <p className="font-semibold">Product</p>
+          {NAV.slice(0, 3).map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="block text-muted-foreground hover:text-foreground"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <nav aria-label="Company" className="space-y-2 text-sm">
+          <p className="font-semibold">Company</p>
+          <Link
+            to="/about"
+            className="block text-muted-foreground hover:text-foreground"
+          >
             About
           </Link>
-          <Link to="/auth/login" className="hover:text-foreground">
+          <Link
+            to="/auth/login"
+            className="block text-muted-foreground hover:text-foreground"
+          >
             Sign in
           </Link>
+          <Link
+            to="/auth/register"
+            className="block text-muted-foreground hover:text-foreground"
+          >
+            Create an account
+          </Link>
         </nav>
+      </div>
+      <div className="border-t border-border">
+        <p className="container mx-auto px-6 py-5 text-xs text-muted-foreground">
+          © {new Date().getFullYear()} Leadline. All rights reserved.
+        </p>
       </div>
     </footer>
   );
