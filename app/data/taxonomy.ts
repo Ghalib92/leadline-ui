@@ -13,6 +13,7 @@ export const OPPORTUNITY_TYPES = [
   { value: 'partnership', label: 'Partnerships' },
   { value: 'event', label: 'Events & awards' },
   { value: 'client', label: 'Client leads' },
+  { value: 'job', label: 'Jobs' },
 ] as const satisfies readonly Option[];
 
 export const ORG_TYPES = [

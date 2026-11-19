@@ -6,6 +6,7 @@ import {
   documentMaxMb,
   geographicScopes,
   goalOptions,
+  organizationGoalOptions,
   linkKinds,
   opportunityKinds,
   targetRegions,
@@ -106,10 +107,12 @@ const text = z.string().default('');
 
 export const goalSchema = z.enum(enumValues(goalOptions));
 export type Goal = z.infer<typeof goalSchema>;
+/** What an organization can pick in its forms (a job seeker's goal is jobs, set
+ * for them). */
 const goalsField = z
-  .array(goalSchema)
+  .array(z.enum(enumValues(organizationGoalOptions)))
   .min(1, 'Pick at least one thing to find')
-  .max(goalOptions.length);
+  .max(organizationGoalOptions.length);
 const list = <T extends z.ZodType>(item: T) => z.array(item).default([]);
 
 export const orgDtoSchema = z
@@ -142,6 +145,8 @@ export const orgDtoSchema = z
     operating_countries: list(z.string()),
     languages: list(z.string()),
     goals: list(goalSchema),
+    // A job seeker's workspace is their own: jobs, their CV, no team.
+    account_type: z.enum(['organization', 'candidate']).catch('organization'),
     created_by: z.string().nullable(),
     created_at: z.string(),
     archived_at: z.string().nullable(),
@@ -159,6 +164,8 @@ export const orgDtoSchema = z
       id: dto.id,
       slug: dto.slug,
       name: dto.name,
+      accountType: dto.account_type,
+      isCandidate: dto.account_type === 'candidate',
       createdAt: dto.created_at,
       createdBy: dto.created_by,
       archivedAt: dto.archived_at,
@@ -623,6 +630,7 @@ export function toMyOrg(view: OrgView, prefs?: PreferencesView): MyOrg {
       opportunityTypes: toFeedTypes(prefs?.opportunityTypes ?? []),
       createdAt: view.createdAt,
       createdBy: view.createdBy ?? '',
+      isCandidate: view.isCandidate,
     },
   };
 }
@@ -658,3 +666,34 @@ export const orgSourcesFormResolver = zodResolver(orgSourcesFormSchema);
 export const documentUploadFormResolver = zodResolver(documentUploadFormSchema);
 export const documentUpdateFormResolver = zodResolver(documentUpdateFormSchema);
 export const folderFormResolver = zodResolver(folderFormSchema);
+
+/** A job seeker's onboarding: who they are, then the jobs they want. */
+export const candidateOnboardingSchema = z.object({
+  name: z.string().trim().min(1, 'Enter your name').max(200),
+  country: z.string().regex(/^[A-Z]{2}$/, 'Choose a country'),
+  city: z.string().trim().max(100),
+  description: z
+    .string()
+    .trim()
+    .min(1, 'Say what you do in a sentence or two')
+    .max(longTextMax),
+  headline: z.string().trim().max(200),
+  targetRoles: z
+    .array(z.string().trim().min(1).max(100))
+    .min(1, 'Add at least one job title')
+    .max(50),
+  seniority: z.array(z.string()),
+  workplaces: z.array(z.string()),
+  skills: z.array(z.string().trim().min(1).max(100)).max(100),
+  yearsExperience: z.preprocess(
+    (v) => (v === '' || v === undefined || v === null ? null : Number(v)),
+    z.number().int().min(0).max(60).nullable()
+  ),
+});
+export type CandidateOnboarding = z.infer<typeof candidateOnboardingSchema>;
+export type CandidateOnboardingInput = z.input<
+  typeof candidateOnboardingSchema
+>;
+export const candidateOnboardingResolver = zodResolver(
+  candidateOnboardingSchema
+);

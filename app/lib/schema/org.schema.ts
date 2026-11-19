@@ -25,6 +25,8 @@ export const organizationSchema = z.object({
   opportunityTypes: z.array(opportunityTypeSchema),
   createdAt: z.string(),
   createdBy: z.string(),
+  /** A job seeker's own workspace (jobs, their CV, no team). */
+  isCandidate: z.boolean().optional(),
 });
 
 export const myOrgSchema = z.object({

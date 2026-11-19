@@ -5,19 +5,27 @@ import {
   businessSizes,
   buyerTypes,
   countryOptions,
+  employmentTypeOptions,
   leadSignals,
+  seniorityOptions,
+  workplaceOptions,
   tenderCategories,
   tenderEligibilityOptions,
 } from '~/data/org-taxonomy';
 import {
   useClientBrief,
+  useJobBrief,
   useTenderBrief,
   useUpdateClientBrief,
+  useUpdateJobBrief,
   useUpdateTenderBrief,
 } from '~/features/orgs';
 import {
   clientBriefFormResolver,
+  jobBriefFormResolver,
   tenderBriefFormResolver,
+  type JobBriefForm,
+  type JobBriefFormInput,
   type ClientBriefForm,
   type ClientBriefFormInput,
   type TenderBrief,
@@ -216,6 +224,94 @@ export function TenderBriefTab({
           required={['tenderCategories']}
           resolver={tenderBriefFormResolver}
           values={brief as DefaultValues<TenderBriefFormInput>}
+          onSave={(values) => update.mutateAsync(values)}
+          pending={update.isPending}
+        />
+      )}
+    </>
+  );
+}
+
+// ---- Jobs ---------------------------------------------------------------------
+
+const jobFields = [
+  'headline', 'targetRoles', 'seniority', 'employmentTypes', 'workplaces',
+  'targetCountries', 'targetCities', 'skills', 'yearsExperience', 'salaryMin',
+  'salaryCurrency', 'companies', 'excludedKeywords', 'notes',
+] as const; // prettier-ignore
+
+/** What a job seeker looks for: the brief their Jobs workers use. */
+export function JobBriefTab({ editing, setEditing }: Readonly<EditingProps>) {
+  const { view, canEdit } = useCanEdit();
+  const { data: brief } = useJobBrief(view.id);
+  const update = useUpdateJobBrief(view.id);
+  if (!brief) return <PageLoader />;
+
+  return (
+    <>
+      <AppCard
+        title="Job preferences"
+        description="What you're looking for. Your workers search with this and score each job against it and your CV."
+        actions={
+          canEdit && <EditButton onClick={() => setEditing('job_brief')} />
+        }
+      >
+        <dl className="divide-y divide-border">
+          <Field label="Headline">{textOrEmpty(brief.headline)}</Field>
+          <Field label="Jobs you want">
+            <Chips values={brief.targetRoles} />
+          </Field>
+          <Field label="Level">
+            <Chips values={brief.seniority} list={seniorityOptions} />
+          </Field>
+          <Field label="Kind of work">
+            <Chips
+              values={brief.employmentTypes}
+              list={employmentTypeOptions}
+            />
+          </Field>
+          <Field label="Where you work">
+            <Chips values={brief.workplaces} list={workplaceOptions} />
+          </Field>
+          <Field label="Countries">
+            <Chips values={brief.targetCountries} list={countryOptions()} />
+          </Field>
+          <Field label="Cities">
+            <Chips values={brief.targetCities} />
+          </Field>
+          <Field label="Skills">
+            <Chips values={brief.skills} />
+          </Field>
+          <Field label="Experience">
+            {brief.yearsExperience == null
+              ? empty
+              : `${brief.yearsExperience} years`}
+          </Field>
+          <Field label="Lowest monthly salary">
+            {brief.salaryMin == null
+              ? empty
+              : `${brief.salaryCurrency} ${brief.salaryMin.toLocaleString('en')}`}
+          </Field>
+          <Field label="Companies you follow">
+            <Chips values={brief.companies} />
+          </Field>
+          <Field label="Avoid">
+            <Chips values={brief.excludedKeywords} />
+          </Field>
+          <Field label="Other context">{textOrEmpty(brief.notes)}</Field>
+        </dl>
+      </AppCard>
+
+      {editing === 'job_brief' && (
+        <EditSheet<JobBriefFormInput, JobBriefForm>
+          open
+          onClose={() => setEditing(null)}
+          title="Edit your job preferences"
+          description="Your workers use them from their next run."
+          fields={jobFields}
+          required={['targetRoles']}
+          resolver={jobBriefFormResolver}
+          values={brief as DefaultValues<JobBriefFormInput>}
           onSave={(values) => update.mutateAsync(values)}
           pending={update.isPending}
         />

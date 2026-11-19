@@ -11,6 +11,10 @@ const stepLinks: Record<string, string> = {
   documents: '/settings/general?tab=documents&edit=upload',
   links: '/settings/general?tab=links&edit=link',
   team: '/team',
+  // A job seeker's steps.
+  job_brief: '/agents?tab=jobs&edit=job_brief',
+  skills: '/agents?tab=jobs&edit=job_brief',
+  cv: '/settings/general?tab=documents&edit=upload',
 };
 
 export const stepHref = (key: string) => stepLinks[key] ?? '/settings/general';

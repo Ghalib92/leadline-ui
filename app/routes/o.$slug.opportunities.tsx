@@ -56,7 +56,7 @@ const SORTS = [
 ];
 
 export default function OpportunitiesPage() {
-  const { org, can } = useOrg();
+  const { org, can, view } = useOrg();
   const path = useOrgPath();
   const [searchParams, setSearchParams] = useSearchParams();
   const runParam = searchParams.get('run');
@@ -126,7 +126,7 @@ export default function OpportunitiesPage() {
   return (
     <Page width="wide">
       <PageHeader
-        title="Opportunities"
+        title={view.isCandidate ? 'Jobs' : 'Opportunities'}
         description={
           runParam
             ? activeRun

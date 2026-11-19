@@ -44,6 +44,7 @@ const kindsOf: Record<OpportunityType, string[]> = {
   partnership: ['partnership', 'accelerator'],
   event: ['conference', 'award', 'competition'],
   client: ['client'],
+  job: ['job'],
 };
 
 export const toBackendKinds = (types: readonly string[]): string[] => [
@@ -112,6 +113,36 @@ const websiteStatuses = [
 ] as const;
 
 /** A tender's portal facts (`Opportunity.tender`); `{}` for everything else. */
+const httpUrl = z
+  .string()
+  .default('')
+  .transform((url) => (/^https?:\/\//i.test(url) ? url : ''));
+
+/** A job's facts from its career page (`opportunity.job`). */
+const jobDtoSchema = z
+  .object({
+    company: z.string().default(''),
+    location: z.string().default(''),
+    workplace: z.string().default(''),
+    employment_type: z.string().default(''),
+    department: z.string().default(''),
+    salary: z.string().default(''),
+    posted: z.string().default(''),
+    url: httpUrl,
+    apply_url: httpUrl,
+  })
+  .transform((dto) => ({
+    company: dto.company,
+    location: dto.location,
+    workplace: dto.workplace,
+    employmentType: dto.employment_type,
+    department: dto.department,
+    salary: dto.salary,
+    posted: dto.posted,
+    url: dto.url,
+    applyUrl: dto.apply_url || dto.url,
+  }));
+
 const tenderDtoSchema = z
   .object({
     reference: z.string().default(''),
@@ -801,6 +832,7 @@ export const opportunityDtoSchema = z
       .catch(undefined),
     business: businessDtoSchema.nullish().catch(null),
     tender: z.record(z.string(), z.unknown()).nullish().catch(null),
+    job: z.record(z.string(), z.unknown()).nullish().catch(null),
     brief_sources: z
       .object({
         mode: z.enum(['all', 'folders', 'none']).catch('all'),
@@ -859,6 +891,10 @@ export const opportunityDtoSchema = z
       tender:
         dto.tender && Object.keys(dto.tender).length > 0
           ? (tenderDtoSchema.safeParse(dto.tender).data ?? undefined)
+          : undefined,
+      job:
+        dto.job && Object.keys(dto.job).length > 0
+          ? (jobDtoSchema.safeParse(dto.job).data ?? undefined)
           : undefined,
       briefSources: dto.brief_sources ?? undefined,
       concerns: dto.requirements?.concerns ?? [],

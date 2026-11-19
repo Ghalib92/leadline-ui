@@ -28,6 +28,10 @@ const TYPE_META: Record<OpportunityType, { label: string; className: string }> =
       label: 'Client lead',
       className: 'bg-rose-500/10 text-rose-700 dark:text-rose-400',
     },
+    job: {
+      label: 'Job',
+      className: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+    },
   };
 
 const pill =

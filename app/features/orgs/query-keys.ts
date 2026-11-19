@@ -10,6 +10,7 @@ export const orgKeys = {
     [...orgKeys.all, orgId, 'client-brief'] as const,
   tenderBrief: (orgId: string) =>
     [...orgKeys.all, orgId, 'tender-brief'] as const,
+  jobBrief: (orgId: string) => [...orgKeys.all, orgId, 'job-brief'] as const,
   links: (orgId: string) => [...orgKeys.all, orgId, 'links'] as const,
   sources: (orgId: string) => [...orgKeys.all, orgId, 'sources'] as const,
   documents: (orgId: string, filters: DocumentFilters = {}) =>

@@ -14,7 +14,7 @@ import {
   tenderEligibilityOptions,
   eligibilityOptions,
   geographicScopes,
-  goalOptions,
+  organizationGoalOptions,
   languageOptions,
   opportunityKinds,
   organizationTypes,
@@ -22,6 +22,9 @@ import {
   targetRegions,
   teamSizes,
   countryOptions,
+  employmentTypeOptions,
+  seniorityOptions,
+  workplaceOptions,
 } from '~/data/org-taxonomy';
 import { SECTORS } from '~/data/taxonomy';
 import {
@@ -310,7 +313,7 @@ const fieldRenderers: Record<string, Render> = {
       placeholder="Clients, tenders, grants…"
       label="What do you want to find?"
       description="Each worker you set up looks for one of these."
-      options={goalOptions}
+      options={organizationGoalOptions}
       searchable={false}
       required={r}
       {...multi}
@@ -542,6 +545,105 @@ const fieldRenderers: Record<string, Render> = {
       placeholder="Who you've worked with, what you won't do, how fast you deliver…"
       label="Anything else the AI should know"
       rows={3}
+    />
+  ),
+
+  // Job preferences: what a job seeker looks for
+  headline: (c) => (
+    <FormTextField
+      control={c}
+      name="headline"
+      autoComplete="off"
+      label="Your headline"
+      placeholder="e.g. Backend developer, 4 years of Python"
+    />
+  ),
+  targetRoles: (c, r) => (
+    <FormTagInputField
+      control={c}
+      name="targetRoles"
+      label="Jobs you want"
+      placeholder="e.g. Backend developer, then Enter"
+      maxTags={50}
+      required={r}
+    />
+  ),
+  seniority: (c) => (
+    <FormPickerField
+      control={c}
+      name="seniority"
+      label="Level"
+      placeholder="Any level"
+      options={seniorityOptions}
+      searchable={false}
+      {...multi}
+    />
+  ),
+  employmentTypes: (c) => (
+    <FormPickerField
+      control={c}
+      name="employmentTypes"
+      label="Kind of work"
+      placeholder="Any"
+      options={employmentTypeOptions}
+      searchable={false}
+      {...multi}
+    />
+  ),
+  workplaces: (c) => (
+    <FormPickerField
+      control={c}
+      name="workplaces"
+      label="Where you work"
+      placeholder="Remote, hybrid or on-site"
+      options={workplaceOptions}
+      searchable={false}
+      {...multi}
+    />
+  ),
+  skills: (c) => (
+    <FormTagInputField
+      control={c}
+      name="skills"
+      label="Your main skills"
+      placeholder="e.g. Python, then Enter"
+      maxTags={100}
+    />
+  ),
+  yearsExperience: (c) => (
+    <FormNumberField
+      control={c}
+      name="yearsExperience"
+      label="Years of experience"
+      placeholder="e.g. 4"
+      min={0}
+    />
+  ),
+  salaryMin: (c) => (
+    <FormNumberField
+      control={c}
+      name="salaryMin"
+      label="Lowest monthly salary"
+      placeholder="e.g. 150000"
+      min={0}
+    />
+  ),
+  salaryCurrency: (c) => (
+    <FormTextField
+      control={c}
+      name="salaryCurrency"
+      autoComplete="off"
+      label="Currency"
+      placeholder="KES"
+    />
+  ),
+  companies: (c) => (
+    <FormTagInputField
+      control={c}
+      name="companies"
+      label="Companies to follow"
+      placeholder="Paste a careers page link (Greenhouse, Lever, Ashby, Workable), then Enter"
+      maxTags={50}
     />
   ),
 

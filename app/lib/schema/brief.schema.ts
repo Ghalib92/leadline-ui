@@ -4,7 +4,10 @@ import {
   businessCategories,
   businessSizes,
   buyerTypes,
+  employmentTypeOptions,
   leadSignals,
+  seniorityOptions,
+  workplaceOptions,
   tenderCategories,
   tenderEligibilityOptions,
 } from '~/data/org-taxonomy';
@@ -173,3 +176,72 @@ export const toTenderBriefWrite = (form: TenderBriefForm) => {
     body.currency = body.currency.toUpperCase();
   return body;
 };
+
+// ---- Job preferences (job seekers) -------------------------------------------
+
+export const jobBriefDtoSchema = z
+  .object({
+    headline: text,
+    target_roles: list(z.string()),
+    seniority: list(z.string()),
+    employment_types: list(z.string()),
+    workplaces: list(z.string()),
+    target_countries: list(z.string()),
+    target_cities: list(z.string()),
+    skills: list(z.string()),
+    years_experience: z.number().nullable().default(null),
+    salary_min: z.number().nullable().default(null),
+    salary_currency: z.string().default('KES'),
+    companies: list(z.string()),
+    excluded_keywords: list(z.string()),
+    notes: text,
+  })
+  .transform((dto) => ({
+    headline: dto.headline,
+    targetRoles: dto.target_roles,
+    seniority: dto.seniority,
+    employmentTypes: dto.employment_types,
+    workplaces: dto.workplaces,
+    targetCountries: dto.target_countries,
+    targetCities: dto.target_cities,
+    skills: dto.skills,
+    yearsExperience: dto.years_experience,
+    salaryMin: dto.salary_min,
+    salaryCurrency: dto.salary_currency,
+    companies: dto.companies,
+    excludedKeywords: dto.excluded_keywords,
+    notes: dto.notes,
+  }));
+export type JobBrief = z.infer<typeof jobBriefDtoSchema>;
+
+export const jobBriefFormSchema = z
+  .object({
+    headline: z.string().trim().max(200),
+    targetRoles: tags(50).min(1, 'Add at least one role'),
+    seniority: z.array(z.enum(enumValues(seniorityOptions))),
+    employmentTypes: z.array(z.enum(enumValues(employmentTypeOptions))),
+    workplaces: z.array(z.enum(enumValues(workplaceOptions))),
+    targetCountries: countries,
+    targetCities: tags(50),
+    skills: tags(100),
+    yearsExperience: z.preprocess(
+      (v) => (v === '' || v === undefined ? null : v),
+      z.number().int().min(0).max(60).nullable()
+    ),
+    salaryMin: amount,
+    salaryCurrency: z
+      .string()
+      .trim()
+      .regex(/^[A-Za-z]{3}$/, 'Use a 3-letter code, e.g. KES'),
+    companies: z
+      .array(z.string().trim().min(1).max(300))
+      .max(50, 'Follow up to 50 companies'),
+    excludedKeywords: tags(100),
+    notes: longText,
+  })
+  .partial();
+export type JobBriefForm = z.infer<typeof jobBriefFormSchema>;
+export type JobBriefFormInput = z.input<typeof jobBriefFormSchema>;
+export const jobBriefFormResolver = zodResolver(jobBriefFormSchema);
+
+export const toJobBriefWrite = (form: JobBriefForm) => toWrite(form);

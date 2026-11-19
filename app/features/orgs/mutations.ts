@@ -24,11 +24,16 @@ import {
   type PreferencesForm,
   clientBriefDtoSchema,
   tenderBriefDtoSchema,
+  jobBriefDtoSchema,
   toClientBriefWrite,
   toTenderBriefWrite,
+  toJobBriefWrite,
   type ClientBrief,
   type ClientBriefForm,
   type TenderBrief,
+  type JobBrief,
+  type JobBriefForm,
+  type CandidateOnboarding,
   type TenderBriefForm,
 } from '~/lib/schema';
 import { agentKeys } from '../agents/query-keys';
@@ -61,6 +66,41 @@ export interface CreateOrgResult {
  * then save its preferences. Only the preferences can fail on their own —
  * reported so the setup checklist picks them up.
  */
+/** A job seeker's own workspace, then their job preferences. */
+export const useCreateCandidateWorkspace = () => {
+  const refresh = useRefreshOrg();
+  return useMutation({
+    mutationFn: async (
+      input: CandidateOnboarding
+    ): Promise<CreateOrgResult> => {
+      const { data } = await apiClient.post('/organizations', {
+        account_type: 'candidate',
+        name: input.name,
+        country: input.country,
+        city: input.city,
+        description: input.description,
+      });
+      const view = orgDtoSchema.parse(data);
+      const failed: string[] = [];
+      await apiClient
+        .patch(
+          `${base(view.id)}/job-brief`,
+          toJobBriefWrite({
+            headline: input.headline,
+            targetRoles: input.targetRoles,
+            seniority: input.seniority as JobBriefForm['seniority'],
+            workplaces: input.workplaces as JobBriefForm['workplaces'],
+            skills: input.skills,
+            yearsExperience: input.yearsExperience,
+          })
+        )
+        .catch(() => failed.push('job preferences'));
+      return { view, failed };
+    },
+    onSuccess: refresh,
+  });
+};
+
 export const useCreateOrg = () => {
   const refresh = useRefreshOrg();
   return useMutation({
@@ -403,6 +443,20 @@ export const useUpdateClientBrief = (orgId: string) => {
         toClientBriefWrite(input)
       );
       return clientBriefDtoSchema.parse(data);
+    },
+    onSuccess: refresh,
+  });
+};
+
+export const useUpdateJobBrief = (orgId: string) => {
+  const refresh = useRefreshOrg();
+  return useMutation({
+    mutationFn: async (input: JobBriefForm): Promise<JobBrief> => {
+      const { data } = await apiClient.patch(
+        `${base(orgId)}/job-brief`,
+        toJobBriefWrite(input)
+      );
+      return jobBriefDtoSchema.parse(data);
     },
     onSuccess: refresh,
   });

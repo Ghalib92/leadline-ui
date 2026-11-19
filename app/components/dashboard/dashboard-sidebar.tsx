@@ -22,13 +22,14 @@ import { Logo } from '~/components/brand/logo';
 import { useAuth } from '~/lib/auth/use-auth';
 import { useLogout } from '~/features/auth';
 import { usePendingInvitations } from '~/features/invitations';
+import { useMyOrgs } from '~/features/orgs';
 import { toastUtils } from '~/lib/utils/toast';
 import { initials } from '~/lib/utils/format';
 import { cn } from '~/lib/utils';
 import { OrgSwitcher } from './org-switcher';
 import { useActiveOrgSlug } from '~/lib/org/use-active-org';
 
-function navFor(slug: string | undefined) {
+function navFor(slug: string | undefined, candidate = false) {
   if (!slug) {
     return [
       {
@@ -45,24 +46,36 @@ function navFor(slug: string | undefined) {
         { to: base, label: 'Overview', icon: Home, end: true },
         {
           to: `${base}/opportunities`,
-          label: 'Opportunities',
+          label: candidate ? 'Jobs' : 'Opportunities',
           icon: Radar,
           end: false,
         },
-        {
-          to: `${base}/calls`,
-          label: 'Call list',
-          icon: PhoneCall,
-          end: false,
-        },
-        { to: `${base}/outreach`, label: 'Outreach', icon: Send, end: false },
+        // A job seeker works alone and calls no clients.
+        ...(candidate
+          ? []
+          : [
+              {
+                to: `${base}/calls`,
+                label: 'Call list',
+                icon: PhoneCall,
+                end: false,
+              },
+              {
+                to: `${base}/outreach`,
+                label: 'Outreach',
+                icon: Send,
+                end: false,
+              },
+            ]),
         {
           to: `${base}/calendar`,
           label: 'Deadlines',
           icon: CalendarDays,
           end: false,
         },
-        { to: `${base}/team`, label: 'Team', icon: Users, end: false },
+        ...(candidate
+          ? []
+          : [{ to: `${base}/team`, label: 'Team', icon: Users, end: false }]),
         {
           to: `${base}/agents`,
           label: 'Workers',
@@ -112,6 +125,8 @@ export function DashboardSidebar({
   const { user } = useAuth();
   const slug = useActiveOrgSlug();
   const { data: myInvites = [] } = usePendingInvitations();
+  const { data: myOrgs = [] } = useMyOrgs(!!slug);
+  const candidate = !!myOrgs.find((m) => m.org.slug === slug)?.org.isCandidate;
 
   const handleLogout = async () => {
     await logout.mutateAsync('/');
@@ -170,7 +185,7 @@ export function DashboardSidebar({
         </div>
 
         <nav className="flex-1 space-y-4 overflow-y-auto px-3">
-          {navFor(slug).map((group) => (
+          {navFor(slug, candidate).map((group) => (
             <div key={group.heading} className="space-y-1">
               <p className="px-2 py-2 text-xs font-medium text-sidebar-foreground/60">
                 {group.heading}

@@ -74,7 +74,9 @@ export function StepFocus() {
 export function StepPreferences() {
   const { control } = useFormContext<OnboardingForm>();
   const goals = useWatch({ control, name: 'goals' }) ?? [];
-  const sections = goalSections.filter((s) => goals.includes(s.goal));
+  const sections = goalSections.filter((s) =>
+    (goals as string[]).includes(s.goal)
+  );
   useValidateFields(sections.flatMap((s) => s.fields));
   return (
     <div className="space-y-8">

@@ -139,7 +139,9 @@ export function DocumentsTab({ editing, setEditing }: Readonly<EditingProps>) {
       {!folder && (
         <UploadSheet
           open={canEdit && editing === 'upload'}
-          folderId=""
+          // From the folder list (or the setup checklist): the first folder, so a
+          // new workspace with one folder uploads straight away.
+          folderId={folders[0]?.id ?? ''}
           folders={folders}
           onClose={() => setEditing(null)}
         />
@@ -466,6 +468,14 @@ function UploadSheet({
     clear();
     setProgress(null);
   });
+  // The folders may arrive after the sheet opened: take the default then.
+  const fillFolder = useEffectEvent(() => {
+    if (folderId && !form.getValues('folderId'))
+      form.setValue('folderId', folderId);
+  });
+  useEffect(() => {
+    fillFolder();
+  }, [folderId]);
   useEffect(() => {
     if (open) onOpened();
   }, [open]);

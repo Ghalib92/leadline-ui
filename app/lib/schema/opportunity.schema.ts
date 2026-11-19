@@ -132,6 +132,20 @@ export const opportunitySchema = z.object({
       source: z.string(),
     })
     .optional(),
+  /** Jobs from a company's career page: the posting's own facts. */
+  job: z
+    .object({
+      company: z.string(),
+      location: z.string(),
+      workplace: z.string(),
+      employmentType: z.string(),
+      department: z.string(),
+      salary: z.string(),
+      posted: z.string(),
+      url: z.string(),
+      applyUrl: z.string(),
+    })
+    .optional(),
   /** Backend: what to check before applying, from the verifier and judge. */
   concerns: z.array(z.string()).optional(),
   requirementItems: z.array(z.string()).optional(),

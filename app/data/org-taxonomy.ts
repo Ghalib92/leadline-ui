@@ -39,7 +39,17 @@ export const goalOptions = [
     label: 'Grants & funding',
     description: 'Grants, fellowships, awards, investment and partnerships',
   },
+  {
+    value: 'jobs',
+    label: 'Jobs',
+    description: 'Jobs that fit your CV, from career pages and job boards',
+  },
 ] as const satisfies readonly (Option & { description: string })[];
+
+/** What an organization can look for (a job seeker's workspace looks for jobs). */
+export const organizationGoalOptions = goalOptions.filter(
+  (goal) => goal.value !== 'jobs'
+);
 
 // ---- Clients brief (who you sell to) and tenders brief (what you bid for) ----
 
@@ -118,6 +128,30 @@ export const buyerTypes = [
   { value: 'ngo', label: 'Local NGOs' },
   { value: 'education', label: 'Universities & schools' },
   { value: 'private', label: 'Private companies' },
+] as const satisfies readonly Option[];
+
+// ---- Job preferences (job seekers) ----------------------------------------------
+
+export const seniorityOptions = [
+  { value: 'intern', label: 'Internship or attachment' },
+  { value: 'entry', label: 'Entry level / graduate' },
+  { value: 'mid', label: 'Mid level' },
+  { value: 'senior', label: 'Senior' },
+  { value: 'lead', label: 'Lead or manager' },
+  { value: 'executive', label: 'Director or executive' },
+] as const satisfies readonly Option[];
+
+export const employmentTypeOptions = [
+  { value: 'full_time', label: 'Full-time' },
+  { value: 'part_time', label: 'Part-time' },
+  { value: 'contract', label: 'Contract or freelance' },
+  { value: 'internship', label: 'Internship' },
+] as const satisfies readonly Option[];
+
+export const workplaceOptions = [
+  { value: 'remote', label: 'Remote' },
+  { value: 'hybrid', label: 'Hybrid' },
+  { value: 'onsite', label: 'On-site' },
 ] as const satisfies readonly Option[];
 
 export const tenderEligibilityOptions = [
@@ -321,6 +355,7 @@ const feedTypeOf: Record<string, OpportunityType> = {
   award: 'event',
   competition: 'event',
   client: 'client',
+  job: 'job',
 };
 
 export function toFeedTypes(kinds: readonly string[]): OpportunityType[] {

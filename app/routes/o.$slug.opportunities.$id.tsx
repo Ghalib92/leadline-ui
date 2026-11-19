@@ -11,6 +11,7 @@ import {
 import { ProposalCard } from '~/components/opportunity/proposal-card';
 import { BriefCard } from '~/components/opportunity/brief-card';
 import { TenderCard } from '~/components/opportunity/tender-card';
+import { JobCard } from '~/components/opportunity/job-card';
 import { BusinessCard } from '~/components/opportunity/business-card';
 import { ContactsPanel } from '~/components/opportunity/contacts-panel';
 import { PitchCard } from '~/components/opportunity/pitch-card';
@@ -67,7 +68,7 @@ function Fact({
 
 export default function OpportunityDetailPage() {
   const { id = '' } = useParams();
-  const { org, can } = useOrg();
+  const { org, can, view } = useOrg();
   const path = useOrgPath();
   const { data: opp, isPending } = useOpportunity(org.id, id);
   const update = useUpdateOpportunity(org.id);
@@ -127,11 +128,15 @@ export default function OpportunityDetailPage() {
 
   // A client lead (a business) shows its listing instead of a call's brief.
   const lead = opp.type === 'client' ? opp.business : undefined;
+  const isJob = opp.type === 'job';
 
   return (
     <Page>
       <PageHeader
-        back={{ to: path('/opportunities'), label: 'Opportunities' }}
+        back={{
+          to: path('/opportunities'),
+          label: view.isCandidate ? 'Jobs' : 'Opportunities',
+        }}
         title={opp.title}
         meta={
           <>
@@ -224,15 +229,18 @@ export default function OpportunityDetailPage() {
               </AppCard>
 
               {opp.tender && <TenderCard tender={opp.tender} />}
+              {opp.job && <JobCard job={opp.job} />}
 
-              <BriefCard orgId={org.id} opp={opp} />
-
-              <ProposalCard orgId={org.id} opp={opp} />
+              {/* A job is judged against the CV; it gets no call brief or proposal. */}
+              {!isJob && <BriefCard orgId={org.id} opp={opp} />}
+              {!isJob && <ProposalCard orgId={org.id} opp={opp} />}
             </>
           )}
 
           {(opp.concerns?.length ?? 0) > 0 && (
-            <AppCard title="Check before applying">
+            <AppCard
+              title={isJob ? 'Gaps to address' : 'Check before applying'}
+            >
               <ul className="space-y-1.5 text-sm">
                 {opp.concerns?.map((concern) => (
                   <li key={concern} className="flex gap-2">
@@ -264,7 +272,7 @@ export default function OpportunityDetailPage() {
           </AppCard>
 
           {/* Funder contacts; a lead's contacts are on its business card. */}
-          {!lead && <ContactsPanel orgId={org.id} opp={opp} />}
+          {!lead && !isJob && <ContactsPanel orgId={org.id} opp={opp} />}
           <ReviewHistory orgId={org.id} oppId={opp.id} />
 
           <AppCard title="Notes">
@@ -285,7 +293,9 @@ export default function OpportunityDetailPage() {
                         ? 'Who to ask for, best time to call, what they said…'
                         : opp.type === 'tender'
                           ? 'Owner, next steps, questions for the buyer…'
-                          : 'Owner, next steps, questions for the funder…'
+                          : opp.type === 'job'
+                            ? 'Who referred you, when you applied, interview notes…'
+                            : 'Owner, next steps, questions for the funder…'
                     }
                   />
                   <Button
@@ -303,13 +313,13 @@ export default function OpportunityDetailPage() {
 
         <AppCard className="h-fit">
           <dl className="space-y-4">
-            {!lead && (
-              <>
-                <Fact label="Amount">{formatAmount(opp.amount)}</Fact>
-                <Fact label="Deadline">
-                  <DeadlineBadge deadline={opp.deadline} type={opp.type} />
-                </Fact>
-              </>
+            {!lead && !isJob && (
+              <Fact label="Amount">{formatAmount(opp.amount)}</Fact>
+            )}
+            {!lead && (!isJob || opp.deadline) && (
+              <Fact label={isJob ? 'Apply by' : 'Deadline'}>
+                <DeadlineBadge deadline={opp.deadline} type={opp.type} />
+              </Fact>
             )}
             {opp.location && <Fact label="Location">{opp.location}</Fact>}
             <Fact label="Source">{opp.sourceName}</Fact>

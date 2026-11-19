@@ -41,6 +41,12 @@ const GOAL_HINTS: Record<
     brief:
       'e.g. Only software and systems, not hardware supply; skip tenders reserved for AGPO groups we are not in.',
   },
+  jobs: {
+    name: 'Backend developer jobs',
+    description: 'Python and Django roles, remote or in Nairobi',
+    brief:
+      'e.g. Prefer product companies; skip roles that need a security clearance or relocation.',
+  },
   grants: {
     name: 'Health grants in East Africa',
     description: 'What this worker looks for, in a sentence',

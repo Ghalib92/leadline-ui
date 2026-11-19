@@ -21,6 +21,7 @@ import { AgentFormSheet } from '~/components/org/agent-form-sheet';
 import { PreferencesTab } from '~/components/org/settings/profile-tabs';
 import {
   ClientBriefTab,
+  JobBriefTab,
   TenderBriefTab,
 } from '~/components/org/settings/brief-tabs';
 import type { Goal } from '~/lib/schema';
@@ -80,6 +81,11 @@ export default function AgentsPage() {
   const inPlay = (goal: Goal) =>
     picked.length ? picked.includes(goal) : goal === 'grants';
   const briefTabs = [
+    inPlay('jobs') && {
+      value: 'jobs',
+      label: 'Job preferences',
+      content: <JobBriefTab {...editingProps} />,
+    },
     inPlay('clients') && {
       value: 'clients',
       label: 'Clients brief',
@@ -147,7 +153,11 @@ export default function AgentsPage() {
     <Page>
       <PageHeader
         title="Workers"
-        description="Searches that run for you. Each uses your organization's search preferences, plus anything you add to it."
+        description={
+          view.isCandidate
+            ? 'Searches that run for you. Each uses your job preferences, plus anything you add to it.'
+            : "Searches that run for you. Each uses your organization's search preferences, plus anything you add to it."
+        }
         actions={
           tab === 'workers' && can('agents.create') ? (
             <Button onClick={() => updateParams({ new: '1' })}>

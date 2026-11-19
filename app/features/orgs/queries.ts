@@ -30,8 +30,10 @@ import {
   type SetupStatus,
   clientBriefDtoSchema,
   tenderBriefDtoSchema,
+  jobBriefDtoSchema,
   type ClientBrief,
   type TenderBrief,
+  type JobBrief,
 } from '~/lib/schema';
 import { collectPages, findBySlug } from './map';
 import { orgKeys, type DocumentFilters } from './query-keys';
@@ -212,6 +214,17 @@ export const useClientBrief = (orgId: string, enabled = true) =>
     queryFn: async (): Promise<ClientBrief> => {
       const { data } = await apiClient.get(orgApi(orgId, '/client-brief'));
       return clientBriefDtoSchema.parse(data);
+    },
+    enabled: !!orgId && enabled,
+  });
+
+/** What a job seeker looks for (their Jobs workers' brief). */
+export const useJobBrief = (orgId: string, enabled = true) =>
+  useQuery({
+    queryKey: orgKeys.jobBrief(orgId),
+    queryFn: async (): Promise<JobBrief> => {
+      const { data } = await apiClient.get(orgApi(orgId, '/job-brief'));
+      return jobBriefDtoSchema.parse(data);
     },
     enabled: !!orgId && enabled,
   });
