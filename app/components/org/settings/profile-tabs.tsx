@@ -353,7 +353,7 @@ export function PreferencesTab({
           open
           onClose={() => setEditing(null)}
           title="Edit preferences"
-          description="Changes apply to your agents’ next runs."
+          description="Changes apply from your next search."
           fields={preferenceFields}
           required={['opportunityTypes', 'geographicScopes']}
           resolver={preferencesFormResolver}

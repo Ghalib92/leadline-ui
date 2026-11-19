@@ -224,8 +224,8 @@ function OrganizationOnboarding({ onBack }: Readonly<{ onBack: () => void }>) {
         Set up your organization
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Tell us who you are and what you’re after. Your agents use this to find
-        and rank opportunities.
+        Tell us who you are and what you’re after. Leadline uses this to find
+        and rank opportunities for you.
       </p>
       <Form {...form}>
         <MultiStepForm

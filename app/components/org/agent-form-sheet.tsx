@@ -148,7 +148,7 @@ export function AgentFormSheet({
             Cancel
           </Button>
           <Button type="submit" form="agent-form" disabled={create.isPending}>
-            Create worker
+            Create search
           </Button>
         </>
       }

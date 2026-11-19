@@ -9,6 +9,7 @@ import { Button } from '~/components/ui/button';
 import { Form } from '~/components/ui/form';
 import { AppSheet } from '~/components/composed';
 import { FormPickerField, FormTagInputField } from '~/components/form-fields';
+import { EMAIL_SEPARATORS } from '~/components/ui/tag-input';
 
 const ROLE_OPTIONS = [
   {
@@ -90,7 +91,8 @@ export function InviteSheet({
             control={form.control}
             name="emails"
             label="Email addresses"
-            placeholder="name@organization.org, then Enter"
+            placeholder="name@company.com — add several with commas or spaces"
+            separators={EMAIL_SEPARATORS}
             maxTags={20}
             required
           />

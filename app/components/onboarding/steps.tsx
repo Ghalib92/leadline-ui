@@ -2,6 +2,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import type { Goal, OnboardingForm } from '~/lib/schema';
 import { useStepValidator } from '~/components/ui/multi-step-form';
 import { FormPickerField, FormTagInputField } from '~/components/form-fields';
+import { EMAIL_SEPARATORS } from '~/components/ui/tag-input';
 import { OrgFields } from '~/components/org/org-profile-fields';
 
 /**
@@ -102,7 +103,8 @@ export function StepTeam() {
         control={control}
         name="inviteEmails"
         label="Invite teammates by email"
-        placeholder="name@organization.org, then Enter"
+        placeholder="name@company.com — add several with commas or spaces"
+        separators={EMAIL_SEPARATORS}
         maxTags={20}
       />
       <FormPickerField

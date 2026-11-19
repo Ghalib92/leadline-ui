@@ -58,7 +58,7 @@ export function LoginForm() {
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
         <p className="text-sm text-muted-foreground">
-          Sign in to see what your agents found.
+          Sign in to see what Leadline found for you.
         </p>
       </div>
       <Form {...form}>

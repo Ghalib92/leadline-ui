@@ -4,6 +4,9 @@ import { Input } from '~/components/ui/input';
 import { Badge } from '~/components/ui/badge';
 import { cn } from '~/lib/utils';
 
+/** Separators for lists of email addresses: commas, semicolons or spaces. */
+export const EMAIL_SEPARATORS = /[\s,;]+/;
+
 export interface TagInputProps {
   /** Current tags */
   value?: string[];
@@ -17,6 +20,9 @@ export interface TagInputProps {
   maxTagLength?: number;
   /** Whether the input is disabled */
   disabled?: boolean;
+  /** What separates tags when typed or pasted (default: commas). Email lists also
+   * split on spaces and semicolons. */
+  separators?: RegExp;
   /** Custom class for the root container */
   className?: string;
   /** Badge variant for tags */
@@ -32,12 +38,13 @@ export function TagInput({
   disabled = false,
   className,
   variant = 'secondary',
+  separators = /,/,
 }: Readonly<TagInputProps>) {
   const [input, setInput] = useState('');
 
   const addTags = (raw: string) => {
     const candidates = raw
-      .split(',')
+      .split(separators)
       .map((s) => s.trim().slice(0, maxTagLength))
       .filter(Boolean);
     if (candidates.length === 0) return;
@@ -60,7 +67,7 @@ export function TagInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',') {
+    if (e.key === 'Enter' || (e.key.length === 1 && separators.test(e.key))) {
       e.preventDefault();
       addTags(input);
     }
@@ -71,7 +78,7 @@ export function TagInput({
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const pasted = e.clipboardData.getData('text');
-    if (pasted.includes(',')) {
+    if (separators.test(pasted.trim())) {
       e.preventDefault();
       addTags(pasted);
     }
@@ -84,6 +91,9 @@ export function TagInput({
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
+        // Typed text counts even without Enter: leaving the box (e.g. to click
+        // Invite or Next) adds it, so nothing typed is silently dropped.
+        onBlur={() => addTags(input)}
         placeholder={placeholder}
         disabled={disabled || (maxTags != null && value.length >= maxTags)}
       />

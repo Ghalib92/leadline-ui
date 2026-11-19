@@ -17,7 +17,7 @@ import { Page } from '~/components/dashboard/page';
 export function meta() {
   return generateSEOTags({
     title: 'Profile & documents | Leadline',
-    description: 'Your organization profile and what your agents look for.',
+    description: 'Your profile, documents and what Leadline looks for.',
     url: '/app',
     noIndex: true,
   });
