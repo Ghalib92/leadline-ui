@@ -312,7 +312,7 @@ const fieldRenderers: Record<string, Render> = {
       name="goals"
       placeholder="Clients, tenders, grants…"
       label="What do you want to find?"
-      description="Each worker you set up looks for one of these."
+      description="Each search you set up looks for one of these."
       options={organizationGoalOptions}
       searchable={false}
       required={r}
@@ -323,7 +323,7 @@ const fieldRenderers: Record<string, Render> = {
     <FormPickerField
       control={c}
       name="opportunityTypes"
-      placeholder="What should agents look for?"
+      placeholder="What should Leadline look for?"
       label="Opportunity types"
       options={opportunityKinds}
       required={r}
@@ -478,7 +478,7 @@ const fieldRenderers: Record<string, Render> = {
       name="additionalContext"
       autoComplete="off"
       placeholder="Priorities, constraints, timing…"
-      label="Anything else agents should know"
+      label="Anything else Leadline should know"
       rows={3}
     />
   ),

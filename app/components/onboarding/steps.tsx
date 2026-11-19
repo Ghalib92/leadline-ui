@@ -33,7 +33,7 @@ const goalSections: {
   {
     goal: 'clients',
     title: 'Your clients',
-    hint: 'What you sell and who buys it. Your workers look for businesses like these.',
+    hint: 'What you sell and who buys it. Leadline looks for businesses like these.',
     fields: ['services', 'customerTypes', 'targetCities'],
     required: ['services', 'customerTypes'],
   },
@@ -63,7 +63,7 @@ export function StepFocus() {
   return (
     <div className="space-y-2">
       <p className="text-sm text-muted-foreground">
-        Agents read this to judge whether an opportunity fits. A mission or a
+        Leadline reads this to judge whether an opportunity fits. A mission or a
         list of what you offer — or both.
       </p>
       <OrgFields names={focusFields} required={['sectors']} />

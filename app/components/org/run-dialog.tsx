@@ -61,7 +61,7 @@ export function RunDialog({
         open={open && !configuring}
         onOpenChange={(next) => !next && close()}
         title="Search for opportunities"
-        description="Use your search settings, or change them for this run only."
+        description="Use your search settings, or change them for this search only."
         footer={
           <>
             <Button
@@ -87,7 +87,7 @@ export function RunDialog({
         onOpenChange={(next) => !next && close()}
         dismissible={false}
         title="Configure this search"
-        description="These choices apply to this run only."
+        description="These choices apply to this search only."
         footer={
           <>
             <Button variant="outline" onClick={() => setConfiguring(false)}>

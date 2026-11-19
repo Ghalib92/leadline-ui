@@ -29,9 +29,9 @@ import { EmptyState, Page, PageLoader } from '~/components/dashboard/page';
 
 export function meta() {
   return generateSEOTags({
-    title: 'Workers | Leadline',
+    title: 'Searches | Leadline',
     description:
-      'AI workers that search for opportunities and the organization preferences that guide them.',
+      'Your searches for opportunities, and what each one looks for.',
     url: '/app',
     noIndex: true,
   });
@@ -88,12 +88,12 @@ export default function AgentsPage() {
     },
     inPlay('clients') && {
       value: 'clients',
-      label: 'Clients brief',
+      label: 'What you sell',
       content: <ClientBriefTab {...editingProps} />,
     },
     inPlay('tenders') && {
       value: 'tenders',
-      label: 'Tenders brief',
+      label: 'Tenders you want',
       content: <TenderBriefTab {...editingProps} />,
     },
     inPlay('grants') && {
@@ -152,7 +152,7 @@ export default function AgentsPage() {
   return (
     <Page>
       <PageHeader
-        title="Workers"
+        title="Searches"
         description={
           view.isCandidate
             ? 'Searches that run for you. Each uses your job preferences, plus anything you add to it.'
@@ -161,7 +161,7 @@ export default function AgentsPage() {
         actions={
           tab === 'workers' && can('agents.create') ? (
             <Button onClick={() => updateParams({ new: '1' })}>
-              <Plus className="h-4 w-4" /> New worker
+              <Plus className="h-4 w-4" /> New search
             </Button>
           ) : undefined
         }
@@ -174,14 +174,14 @@ export default function AgentsPage() {
         tabs={[
           {
             value: 'workers',
-            label: `Workers (${agents.length})`,
+            label: `Searches (${agents.length})`,
             content: (
               <>
                 {isPending ? (
                   <PageLoader />
                 ) : agents.length === 0 ? (
                   <EmptyState
-                    title="No workers yet"
+                    title="No searches yet"
                     description="Create one to repeat a search or run it on a schedule."
                     action={
                       can('agents.create') && (
@@ -189,7 +189,7 @@ export default function AgentsPage() {
                           size="sm"
                           onClick={() => updateParams({ new: '1' })}
                         >
-                          <Plus className="h-4 w-4" /> New worker
+                          <Plus className="h-4 w-4" /> New search
                         </Button>
                       )
                     }

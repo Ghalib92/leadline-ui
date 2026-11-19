@@ -66,13 +66,13 @@ export function RunSettingsUsed({ run }: Readonly<{ run: AgentRun }>) {
             to={path(`/agents/${run.agentId}?tab=settings`)}
             className="hidden text-sm font-medium text-primary hover:underline sm:inline"
           >
-            Worker settings
+            Search settings
           </Link>
         )}
       </summary>
       <div className="space-y-4 border-t border-border px-5 py-4">
         <p className="text-xs text-muted-foreground">
-          Grey comes from your organization, blue from the worker, amber was
+          Grey comes from your organization, blue from the search, amber was
           chosen for this run only.
         </p>
         <dl className="divide-y divide-border">
@@ -148,7 +148,7 @@ export function RunSettingsUsed({ run }: Readonly<{ run: AgentRun }>) {
             to={path(`/agents/${run.agentId}?tab=settings`)}
             className="inline-block text-sm font-medium text-primary hover:underline sm:hidden"
           >
-            Worker settings
+            Search settings
           </Link>
         )}
       </div>

@@ -8,6 +8,7 @@ import { writeLastOrg } from '~/lib/org/last-org';
 import { toastUtils } from '~/lib/utils/toast';
 import { Button } from '~/components/ui/button';
 import { PageLoader } from '~/components/dashboard/page';
+import { FirstRunTour } from '~/components/onboarding/first-run-tour';
 
 /**
  * Resolves the org client-side from my orgs list (React Query), so switching
@@ -76,6 +77,7 @@ export default function OrgLayout() {
         </div>
       )}
       <Outlet />
+      <FirstRunTour />
     </OrgProvider>
   );
 }

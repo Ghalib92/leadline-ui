@@ -11,7 +11,7 @@ import { EmptyState, Page } from '~/components/dashboard/page';
 
 export function meta() {
   return generateSEOTags({
-    title: 'Integrations | Leadline',
+    title: 'Connected apps | Leadline',
     description: 'Send matches and deadlines to the tools your team uses.',
     url: '/app',
     noIndex: true,
@@ -77,8 +77,8 @@ export default function IntegrationsPage() {
   return (
     <Page>
       <PageHeader
-        title="Integrations"
-        description="Coming soon: send matches, deadlines and pipeline updates to the tools your team already uses. Agents find opportunities without any of these."
+        title="Connected apps"
+        description="Coming soon: send matches and deadlines to the apps your team already uses. Leadline works fine without them."
       />
 
       <div className="mb-6 flex flex-col gap-3 border-b border-border pb-4 md:flex-row md:items-center md:justify-between">

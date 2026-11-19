@@ -51,7 +51,7 @@ function describe(item: AttentionItem, path: (to: string) => string) {
     },
     failed_runs: {
       icon: AlertTriangle,
-      text: `${plural(n, 'worker run', 'worker runs')} failed or had warnings this week`,
+      text: `${plural(n, 'search', 'searches')} failed or had warnings this week`,
       action: 'See the latest',
       to: item.target ? path(`/runs/${item.target}`) : path('/runs'),
       tone: 'text-amber-600',
@@ -143,7 +143,7 @@ export function AutomationsPanel({ orgId }: Readonly<{ orgId: string }>) {
   const shown = agents.slice(0, 5);
   return (
     <AppCard
-      title="Workers"
+      title="Searches"
       actions={
         <Link
           to={path('/agents')}
@@ -155,7 +155,7 @@ export function AutomationsPanel({ orgId }: Readonly<{ orgId: string }>) {
     >
       {shown.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          No workers yet.{' '}
+          No searches yet.{' '}
           <Link
             to={path('/agents?new=1')}
             className="font-medium text-primary hover:underline"

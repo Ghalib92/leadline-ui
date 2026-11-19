@@ -59,7 +59,7 @@ export function ReviewActions({
         onSuccess: () => {
           setRejecting(false);
           form.reset();
-          toastUtils.success('Rejected', 'Your reason will guide the agents.');
+          toastUtils.success('Rejected', 'Leadline learns from your reason.');
         },
         onError: (error) =>
           toastUtils.error('Could not reject', extractError(error)),

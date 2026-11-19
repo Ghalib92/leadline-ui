@@ -26,13 +26,13 @@ export function SetupChecklist() {
       title={`Finish setting up (${setup.completed}/${setup.total})`}
       description={
         setup.readyForMatching
-          ? 'Ready for matching. The optional steps sharpen what agents find.'
-          : 'Complete the required steps so agents can start matching.'
+          ? 'Ready to search. The optional steps make the matches better.'
+          : 'Finish the required steps so Leadline can start searching.'
       }
       actions={
         setup.readyForMatching && (
           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-            <Sparkles className="h-3 w-3" /> Ready for matching
+            <Sparkles className="h-3 w-3" /> Ready to search
           </span>
         )
       }

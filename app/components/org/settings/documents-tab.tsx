@@ -117,7 +117,7 @@ export function DocumentsTab({ editing, setEditing }: Readonly<EditingProps>) {
       ) : (
         <AppCard
           title="Documents"
-          description="Folders of profiles, reports and past proposals — context your agents can draw on."
+          description="Folders of profiles, reports and past proposals that Leadline reads."
           actions={
             canEdit && (
               <Button

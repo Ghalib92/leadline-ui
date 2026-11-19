@@ -27,8 +27,8 @@ import { PageHeader } from '~/components/dashboard/page-header';
 
 export function meta() {
   return generateSEOTags({
-    title: 'Worker | Leadline',
-    description: 'One worker: its runs, what it found and its settings.',
+    title: 'Search | Leadline',
+    description: 'One search: when it ran, what it found and its settings.',
     url: '/app',
     noIndex: true,
   });
@@ -68,11 +68,11 @@ export default function AgentPage() {
     return (
       <Page width="narrow">
         <EmptyState
-          title="This worker doesn't exist"
+          title="This search doesn't exist"
           description="It may have been deleted."
           action={
             <Button asChild variant="outline">
-              <Link to={path('/agents')}>Back to workers</Link>
+              <Link to={path('/agents')}>Back to searches</Link>
             </Button>
           }
         />
@@ -105,13 +105,13 @@ export default function AgentPage() {
     const ok = await confirm({
       title: `Delete ${agent.name}?`,
       description: 'Opportunities it already found are kept.',
-      confirmLabel: 'Delete worker',
+      confirmLabel: 'Delete search',
       destructive: true,
     });
     if (!ok) return;
     remove.mutate(agent.id, {
       onSuccess: () => {
-        toastUtils.success('Worker deleted');
+        toastUtils.success('Search deleted');
         navigate(path('/agents'));
       },
       onError: (error) =>
@@ -122,7 +122,7 @@ export default function AgentPage() {
   return (
     <Page>
       <PageHeader
-        back={{ to: path('/agents'), label: 'Workers' }}
+        back={{ to: path('/agents'), label: 'Searches' }}
         title={agent.name}
         meta={
           <>
@@ -161,7 +161,7 @@ export default function AgentPage() {
                 label="More actions"
                 items={[
                   {
-                    label: 'Delete worker',
+                    label: 'Delete search',
                     icon: Trash2,
                     destructive: true,
                     onSelect: onDelete,

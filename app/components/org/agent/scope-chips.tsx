@@ -3,8 +3,8 @@ import { cn } from '~/lib/utils';
 
 const chipTitle = {
   organization: 'From your organization',
-  agent: 'Added by this worker',
-  run: 'Chosen for this run only',
+  agent: 'Added by this search',
+  run: 'Chosen for this search only',
 } as const;
 
 /** Chips: the organization's in grey, the automation's in the brand color,

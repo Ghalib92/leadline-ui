@@ -40,56 +40,29 @@ function navFor(slug: string | undefined, candidate = false) {
     ];
   }
   const base = `/o/${slug}`;
+  // In the order people use Leadline: set up searches, see what they found, act on
+  // it, then settings. Plain words: users shouldn't need our vocabulary.
   return [
     {
-      heading: 'Workspace',
+      heading: '',
+      items: [{ to: base, label: 'Home', icon: Home, end: true }],
+    },
+    {
+      heading: 'Find',
       items: [
-        { to: base, label: 'Overview', icon: Home, end: true },
+        {
+          to: `${base}/agents`,
+          label: 'Searches',
+          icon: Bot,
+          end: false,
+          tour: 'searches',
+        },
         {
           to: `${base}/opportunities`,
           label: candidate ? 'Jobs' : 'Opportunities',
           icon: Radar,
           end: false,
-        },
-        // A job seeker works alone and calls no clients; the same list tracks
-        // their applications.
-        ...(candidate
-          ? [
-              {
-                to: `${base}/calls`,
-                label: 'Applications',
-                icon: ClipboardList,
-                end: false,
-              },
-            ]
-          : [
-              {
-                to: `${base}/calls`,
-                label: 'Call list',
-                icon: PhoneCall,
-                end: false,
-              },
-              {
-                to: `${base}/outreach`,
-                label: 'Outreach',
-                icon: Send,
-                end: false,
-              },
-            ]),
-        {
-          to: `${base}/calendar`,
-          label: 'Deadlines',
-          icon: CalendarDays,
-          end: false,
-        },
-        ...(candidate
-          ? []
-          : [{ to: `${base}/team`, label: 'Team', icon: Users, end: false }]),
-        {
-          to: `${base}/agents`,
-          label: 'Workers',
-          icon: Bot,
-          end: false,
+          tour: 'opportunities',
         },
         {
           to: `${base}/runs`,
@@ -100,17 +73,61 @@ function navFor(slug: string | undefined, candidate = false) {
       ],
     },
     {
+      heading: 'Follow up',
+      items: [
+        // A job seeker works alone and calls no clients; the same list tracks
+        // their applications.
+        ...(candidate
+          ? [
+              {
+                to: `${base}/calls`,
+                label: 'Applications',
+                icon: ClipboardList,
+                end: false,
+                tour: 'follow-up',
+              },
+            ]
+          : [
+              {
+                to: `${base}/calls`,
+                label: 'Call list',
+                icon: PhoneCall,
+                end: false,
+                tour: 'follow-up',
+              },
+              {
+                to: `${base}/outreach`,
+                label: 'Funder emails',
+                icon: Send,
+                end: false,
+                tour: 'follow-up',
+              },
+            ]),
+        {
+          to: `${base}/calendar`,
+          label: 'Deadlines',
+          icon: CalendarDays,
+          end: false,
+          tour: 'follow-up',
+        },
+      ],
+    },
+    {
       heading: 'Settings',
       items: [
         {
           to: `${base}/settings/general`,
-          label: 'General',
+          label: candidate ? 'Profile & CV' : 'Profile & documents',
           icon: Building2,
           end: false,
+          tour: 'profile',
         },
+        ...(candidate
+          ? []
+          : [{ to: `${base}/team`, label: 'Team', icon: Users, end: false }]),
         {
           to: `${base}/settings/integrations`,
-          label: 'Integrations',
+          label: 'Connected apps',
           icon: Plug,
           end: false,
         },
@@ -195,16 +212,19 @@ export function DashboardSidebar({
 
         <nav className="flex-1 space-y-4 overflow-y-auto px-3">
           {navFor(slug, candidate).map((group) => (
-            <div key={group.heading} className="space-y-1">
-              <p className="px-2 py-2 text-xs font-medium text-sidebar-foreground/60">
-                {group.heading}
-              </p>
+            <div key={group.heading || 'home'} className="space-y-1">
+              {group.heading && (
+                <p className="px-2 py-2 text-xs font-medium text-sidebar-foreground/60">
+                  {group.heading}
+                </p>
+              )}
               {group.items.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   end={item.end}
                   onClick={onClose}
+                  data-tour={'tour' in item ? item.tour : undefined}
                   className={({ isActive }) =>
                     cn(
                       'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',

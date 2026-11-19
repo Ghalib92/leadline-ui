@@ -144,7 +144,7 @@ export function ProfileTab({ editing, setEditing }: Readonly<EditingProps>) {
     <div className="space-y-4">
       <AppCard
         title="What you want to find"
-        description="Each worker looks for one of these. Searches cover only what you pick."
+        description="Each search looks for one of these. Leadline looks only for what you pick."
         actions={edit('goals')}
       >
         <dl className="divide-y divide-border">
@@ -203,7 +203,7 @@ export function ProfileTab({ editing, setEditing }: Readonly<EditingProps>) {
 
       <AppCard
         title="About & impact"
-        description="Agents read this to judge whether an opportunity fits."
+        description="Leadline reads this to judge whether an opportunity fits."
         actions={edit('about')}
       >
         <dl className="divide-y divide-border">
@@ -241,7 +241,7 @@ export function ProfileTab({ editing, setEditing }: Readonly<EditingProps>) {
           open
           onClose={() => setEditing(null)}
           title={`Edit ${sheet.title.toLowerCase()}`}
-          description="Agents use the updated profile from their next run."
+          description="Your searches use the updated profile from their next search."
           fields={sheet.fields}
           required={sheet.required}
           resolver={orgProfileFormResolver}
@@ -292,7 +292,7 @@ export function PreferencesTab({
     <>
       <AppCard
         title="What you’re looking for"
-        description="Agents search and score against these."
+        description="Leadline searches and scores against these."
         actions={
           canEdit && <EditButton onClick={() => setEditing('preferences')} />
         }

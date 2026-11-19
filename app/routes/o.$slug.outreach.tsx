@@ -41,7 +41,7 @@ import { EmptyState, Page, PageLoader } from '~/components/dashboard/page';
 
 export function meta() {
   return generateSEOTags({
-    title: 'Outreach | Leadline',
+    title: 'Funder emails | Leadline',
     description: 'Review and approve emails to funders before they are sent.',
     url: '/app',
     noIndex: true,
@@ -79,7 +79,7 @@ export default function OutreachPage() {
   return (
     <Page>
       <PageHeader
-        title="Outreach"
+        title="Funder emails"
         description={
           isAdmin
             ? 'Emails to funders. Nothing is sent until you approve it; replies come to you.'

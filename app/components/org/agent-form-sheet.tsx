@@ -49,7 +49,7 @@ const GOAL_HINTS: Record<
   },
   grants: {
     name: 'Health grants in East Africa',
-    description: 'What this worker looks for, in a sentence',
+    description: 'What this search looks for, in a sentence',
     brief:
       'e.g. Focus on grants supporting climate resilience in East Africa, avoid equity requirements, prefer calls with deadlines at least 30 days away.',
   },
@@ -120,13 +120,13 @@ export function AgentFormSheet({
     try {
       const agent = await create.mutateAsync(input);
       toastUtils.success(
-        'Worker created',
+        'Search created',
         "It uses your organization's search settings. Add to them here."
       );
       onOpenChange(false);
       navigate(path(`/agents/${agent.id}?tab=settings`));
     } catch (error) {
-      toastUtils.error('Could not create the worker', extractError(error));
+      toastUtils.error('Could not create the search', extractError(error));
     }
   };
 
@@ -136,8 +136,8 @@ export function AgentFormSheet({
       onOpenChange={onOpenChange}
       dismissible={false}
       size="lg"
-      title="New worker"
-      description="It searches with your organization's settings. You can add a brief, sources, types, keywords and folders next."
+      title="New search"
+      description="It searches with your organization's settings. You can add instructions, sources, types, keywords and folders next."
       footer={
         <>
           <Button
@@ -188,8 +188,8 @@ export function AgentFormSheet({
           <FormTextareaField
             control={form.control}
             name="instructions"
-            label="Worker brief"
-            description="Specific guidance or focus areas for this worker to follow during searches and evaluation."
+            label="Extra instructions"
+            description="Anything this search should focus on, prefer or avoid."
             placeholder={hints.brief}
             rows={3}
           />
@@ -199,8 +199,8 @@ export function AgentFormSheet({
                 control={form.control}
                 name="customerTypes"
                 label="Kinds of customer"
-                description="Only these, for this worker. Leave empty to use your Clients brief."
-                placeholder="From your Clients brief"
+                description="Only these, for this search. Leave empty to use what you sell (Searches › What you sell)."
+                placeholder="From what you sell"
                 options={businessCategories}
                 multi
                 optionStyle="checkbox"
@@ -208,7 +208,7 @@ export function AgentFormSheet({
               <FormTagInputField
                 control={form.control}
                 name="places"
-                label="Places (empty: your Clients brief's cities)"
+                label="Places (empty: the places in What you sell)"
                 placeholder="e.g. Nairobi, then Enter"
                 maxTags={10}
               />

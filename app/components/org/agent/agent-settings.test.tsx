@@ -71,7 +71,7 @@ describe('automation settings', () => {
     expect(
       screen.getByText('Hotels, lodges & guest houses')
     ).toBeInTheDocument();
-    expect(screen.getByText(/Clients brief's cities/)).toBeInTheDocument();
+    expect(screen.getByText(/The places in What you sell/)).toBeInTheDocument();
     const user = userEvent.setup();
     await user.click(
       screen.getByRole('button', { name: 'Edit customers and places' })
@@ -104,7 +104,7 @@ describe('automation settings', () => {
     );
     expect(within(sources).getByText('Partner calls')).toHaveAttribute(
       'title',
-      'Added by this worker'
+      'Added by this search'
     );
   });
 

@@ -29,7 +29,7 @@ describe('AttentionList', () => {
       })
     ).toHaveAttribute('href', '/o/acme/opportunities?review=pending');
     expect(
-      screen.getByRole('link', { name: /2 worker runs failed/ })
+      screen.getByRole('link', { name: /2 searches failed/ })
     ).toHaveAttribute('href', '/o/acme/runs/run-9');
   });
 

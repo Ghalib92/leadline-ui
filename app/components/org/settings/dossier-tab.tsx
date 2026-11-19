@@ -51,7 +51,7 @@ export function DossierTab({ goToTab }: Readonly<DossierTabProps>) {
     <div className="space-y-4">
       <AppCard
         title="What the AI knows about you"
-        description="A summary the AI wrote from your profile, preferences and documents. Every agent works from it, and it updates when they change."
+        description="A summary the AI wrote from your profile, preferences and documents. Leadline works from it, and it updates when they change."
         actions={actions}
       >
         {isPending ? null : isError || !dossier ? (

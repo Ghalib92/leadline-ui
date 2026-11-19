@@ -283,12 +283,12 @@ function CandidateOnboarding({ onBack }: Readonly<{ onBack: () => void }>) {
         if (failed.length > 0) {
           toastUtils.warning(
             'Your workspace is ready',
-            'Your job preferences didn’t save; add them on the Workers page.'
+            'Your job preferences didn’t save; add them on the Searches page.'
           );
         } else {
           toastUtils.success(
             'You’re all set',
-            'Next: upload your CV, so your workers can score jobs against it.'
+            'Next: upload your CV, so Leadline can score jobs against it.'
           );
         }
         navigate(`/o/${view.slug}`, { replace: true });
@@ -307,7 +307,7 @@ function CandidateOnboarding({ onBack }: Readonly<{ onBack: () => void }>) {
         Set up your job search
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Tell us who you are and what you want. Your workers use this to find and
+        Tell us who you are and what you want. Leadline uses this to find and
         rank jobs.
       </p>
       <Form {...form}>

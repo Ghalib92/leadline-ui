@@ -132,7 +132,7 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
     <>
       <AppCard
         title="Custom sources"
-        description="Portals, grant databases and opportunity feeds your discovery agents will crawl."
+        description="Portals, grant databases and opportunity lists Leadline reads."
         actions={
           canEdit && (
             <Button
@@ -228,7 +228,7 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
         onOpenChange={(next) => !next && setEditing(null)}
         dismissible={false}
         title="Edit source"
-        description="Add a funding portal, grant opportunities page, or RFP feed for discovery agents."
+        description="Add a funding portal, grants page or tender list for Leadline to read."
         footer={
           <>
             <Button variant="outline" onClick={() => setEditing(null)}>
@@ -275,7 +275,7 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
               control={form.control}
               name="enabled"
               label="Active"
-              description="Include this source in automated discovery runs."
+              description="Read this source in every search."
             />
           </form>
         </Form>
@@ -352,7 +352,7 @@ function AddSourcesSheet({
       dismissible={!form.formState.isDirty}
       size="lg"
       title="Add sources"
-      description="Funding portals, grant pages or RFP feeds for your workers to read. Add as many as you like."
+      description="Funding portals, grant pages or tender lists for Leadline to read. Add as many as you like."
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
@@ -428,7 +428,7 @@ function AddSourcesSheet({
                 control={form.control}
                 name={`sources.${index}.enabled`}
                 label="Active"
-                description="Include this source in automated discovery runs."
+                description="Read this source in every search."
               />
             </fieldset>
           ))}

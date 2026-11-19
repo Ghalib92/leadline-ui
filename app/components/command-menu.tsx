@@ -21,8 +21,10 @@ import {
   User,
   Users,
   type LucideIcon,
+  Compass,
 } from 'lucide-react';
 import { useActiveOrgSlug } from '~/lib/org/use-active-org';
+import { startTour } from '~/components/onboarding/first-run-tour';
 import { useMyOrgs } from '~/features/orgs';
 import { useAgents } from '~/features/agents';
 import {
@@ -69,10 +71,10 @@ interface Entry {
 /** Org pages, in sidebar order. */
 const orgPages: Entry[] = [
   {
-    label: 'Overview',
+    label: 'Home',
     to: '',
     icon: LayoutDashboard,
-    keywords: ['home', 'dashboard'],
+    keywords: ['home', 'dashboard', 'overview'],
   },
   {
     label: 'Opportunities',
@@ -87,10 +89,10 @@ const orgPages: Entry[] = [
     keywords: ['leads', 'clients', 'whatsapp', 'calls', 'applications'],
   },
   {
-    label: 'Outreach',
+    label: 'Funder emails',
     to: '/outreach',
     icon: Send,
-    keywords: ['email', 'contacts'],
+    keywords: ['email', 'contacts', 'outreach', 'funders'],
   },
   {
     label: 'Deadlines',
@@ -100,7 +102,7 @@ const orgPages: Entry[] = [
   },
   { label: 'Team', to: '/team', icon: Users, keywords: ['members', 'invite'] },
   {
-    label: 'Workers',
+    label: 'Searches',
     to: '/agents',
     icon: Bot,
     keywords: ['workers', 'agents', 'saved searches'],
@@ -111,7 +113,7 @@ const orgPages: Entry[] = [
 /** The settings tabs people jump to. */
 const settingsPages: Entry[] = [
   {
-    label: 'Organization profile',
+    label: 'Profile & documents',
     to: '/settings/general',
     icon: Settings,
     keywords: ['settings', 'general'],
@@ -140,7 +142,12 @@ const settingsPages: Entry[] = [
     icon: Globe,
     keywords: ['websites', 'links'],
   },
-  { label: 'Integrations', to: '/settings/integrations', icon: Plug },
+  {
+    label: 'Connected apps',
+    to: '/settings/integrations',
+    icon: Plug,
+    keywords: ['integrations'],
+  },
 ];
 
 const youPages: Entry[] = [
@@ -213,21 +220,21 @@ export function CommandMenu() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen} filter={matchScore}>
-      <CommandInput placeholder="Search pages, workers and actions…" />
+      <CommandInput placeholder="Find pages, searches and actions…" />
       <CommandList>
         <CommandEmpty>
-          Nothing matches. Try a page or a worker’s name.
+          Nothing matches. Try a page or a search’s name.
         </CommandEmpty>
         {base && (
           <>
             <CommandGroup heading="Actions">
               <CommandItem
-                value="New worker"
+                value="New search"
                 keywords={['create', 'worker', 'agent', 'saved search']}
                 onSelect={() => go(`${base}/agents?new=1`)}
               >
                 <Plus />
-                New worker
+                New search
               </CommandItem>
               <CommandItem
                 value="Review opportunities"
@@ -237,10 +244,21 @@ export function CommandMenu() {
                 <ClipboardCheck />
                 Review opportunities
               </CommandItem>
+              <CommandItem
+                value="Take the tour"
+                keywords={['help', 'guide', 'how', 'start', 'tutorial']}
+                onSelect={() => {
+                  setOpen(false);
+                  startTour();
+                }}
+              >
+                <Compass />
+                Take the tour
+              </CommandItem>
             </CommandGroup>
             <CommandGroup heading="Go to">{items(orgPages, base)}</CommandGroup>
             {agents.length > 0 && (
-              <CommandGroup heading="Workers">
+              <CommandGroup heading="Searches">
                 {agents.map((agent) => (
                   <CommandItem
                     key={agent.id}

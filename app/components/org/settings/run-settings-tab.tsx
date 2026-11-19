@@ -90,7 +90,7 @@ export function RunSettingsTab() {
     <>
       <AppCard
         title="Search settings"
-        description="What “Search for opportunities” uses. Every worker uses these too, plus anything it adds."
+        description="What “Search for opportunities” uses. Every search uses these too, plus anything it adds."
         actions={
           canEdit && (
             <Button
@@ -134,7 +134,7 @@ export function RunSettingsTab() {
         onOpenChange={setEditing}
         dismissible={!form.formState.isDirty}
         title="Edit search settings"
-        description="Every worker uses these, plus anything it adds."
+        description="Every search uses these, plus anything it adds."
         footer={
           <>
             <Button variant="outline" onClick={() => setEditing(false)}>

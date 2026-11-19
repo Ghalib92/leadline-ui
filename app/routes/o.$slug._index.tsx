@@ -23,7 +23,7 @@ import { Page, PageLoader } from '~/components/dashboard/page';
 
 export function meta() {
   return generateSEOTags({
-    title: 'Overview | Leadline',
+    title: 'Home | Leadline',
     description: 'Your organization’s opportunity pipeline at a glance.',
     url: '/app',
     noIndex: true,
@@ -66,7 +66,7 @@ function RunButton() {
     <>
       <Button size="lg" onClick={() => setOpen(true)}>
         <Play className="h-4 w-4" />
-        Run worker
+        Run a search
       </Button>
       <RunAutomationDialog open={open} onClose={() => setOpen(false)} />
     </>
@@ -86,7 +86,7 @@ export default function OrgOverview() {
     <Page>
       <PageHeader
         title={org.name}
-        description="What needs you today, and what your workers found."
+        description="What needs you today, and what Leadline found."
         actions={<RunButton />}
       />
 
@@ -125,7 +125,7 @@ export default function OrgOverview() {
         >
           {data.latest.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No matches yet. Run a worker to start.
+              No matches yet. Run a search to start.
             </p>
           ) : (
             <ul className="divide-y divide-border">

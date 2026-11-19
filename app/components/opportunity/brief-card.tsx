@@ -27,7 +27,7 @@ function splitEffort(effort: string): [string, string] {
 /** Which company documents the brief read, in one line. */
 function basedOn(sources: NonNullable<Opportunity['briefSources']>) {
   if (sources.mode === 'none')
-    return 'No company documents were used for this brief.';
+    return 'No company documents were used for this summary.';
   const where =
     sources.mode === 'folders'
       ? `your ${sources.folders.join(', ')} folder${sources.folders.length === 1 ? '' : 's'}`
@@ -46,13 +46,13 @@ export function BriefCard({
   const retry = () =>
     regenerate.mutate(opp.id, {
       onError: (error) =>
-        toastUtils.error('Could not prepare the brief', extractError(error)),
+        toastUtils.error('Could not prepare the summary', extractError(error)),
     });
 
   if (!opp.brief) {
     const failed = opp.briefStatus === 'failed';
     return (
-      <AppCard title="Brief">
+      <AppCard title="Summary">
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
           <p className="flex items-center gap-2 text-muted-foreground">
             {failed ? (
@@ -61,8 +61,8 @@ export function BriefCard({
               <Loader2 className="h-4 w-4 animate-spin" />
             )}
             {failed
-              ? "The AI couldn't prepare a brief for this opportunity."
-              : 'The AI is preparing a brief: fit, eligibility and what to submit.'}
+              ? "The AI couldn't prepare a summary for this opportunity."
+              : 'The AI is preparing a summary: fit, eligibility and what to submit.'}
           </p>
           {failed && (
             <Button
@@ -83,7 +83,7 @@ export function BriefCard({
   const [effortLevel, effortWhy] = splitEffort(brief.effort);
   return (
     <AppCard
-      title="Brief"
+      title="Summary"
       description="The AI's assessment of this opportunity for your organization."
       actions={
         <Button
@@ -91,7 +91,7 @@ export function BriefCard({
           size="sm"
           onClick={retry}
           disabled={regenerate.isPending}
-          aria-label="Prepare the brief again"
+          aria-label="Prepare the summary again"
         >
           <RefreshCw
             className={

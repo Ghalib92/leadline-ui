@@ -47,15 +47,14 @@ const sections = {
     fields: ['goal', 'name', 'description', 'schedule', 'depth'],
   },
   instructions: {
-    title: 'Worker brief',
-    description:
-      'Specific guidance and focus areas to steer this worker during searches and evaluation.',
+    title: 'Extra instructions',
+    description: 'Anything this search should focus on, prefer or avoid.',
     fields: ['instructions'],
   },
   customers: {
     title: 'Customers and places',
     description:
-      'Which businesses and places this worker searches. Empty uses your Clients brief.',
+      'Which businesses and places this search looks for. Empty uses What you sell.',
     fields: ['customerTypes', 'places'],
   },
   sources: {
@@ -72,7 +71,7 @@ const sections = {
   documents: {
     title: 'Company documents',
     description:
-      'Which of your documents the AI reads to judge fit and write briefs.',
+      'Which of your documents the AI reads to judge fit and write summaries.',
     fields: ['folders'],
   },
 } as const satisfies Record<
@@ -86,7 +85,7 @@ const isSection = (value: string | null): value is SectionKey =>
 const knowledgeLabel = {
   all: 'All documents: every folder is read',
   selected: 'Only selected folders',
-  none: 'No documents, unless this worker adds folders',
+  none: 'No documents, unless this search adds folders',
 } as const;
 
 const fromOrg = <T extends { origin: string }>(rows: T[]) =>
@@ -194,7 +193,7 @@ export function AgentSettings({
             <span className="text-muted-foreground">
               {summary.added === 0
                 ? 'All of it comes from your organization.'
-                : `${summary.added} added by this worker.`}
+                : `${summary.added} added by this search.`}
             </span>
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
@@ -235,7 +234,7 @@ export function AgentSettings({
             {scope ? depthLabel[scope.depth.value] : '–'}{' '}
             <span className="text-muted-foreground">
               {scope?.depth.origin === 'agent'
-                ? '(set on this worker)'
+                ? '(set on this search)'
                 : '(organization default)'}
             </span>
           </Row>
@@ -245,15 +244,15 @@ export function AgentSettings({
       {section(
         'instructions',
         <>
-          <Row label="Worker brief">
+          <Row label="Extra instructions">
             {agent.instructions ? (
               <p className="whitespace-pre-wrap text-sm leading-relaxed">
                 {agent.instructions}
               </p>
             ) : (
               <span className="text-muted-foreground">
-                No custom brief set. The worker uses default evaluation prompts
-                and organization preferences.
+                No extra instructions. The search uses its standard rules and
+                organization preferences.
               </span>
             )}
           </Row>
@@ -271,7 +270,7 @@ export function AgentSettings({
                   .join(', ')
               ) : (
                 <span className="text-muted-foreground">
-                  From your Clients brief
+                  From what you sell
                 </span>
               )}
             </Row>
@@ -280,7 +279,7 @@ export function AgentSettings({
                 agent.places.join(', ')
               ) : (
                 <span className="text-muted-foreground">
-                  Your Clients brief&apos;s cities
+                  The places in What you sell
                 </span>
               )}
             </Row>
@@ -441,10 +440,10 @@ function AgentSettingsSheet({
     ) as Partial<AgentInput>;
     try {
       await update.mutateAsync({ agentId: agent.id, input: changes });
-      toastUtils.success('Worker saved');
+      toastUtils.success('Search saved');
       onClose();
     } catch (error) {
-      toastUtils.error('Could not save the worker', extractError(error));
+      toastUtils.error('Could not save the search', extractError(error));
     }
   };
 
@@ -503,7 +502,7 @@ function AgentSettingsSheet({
                 control={form.control}
                 name="description"
                 label="Description"
-                placeholder="What this worker looks for, in a sentence"
+                placeholder="What this search looks for, in a sentence"
                 rows={2}
               />
               <FormPickerField
@@ -529,8 +528,8 @@ function AgentSettingsSheet({
             <FormTextareaField
               control={form.control}
               name="instructions"
-              label="Worker brief"
-              description="Provide a custom brief to guide this worker. Be specific about what you want it to look for, prioritize, or avoid during discovery runs."
+              label="Extra instructions"
+              description="Tell this search what to look for, put first, or avoid. Be specific."
               placeholder="e.g. Focus on grants supporting climate resilience in East Africa, avoid matching equity requirements, prioritize calls with deadlines at least 30 days away."
               rows={6}
             />
@@ -542,7 +541,7 @@ function AgentSettingsSheet({
                 control={form.control}
                 name="customerTypes"
                 label="Kinds of customer"
-                placeholder="From your Clients brief"
+                placeholder="From what you sell"
                 options={businessCategories}
                 multi
                 optionStyle="checkbox"
@@ -550,7 +549,7 @@ function AgentSettingsSheet({
               <FormTagInputField
                 control={form.control}
                 name="places"
-                label="Places (empty: your Clients brief's cities)"
+                label="Places (empty: the places in What you sell)"
                 placeholder="e.g. Nairobi, then Enter"
                 maxTags={10}
               />

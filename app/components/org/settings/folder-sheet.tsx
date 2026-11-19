@@ -64,7 +64,7 @@ export function FolderSheet({
       onOpenChange={(next) => !next && onClose()}
       dismissible={false}
       title={folder ? 'Edit folder' : 'New folder'}
-      description="Agents read a folder's purpose to know what its files prove."
+      description="Leadline reads a folder's purpose to know what its files show."
       footer={
         <>
           <Button variant="outline" onClick={onClose}>

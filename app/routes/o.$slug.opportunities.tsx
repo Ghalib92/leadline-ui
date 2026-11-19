@@ -42,7 +42,8 @@ import { EmptyState, Page, PageLoader } from '~/components/dashboard/page';
 export function meta() {
   return generateSEOTags({
     title: 'Opportunities | Leadline',
-    description: 'Grants, tenders, partnerships and events your workers found.',
+    description:
+      'Clients, tenders, grants and partnerships Leadline found for you.',
     url: '/app',
     noIndex: true,
   });
@@ -135,8 +136,8 @@ export default function OpportunitiesPage() {
                 ? `${data.total} found in run ${runParam}`
                 : `Filtered by run ${runParam}`
             : data
-              ? `${data.total} found by your workers`
-              : 'Found by your workers'
+              ? `${data.total} found for you`
+              : 'Found for you'
         }
         actions={
           <Button asChild variant="outline">
@@ -171,7 +172,7 @@ export default function OpportunitiesPage() {
           onChange={(v) => setOrClear('status', v)}
         />
         <FilterPill
-          label="Worker"
+          label="Search"
           icon={Bot}
           options={agents.map((a) => ({ value: a.id, label: a.name }))}
           value={filter('agentId')}
@@ -307,7 +308,7 @@ export default function OpportunitiesPage() {
           description={
             hasFilters
               ? 'Try clearing a filter.'
-              : 'Run a worker to start finding opportunities.'
+              : 'Run a search to start finding opportunities.'
           }
           action={
             hasFilters ? (

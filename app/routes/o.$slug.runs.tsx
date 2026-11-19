@@ -54,7 +54,7 @@ export default function RunsPage() {
     <Page>
       <PageHeader
         title="Search history"
-        description="Every search: what the AI agents did, what went wrong, and what they found."
+        description="Every search: where it looked, what went wrong, and what it found."
         actions={
           <Button asChild variant="outline">
             <Link to={path('/agents')}>Workers</Link>
@@ -64,7 +64,7 @@ export default function RunsPage() {
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <FilterPill
-          label="Worker"
+          label="Search"
           icon={Bot}
           options={agents.map((a) => ({ value: a.id, label: a.name }))}
           value={agentId}
@@ -84,7 +84,7 @@ export default function RunsPage() {
       ) : !data || data.data.length === 0 ? (
         <EmptyState
           title="No runs yet"
-          description="Run a worker to see what it searched and what it found."
+          description="Run a search to see where it looked and what it found."
           action={
             <Button asChild size="sm">
               <Link to={path('/agents')}>Go to workers</Link>

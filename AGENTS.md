@@ -14,7 +14,8 @@ backend (`leadline_backend`) at `API_URL` — there is no in-browser mock.
 Shells:
 
 - **Marketing** (`components/root-layout.tsx`) — public: home (`/`), about
-  (`/about`). Light header; a "Dashboard" button (→ `/app`) when signed in.
+  (`/about`), privacy (`/privacy`: plain-language privacy notice; its list of
+  service providers must match what the backend really sends where). Light header; a "Dashboard" button (→ `/app`) when signed in.
 - **Auth** (`components/auth-layout.tsx`) — split screen: login, register,
   forgot/reset password, invite acceptance (`/invite/:token`).
 - **Onboarding** (`routes/onboarding.tsx`) — standalone, guarded in its own loader:
@@ -367,6 +368,31 @@ export function meta() {
   });
 }
 ```
+
+## Words people see
+
+Users aren't technical. On screen, use everyday words and say what a thing does;
+code names (`agents`, `runs`, `briefs`) stay in code and URLs only.
+
+| In code                     | On screen                                                    |
+| --------------------------- | ------------------------------------------------------------ |
+| agent / worker              | **search** ("New search", "Run a search")                    |
+| run                         | **search** (one time it ran); the list is **Search history** |
+| agent brief                 | **Extra instructions**                                       |
+| client brief / tender brief | **What you sell** / **Tenders you want**                     |
+| opportunity brief           | **Summary**                                                  |
+| dossier                     | **AI summary**                                               |
+| outreach                    | **Funder emails**                                            |
+| integrations                | **Connected apps**                                           |
+| "the agents"                | **Leadline** or **the AI**                                   |
+
+The sidebar follows the order people use the app: **Home**, then **Find**
+(Searches, Opportunities/Jobs, Search history), **Follow up** (Call list or
+Applications, Funder emails, Deadlines), **Settings** (Profile & documents or
+Profile & CV, Team, Connected apps). Sidebar items carry `data-tour` ids for the
+first-run tour (`components/onboarding/first-run-tour.tsx`): shown once per person
+on their first org page (remembered in localStorage), again from ⌘K › "Take the
+tour". It is a floating card, not a modal, so the lit sidebar item stays visible.
 
 ## Conventions
 

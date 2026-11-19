@@ -19,7 +19,7 @@ const STATUS_META: Record<
   },
   processed: {
     label: 'Read by AI',
-    hint: 'Agents can draw on this document',
+    hint: 'Leadline can use this document',
     className: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
     dot: 'bg-emerald-500',
   },

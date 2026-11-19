@@ -16,7 +16,7 @@ import { Page } from '~/components/dashboard/page';
 
 export function meta() {
   return generateSEOTags({
-    title: 'Organization Settings | Leadline',
+    title: 'Profile & documents | Leadline',
     description: 'Your organization profile and what your agents look for.',
     url: '/app',
     noIndex: true,
@@ -63,8 +63,8 @@ export default function GeneralSettingsPage() {
   return (
     <Page width="narrow">
       <PageHeader
-        title="General"
-        description="Your organization profile. Agents use it to find and rank matches."
+        title="Profile & documents"
+        description="Who you are and what you have. Leadline uses it to find and rank matches."
       />
       <AppTabs
         variant="underline"

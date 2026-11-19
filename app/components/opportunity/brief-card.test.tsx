@@ -32,7 +32,7 @@ describe('BriefCard', () => {
       brief: undefined,
       briefStatus: 'pending',
     });
-    expect(screen.getByText(/preparing a brief/)).toBeInTheDocument();
+    expect(screen.getByText(/preparing a summary/)).toBeInTheDocument();
     unmount();
     renderBrief({ ...opp, brief: undefined, briefStatus: 'failed' });
     expect(
@@ -60,7 +60,7 @@ describe('BriefCard', () => {
       briefSources: { mode: 'none', folders: [], documents: [] },
     });
     expect(
-      screen.getByText('No company documents were used for this brief.')
+      screen.getByText('No company documents were used for this summary.')
     ).toBeInTheDocument();
   });
 });

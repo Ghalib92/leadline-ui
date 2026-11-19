@@ -246,7 +246,7 @@ export default function RunDetailPage() {
           <>
             <RunStatusBadge status={running ? 'running' : run.status} />
             <span>
-              {isOrgSearch ? 'Search' : 'Worker'},{' '}
+              Search,{' '}
               {run.trigger === 'manual' ? 'run by hand' : 'on its schedule'}
             </span>
             <span aria-hidden>·</span>
@@ -519,7 +519,7 @@ export default function RunDetailPage() {
                 {run.status === 'failed' && !running
                   ? 'Nothing to score — no source responded.'
                   : run.status === 'queued'
-                    ? 'Waiting for a worker to pick up the search…'
+                    ? 'Waiting to start…'
                     : 'Waiting for pages to be scored…'}
               </p>
             </div>

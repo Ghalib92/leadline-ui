@@ -65,8 +65,8 @@ export function StepJobsYouWant() {
   return (
     <div className="space-y-2">
       <p className="text-sm text-muted-foreground">
-        Your workers search company career pages and job boards for these, and
-        score each job against your CV. You upload your CV next.
+        Your searches look through company career pages and job boards for
+        these, and score each job against your CV. You upload your CV next.
       </p>
       <OrgFields
         names={[

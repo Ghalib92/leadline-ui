@@ -63,7 +63,7 @@ export function AgentOverview({
           value={scope ? depthLabel[scope.depth.value] : '–'}
           hint={
             scope?.depth.origin === 'agent'
-              ? 'Set on this worker'
+              ? 'Set on this search'
               : 'Organization default'
           }
         />
@@ -187,7 +187,7 @@ export function AgentOpportunities({ agent }: Readonly<{ agent: Agent }>) {
     return (
       <EmptyState
         title="Nothing found yet"
-        description="Opportunities this worker adds will show up here."
+        description="Opportunities this search finds will show up here."
       />
     );
   const totalPages = Math.max(1, Math.ceil(data.total / data.limit));

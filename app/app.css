@@ -384,3 +384,22 @@ body {
     animation: none;
   }
 }
+
+/* First-run tour: the sidebar items the current step is about. */
+[data-tour-active] {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+  animation: tour-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes tour-pulse {
+  50% {
+    outline-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tour-active] {
+    animation: none;
+  }
+}

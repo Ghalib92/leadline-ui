@@ -82,8 +82,8 @@ export function ClientBriefTab({
   return (
     <>
       <AppCard
-        title="Clients brief"
-        description="What you sell and who to. Your Clients workers search and score with this."
+        title="What you sell"
+        description="What you sell and who to. Your client searches look and score with this."
         actions={
           canEdit && <EditButton onClick={() => setEditing('client_brief')} />
         }
@@ -142,8 +142,8 @@ export function ClientBriefTab({
         <EditSheet<ClientBriefFormInput, ClientBriefForm>
           open
           onClose={() => setEditing(null)}
-          title="Edit the clients brief"
-          description="Your Clients workers use it from their next run."
+          title="Edit what you sell"
+          description="Your client searches use it from their next search."
           fields={clientFields}
           required={['services']}
           resolver={clientBriefFormResolver}
@@ -185,8 +185,8 @@ export function TenderBriefTab({
   return (
     <>
       <AppCard
-        title="Tenders brief"
-        description="What you bid for. Your Tenders workers search and score with this."
+        title="Tenders you want"
+        description="What you bid for. Your tender searches look and score with this."
         actions={
           canEdit && <EditButton onClick={() => setEditing('tender_brief')} />
         }
@@ -225,8 +225,8 @@ export function TenderBriefTab({
         <EditSheet<TenderBriefFormInput, TenderBriefForm>
           open
           onClose={() => setEditing(null)}
-          title="Edit the tenders brief"
-          description="Your Tenders workers use it from their next run."
+          title="Edit the tenders you want"
+          description="Your tender searches use it from their next search."
           fields={tenderFields}
           required={['tenderCategories']}
           resolver={tenderBriefFormResolver}
@@ -350,7 +350,7 @@ function CvSuggestions({
           {pending > 0 ? (
             <>
               <p className="text-muted-foreground">
-                Your CV also shows these. Add the ones you want your workers to
+                Your CV also shows these. Add the ones you want your searches to
                 search for:
               </p>
               {group('Jobs', found.targetRoles, 'targetRoles')}
@@ -441,7 +441,7 @@ export function JobBriefTab({ editing, setEditing }: Readonly<EditingProps>) {
       />
       <AppCard
         title="Job preferences"
-        description="What you're looking for. Your workers search with this and score each job against it and your CV."
+        description="What you're looking for. Your searches use this and score each job against it and your CV."
         actions={
           canEdit && <EditButton onClick={() => setEditing('job_brief')} />
         }
@@ -497,7 +497,7 @@ export function JobBriefTab({ editing, setEditing }: Readonly<EditingProps>) {
           open
           onClose={() => setEditing(null)}
           title="Edit your job preferences"
-          description="Your workers use them from their next run."
+          description="Your searches use them from their next search."
           fields={jobFields}
           required={['targetRoles']}
           resolver={jobBriefFormResolver}

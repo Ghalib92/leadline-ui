@@ -20,7 +20,7 @@ const knowledgeOptions = [
   {
     value: 'none',
     label: 'No documents',
-    description: 'Judge from the profile only. Workers can still add folders.',
+    description: 'Judge from the profile only. A search can still add folders.',
   },
 ];
 

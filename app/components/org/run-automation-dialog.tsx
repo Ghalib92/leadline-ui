@@ -38,7 +38,7 @@ export function RunAutomationDialog({
           navigate(path(`/runs/${started.id}`));
         },
         onError: (error) =>
-          toastUtils.error('Could not start the run', extractError(error)),
+          toastUtils.error('Could not start the search', extractError(error)),
       }
     );
 
@@ -46,13 +46,13 @@ export function RunAutomationDialog({
     <AppDialog
       open={open}
       onOpenChange={(next) => !next && onClose()}
-      title="Run a worker"
+      title="Run a search"
       description="Each one searches with your organization's settings plus what it adds."
       footer={
         can('agents.create') && (
           <Button asChild>
             <Link to={path('/agents?new=1')} onClick={onClose}>
-              <Plus className="h-4 w-4" /> Create worker
+              <Plus className="h-4 w-4" /> Create a search
             </Link>
           </Button>
         )
@@ -67,7 +67,7 @@ export function RunAutomationDialog({
         </div>
       ) : runnable.length === 0 ? (
         <p className="py-4 text-sm text-muted-foreground">
-          You have no workers to run yet. Create one to search on a schedule or
+          You have no searches to run yet. Create one to search on a schedule or
           whenever you like.
         </p>
       ) : (
