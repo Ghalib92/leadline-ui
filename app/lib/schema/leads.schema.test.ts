@@ -2,14 +2,19 @@ import { describe, expect, it } from 'vitest';
 import pitch from './__fixtures__/backend/lead_pitch.json';
 import activity from './__fixtures__/backend/lead_activity.json';
 import callList from './__fixtures__/backend/call_list.json';
+import jobApplication from './__fixtures__/backend/job_application.json';
 import {
+  applicationDtoSchema,
   callListItemDtoSchema,
+  clientOutcomes,
   drfPage,
+  jobOutcomes,
   leadActivityDtoSchema,
   logActivityFormSchema,
   mailtoLink,
   pitchDtoSchema,
   toActivityBody,
+  toApplicationBody,
   toPitchBody,
   whatsappLink,
 } from '~/lib/schema';
@@ -85,6 +90,79 @@ describe('lead schemas', () => {
     const result = logActivityFormSchema.safeParse({
       channel: 'call',
       outcome: 'not_interested',
+      note: '',
+      followUpOn: '2026-12-01',
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe('job applications', () => {
+  it('reads an application', () => {
+    const application = applicationDtoSchema.parse({
+      id: 'a1b2c3d4e5f6',
+      status: 'ready',
+      cover_letter: 'Dear Hiring Team,',
+      cv: '# Brian',
+      gaps: ['No GraphQL'],
+      cv_document_title: 'CV.pdf',
+      apply_url: 'https://x.example/apply',
+      instructions: '',
+      error: '',
+      edited_by: null,
+      edited_at: null,
+      updated_at: '2026-11-19T08:00:00Z',
+    });
+    expect(application.coverLetter).toBe('Dear Hiring Team,');
+    expect(application.applyUrl).toBe('https://x.example/apply');
+    expect(toApplicationBody({ coverLetter: 'A', cv: 'B' })).toEqual({
+      cover_letter: 'A',
+      cv: 'B',
+    });
+  });
+
+  it('reads a real application from the backend', () => {
+    const application = applicationDtoSchema.parse(jobApplication);
+    expect(application.status).toBe('ready');
+    expect(application.coverLetter).toMatch(/^Dear Hiring Team at Savannah/);
+    expect(application.cv).toMatch(/^# Brian Kamau/);
+    expect(application.unverified.length).toBeGreaterThan(0);
+    expect(application.applyUrl).toMatch(/^https:\/\//);
+  });
+
+  it('keeps client and job outcomes apart', () => {
+    const jobs = jobOutcomes.map((o) => o.value);
+    expect(jobs).toEqual([
+      'applied',
+      'interview',
+      'offer',
+      'rejected',
+      'withdrew',
+    ]);
+    expect(clientOutcomes.map((o) => o.value)).not.toContain('applied');
+    expect(clientOutcomes).toHaveLength(8);
+  });
+
+  it('reads a job on the application tracker', () => {
+    const item = callListItemDtoSchema.parse({
+      ...callList.results[0],
+      funder: 'Savannah Informatics',
+      deadline: '2026-11-30T20:59:59Z',
+      apply_url: 'https://x.example/apply',
+      application: { status: 'writing' },
+      pitch: null,
+      last_outcome: 'interview',
+    });
+    expect(item.funder).toBe('Savannah Informatics');
+    expect(item.applyUrl).toBe('https://x.example/apply');
+    expect(item.application).toEqual({ status: 'writing' });
+    expect(item.lastOutcome).toBe('interview');
+  });
+
+  it('refuses a follow-up once not selected', () => {
+    const result = logActivityFormSchema.safeParse({
+      channel: 'online',
+      outcome: 'rejected',
       note: '',
       followUpOn: '2026-12-01',
     });

@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import type { DefaultValues } from 'react-hook-form';
-import { Pencil } from 'lucide-react';
+import { FileText, Pencil, Plus, Sparkles } from 'lucide-react';
 import {
   businessCategories,
   businessSizes,
@@ -14,7 +15,9 @@ import {
 } from '~/data/org-taxonomy';
 import {
   useClientBrief,
+  useDismissCvSuggestions,
   useJobBrief,
+  useReadCv,
   useTenderBrief,
   useUpdateClientBrief,
   useUpdateJobBrief,
@@ -24,6 +27,7 @@ import {
   clientBriefFormResolver,
   jobBriefFormResolver,
   tenderBriefFormResolver,
+  type JobBrief,
   type JobBriefForm,
   type JobBriefFormInput,
   type ClientBriefForm,
@@ -33,6 +37,9 @@ import {
   type TenderBriefFormInput,
 } from '~/lib/schema';
 import { useOrg } from '~/lib/org/org-context';
+import { extractError } from '~/lib/utils/extract-error';
+import { timeAgo } from '~/lib/utils/format';
+import { toastUtils } from '~/lib/utils/toast';
 import { Button } from '~/components/ui/button';
 import { AppCard } from '~/components/composed';
 import { PageLoader } from '~/components/dashboard/page';
@@ -240,15 +247,198 @@ const jobFields = [
   'salaryCurrency', 'companies', 'excludedKeywords', 'notes',
 ] as const; // prettier-ignore
 
+const FILLED_LABELS: Record<string, string> = {
+  headline: 'headline',
+  target_roles: 'jobs you want',
+  skills: 'skills',
+  years_experience: 'years of experience',
+  seniority: 'level',
+};
+const READ_TIMEOUT_MS = 90_000;
+
+/** What reading the CV found: what it filled in, and job titles and skills to add. */
+function CvSuggestions({
+  orgId,
+  brief,
+  canEdit,
+  reading,
+  onRead,
+}: Readonly<{
+  orgId: string;
+  brief: JobBrief;
+  canEdit: boolean;
+  reading: boolean;
+  onRead: () => void;
+}>) {
+  const update = useUpdateJobBrief(orgId);
+  const dismiss = useDismissCvSuggestions(orgId);
+  const found = brief.cvSuggestions;
+  const pending =
+    (found?.targetRoles.length ?? 0) + (found?.skills.length ?? 0);
+
+  const add = (patch: { targetRoles?: string[]; skills?: string[] }) =>
+    update.mutate(
+      {
+        ...(patch.targetRoles && {
+          targetRoles: [...brief.targetRoles, ...patch.targetRoles],
+        }),
+        ...(patch.skills && { skills: [...brief.skills, ...patch.skills] }),
+      },
+      {
+        onError: (error) =>
+          toastUtils.error('Could not add it', extractError(error)),
+      }
+    );
+
+  const group = (
+    label: string,
+    items: string[],
+    field: 'targetRoles' | 'skills'
+  ) =>
+    items.length > 0 && (
+      <div className="space-y-1.5">
+        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        <div className="flex flex-wrap gap-1.5">
+          {items.map((item) => (
+            <button
+              key={item}
+              type="button"
+              disabled={!canEdit || update.isPending}
+              onClick={() => add({ [field]: [item] })}
+              className="inline-flex items-center gap-1 rounded-full border border-dashed border-primary/50 px-2.5 py-0.5 text-xs text-primary hover:bg-primary/5 disabled:opacity-60"
+              aria-label={`Add ${item}`}
+            >
+              <Plus className="h-3 w-3" /> {item}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+
+  return (
+    <AppCard
+      title="From your CV"
+      description={
+        found
+          ? `Read from “${found.documentTitle}” ${timeAgo(found.readAt)}.`
+          : 'Upload your CV and Leadline fills in your skills and the jobs it shows you can do.'
+      }
+      actions={
+        canEdit && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRead}
+            disabled={reading}
+          >
+            <FileText className="h-3.5 w-3.5" />
+            {reading ? 'Reading…' : found ? 'Read my CV again' : 'Read my CV'}
+          </Button>
+        )
+      }
+    >
+      {found ? (
+        <div className="space-y-4 text-sm">
+          {found.filled.length > 0 && (
+            <p className="flex gap-2">
+              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              Filled in your{' '}
+              {found.filled.map((f) => FILLED_LABELS[f] ?? f).join(', ')}. Check
+              them below.
+            </p>
+          )}
+          {pending > 0 ? (
+            <>
+              <p className="text-muted-foreground">
+                Your CV also shows these. Add the ones you want your workers to
+                search for:
+              </p>
+              {group('Jobs', found.targetRoles, 'targetRoles')}
+              {group('Skills', found.skills, 'skills')}
+              {canEdit && (
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    disabled={update.isPending}
+                    onClick={() =>
+                      add({
+                        targetRoles: found.targetRoles,
+                        skills: found.skills,
+                      })
+                    }
+                  >
+                    Add all
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={dismiss.isPending}
+                    onClick={() => dismiss.mutate()}
+                  >
+                    Dismiss
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : (
+            found.filled.length === 0 && (
+              <p className="text-muted-foreground">
+                Your preferences already have everything your CV shows.
+              </p>
+            )
+          )}
+        </div>
+      ) : null}
+    </AppCard>
+  );
+}
+
 /** What a job seeker looks for: the brief their Jobs workers use. */
 export function JobBriefTab({ editing, setEditing }: Readonly<EditingProps>) {
   const { view, canEdit } = useCanEdit();
-  const { data: brief } = useJobBrief(view.id);
+  // While the CV is read in the background: since when, and the last read it replaces.
+  const [reading, setReading] = useState<{
+    since: number;
+    before: string | null;
+  } | null>(null);
+  const { data: brief } = useJobBrief(
+    view.id,
+    true,
+    reading ? 3000 : undefined
+  );
   const update = useUpdateJobBrief(view.id);
+  const readCv = useReadCv(view.id);
+
+  const readAt = brief?.cvSuggestions?.readAt ?? null;
+  useEffect(() => {
+    if (!reading) return;
+    if (readAt !== reading.before) {
+      setReading(null);
+      return;
+    }
+    const left = reading.since + READ_TIMEOUT_MS - Date.now();
+    const timer = setTimeout(() => setReading(null), Math.max(left, 0));
+    return () => clearTimeout(timer);
+  }, [reading, readAt]);
+
   if (!brief) return <PageLoader />;
 
+  const read = () =>
+    readCv.mutate(undefined, {
+      onSuccess: () => setReading({ since: Date.now(), before: readAt }),
+      onError: (error) =>
+        toastUtils.error('Could not read your CV', extractError(error)),
+    });
+
   return (
-    <>
+    <div className="space-y-6">
+      <CvSuggestions
+        orgId={view.id}
+        brief={brief}
+        canEdit={canEdit}
+        reading={!!reading || readCv.isPending}
+        onRead={read}
+      />
       <AppCard
         title="Job preferences"
         description="What you're looking for. Your workers search with this and score each job against it and your CV."
@@ -316,6 +506,6 @@ export function JobBriefTab({ editing, setEditing }: Readonly<EditingProps>) {
           pending={update.isPending}
         />
       )}
-    </>
+    </div>
   );
 }

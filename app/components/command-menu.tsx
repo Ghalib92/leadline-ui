@@ -84,7 +84,7 @@ const orgPages: Entry[] = [
     label: 'Call list',
     to: '/calls',
     icon: PhoneCall,
-    keywords: ['leads', 'clients', 'whatsapp', 'calls'],
+    keywords: ['leads', 'clients', 'whatsapp', 'calls', 'applications'],
   },
   {
     label: 'Outreach',

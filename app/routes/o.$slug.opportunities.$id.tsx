@@ -16,6 +16,7 @@ import { BusinessCard } from '~/components/opportunity/business-card';
 import { ContactsPanel } from '~/components/opportunity/contacts-panel';
 import { PitchCard } from '~/components/opportunity/pitch-card';
 import { LeadActivityCard } from '~/components/opportunity/lead-activity';
+import { ApplicationCard } from '~/components/opportunity/application-card';
 import {
   DeadlineBadge,
   MatchScore,
@@ -231,7 +232,10 @@ export default function OpportunityDetailPage() {
               {opp.tender && <TenderCard tender={opp.tender} />}
               {opp.job && <JobCard job={opp.job} />}
 
-              {/* A job is judged against the CV; it gets no call brief or proposal. */}
+              {/* A job is judged against the CV: no call brief or proposal, but a
+                  cover letter, a tailored CV and the application's progress. */}
+              {isJob && <ApplicationCard orgId={org.id} opp={opp} />}
+              {isJob && <LeadActivityCard orgId={org.id} opp={opp} />}
               {!isJob && <BriefCard orgId={org.id} opp={opp} />}
               {!isJob && <ProposalCard orgId={org.id} opp={opp} />}
             </>

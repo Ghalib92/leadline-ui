@@ -462,6 +462,33 @@ export const useUpdateJobBrief = (orgId: string) => {
   });
 };
 
+/** Read the CV into the job preferences again (in the background: poll the brief). */
+export const useReadCv = (orgId: string) =>
+  useMutation({
+    mutationFn: async (): Promise<JobBrief> => {
+      const { data } = await apiClient.post(
+        `${base(orgId)}/job-brief/read-cv`,
+        {}
+      );
+      return jobBriefDtoSchema.parse(data);
+    },
+  });
+
+/** Drop the job titles and skills still suggested from the CV. */
+export const useDismissCvSuggestions = (orgId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (): Promise<JobBrief> => {
+      const { data } = await apiClient.post(
+        `${base(orgId)}/job-brief/dismiss-suggestions`
+      );
+      return jobBriefDtoSchema.parse(data);
+    },
+    onSuccess: (brief) =>
+      queryClient.setQueryData(orgKeys.jobBrief(orgId), brief),
+  });
+};
+
 export const useUpdateTenderBrief = (orgId: string) => {
   const refresh = useRefreshOrg();
   return useMutation({

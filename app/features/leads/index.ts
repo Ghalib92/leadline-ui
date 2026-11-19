@@ -1,16 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { apiClient } from '~/lib/api/client';
-import { orgApi } from '~/lib/api/backend';
+import { downloadFile, orgApi } from '~/lib/api/backend';
 import {
+  applicationDtoSchema,
   callListItemDtoSchema,
   drfPage,
   leadActivityDtoSchema,
   pitchDtoSchema,
   toActivityBody,
+  toApplicationBody,
   toPitchBody,
+  type ApplicationFormInput,
   type CallListItem,
   type CallListView,
+  type JobApplication,
   type LeadActivity,
   type LeadPitch,
   type LogActivityFormInput,
@@ -18,11 +22,14 @@ import {
 } from '~/lib/schema';
 import { opportunityKeys } from '../opportunities/query-keys';
 
-/** Client leads after approval: the pitch, calls and messages, and the call list. */
+/** Client leads after approval: the pitch, calls and messages, and the call list.
+ * Approved jobs: the application (letter and CV) and the same log and list. */
 export const leadKeys = {
   all: ['leads'] as const,
   pitch: (orgId: string, oppId: string) =>
     [...leadKeys.all, orgId, 'pitch', oppId] as const,
+  application: (orgId: string, oppId: string) =>
+    [...leadKeys.all, orgId, 'application', oppId] as const,
   activity: (orgId: string, oppId: string) =>
     [...leadKeys.all, orgId, 'activity', oppId] as const,
   callList: (orgId: string, view: CallListView) =>
@@ -32,6 +39,8 @@ export const leadKeys = {
 const POLL_MS = 2000;
 const pitchPath = (oppId: string) => `/opportunities/${oppId}/pitch`;
 const activityPath = (oppId: string) => `/opportunities/${oppId}/activity`;
+const applicationPath = (oppId: string) =>
+  `/opportunities/${oppId}/application`;
 
 export const isPitchBusy = (pitch: LeadPitch | null | undefined) =>
   pitch?.status === 'writing';
@@ -108,6 +117,78 @@ export const useEditPitch = (orgId: string, oppId: string) =>
   });
 
 // ---------------------------------------------------------------------------
+// A job application: cover letter and tailored CV
+// ---------------------------------------------------------------------------
+
+export const isApplicationBusy = (
+  application: JobApplication | null | undefined
+) => application?.status === 'writing';
+
+/** The job's application, or null when there is none yet. Polls while it is written. */
+export const useApplication = (orgId: string, oppId: string, enabled = true) =>
+  useQuery({
+    queryKey: leadKeys.application(orgId, oppId),
+    queryFn: async (): Promise<JobApplication | null> => {
+      try {
+        const { data } = await apiClient.get(
+          orgApi(orgId, applicationPath(oppId))
+        );
+        return applicationDtoSchema.parse(data);
+      } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 404) return null;
+        throw error;
+      }
+    },
+    enabled: enabled && !!orgId && !!oppId,
+    refetchInterval: (query) =>
+      isApplicationBusy(query.state.data) ? POLL_MS : false,
+  });
+
+function useApplicationMutation<T>(
+  orgId: string,
+  oppId: string,
+  send: (input: T) => Promise<unknown>
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: T): Promise<JobApplication> =>
+      applicationDtoSchema.parse(await send(input)),
+    onSuccess: (application) => {
+      queryClient.setQueryData(leadKeys.application(orgId, oppId), application);
+      queryClient.invalidateQueries({
+        queryKey: [...leadKeys.all, orgId, 'call-list'],
+      });
+    },
+  });
+}
+
+/** (Re)write the letter and CV with the AI; replaces any edits. */
+export const useWriteApplication = (orgId: string, oppId: string) =>
+  useApplicationMutation(orgId, oppId, async (instructions: string) => {
+    const { data } = await apiClient.post(
+      orgApi(orgId, applicationPath(oppId)),
+      { instructions }
+    );
+    return data;
+  });
+
+export const useEditApplication = (orgId: string, oppId: string) =>
+  useApplicationMutation(orgId, oppId, async (input: ApplicationFormInput) => {
+    const { data } = await apiClient.patch(
+      orgApi(orgId, applicationPath(oppId)),
+      toApplicationBody(input)
+    );
+    return data;
+  });
+
+/** The tailored CV and the cover letter as one Word file. */
+export const downloadApplication = (orgId: string, oppId: string) =>
+  downloadFile(
+    orgApi(orgId, `${applicationPath(oppId)}/export`),
+    'application.docx'
+  );
+
+// ---------------------------------------------------------------------------
 // Calls and messages
 // ---------------------------------------------------------------------------
 
@@ -176,7 +257,11 @@ export const useCallList = (orgId: string, view: CallListView) =>
     },
     enabled: !!orgId,
     refetchInterval: (query) =>
-      query.state.data?.items.some((item) => item.pitch?.status === 'writing')
+      query.state.data?.items.some(
+        (item) =>
+          item.pitch?.status === 'writing' ||
+          item.application?.status === 'writing'
+      )
         ? POLL_MS
         : false,
   });

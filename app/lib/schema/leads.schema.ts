@@ -5,6 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
  * Client leads after approval: the pitch (what to say), calls and messages logged by
  * people, and the call list. Backend: `apps/outreach` (pitch, activity, call-list).
  * Nothing is sent by Leadline; people send from their own phone or email.
+ *
+ * For a job seeker the same log and list track their applications (applied,
+ * interview, offer…), and an approved job gets a cover letter and a tailored CV
+ * (`application`). They apply themselves.
  */
 
 const text = z
@@ -27,6 +31,7 @@ export const leadChannels = [
   { value: 'whatsapp', label: 'WhatsApp' },
   { value: 'email', label: 'Email' },
   { value: 'visit', label: 'Visit' },
+  { value: 'online', label: 'Online form or job site' },
   { value: 'other', label: 'Other' },
 ] as const;
 export type LeadChannel = (typeof leadChannels)[number]['value'];
@@ -40,13 +45,40 @@ export const leadOutcomes = [
   { value: 'meeting', label: 'Meeting booked' },
   { value: 'not_interested', label: 'Not interested' },
   { value: 'wrong_contact', label: 'Wrong number or contact' },
+  // A job seeker's application steps.
+  { value: 'applied', label: 'Applied' },
+  { value: 'interview', label: 'Interview booked' },
+  { value: 'offer', label: 'Offer received' },
+  { value: 'rejected', label: 'Not selected' },
+  { value: 'withdrew', label: 'Withdrew' },
 ] as const;
 export type LeadOutcome = (typeof leadOutcomes)[number]['value'];
 
-/** After these, nobody needs to reach the business again (no follow-up). */
+const JOB_OUTCOME_VALUES: readonly LeadOutcome[] = [
+  'applied',
+  'interview',
+  'offer',
+  'rejected',
+  'withdrew',
+];
+/** What can happen with a client lead, or with a job application. */
+export const clientOutcomes = leadOutcomes.filter(
+  (o) => !JOB_OUTCOME_VALUES.includes(o.value)
+);
+export const jobOutcomes = leadOutcomes.filter((o) =>
+  JOB_OUTCOME_VALUES.includes(o.value)
+);
+/** How a job seeker applied or heard back (no visits to sell to). */
+export const jobChannels = leadChannels.filter((c) =>
+  ['online', 'email', 'call', 'whatsapp', 'other'].includes(c.value)
+);
+
+/** After these, nobody needs to reach the business (or employer) again. */
 export const CLOSED_OUTCOMES: readonly LeadOutcome[] = [
   'not_interested',
   'wrong_contact',
+  'rejected',
+  'withdrew',
 ];
 
 const channelValues = leadChannels.map((c) => c.value) as [
@@ -65,6 +97,14 @@ export const callListViews = [
   { value: 'all', label: 'All' },
 ] as const;
 export type CallListView = (typeof callListViews)[number]['value'];
+
+/** The same views, named for a job seeker's application tracker. */
+export const applicationViews = [
+  { value: 'to_contact', label: 'To apply' },
+  { value: 'follow_up', label: 'In progress' },
+  { value: 'closed', label: 'Closed' },
+  { value: 'all', label: 'All' },
+] as const satisfies readonly { value: CallListView; label: string }[];
 
 // ---------------------------------------------------------------------------
 // The pitch
@@ -160,7 +200,7 @@ export const logActivityFormSchema = z
     followUpOn: z.string(),
   })
   .refine((v) => !(v.followUpOn && CLOSED_OUTCOMES.includes(v.outcome)), {
-    message: 'A closed lead needs no follow-up',
+    message: 'Nothing to follow up once it’s closed',
     path: ['followUpOn'],
   });
 export const logActivityFormResolver = zodResolver(logActivityFormSchema);
@@ -184,6 +224,14 @@ export const callListItemDtoSchema = z
     status: z.string(),
     match_score: z.number(),
     location: text,
+    /** A job's employer. */
+    funder: text,
+    deadline: z.string().nullish(),
+    /** Where to apply for a job ("" for client leads). */
+    apply_url: text,
+    application: z
+      .object({ status: z.enum(pitchStatuses).catch('ready') })
+      .nullish(),
     category: text,
     phone: text,
     whatsapp_number: text,
@@ -211,6 +259,10 @@ export const callListItemDtoSchema = z
     status: dto.status,
     matchScore: dto.match_score,
     location: dto.location,
+    funder: dto.funder,
+    deadline: dto.deadline ?? null,
+    applyUrl: dto.apply_url,
+    application: dto.application ? { status: dto.application.status } : null,
     category: dto.category,
     phone: dto.phone,
     whatsappNumber: dto.whatsapp_number,
@@ -233,6 +285,57 @@ export const callListItemDtoSchema = z
     followUpOn: dto.follow_up_on ?? null,
   }));
 export type CallListItem = z.infer<typeof callListItemDtoSchema>;
+
+// ---------------------------------------------------------------------------
+// A job application: the cover letter and tailored CV for an approved job
+// ---------------------------------------------------------------------------
+
+export const applicationDtoSchema = z
+  .object({
+    id: z.string(),
+    status: z.enum(pitchStatuses),
+    cover_letter: text,
+    /** Simple Markdown ("# Name", "## Experience", "- " bullets). */
+    cv: text,
+    gaps: z.array(z.string()).default([]),
+    /** Lines of the CV or letter that the original CV doesn't support. */
+    unverified: z.array(z.string()).default([]),
+    cv_document_title: text,
+    apply_url: text,
+    instructions: text,
+    error: text,
+    edited_by: person,
+    edited_at: z.string().nullish(),
+    updated_at: z.string(),
+  })
+  .transform((dto) => ({
+    id: dto.id,
+    status: dto.status,
+    coverLetter: dto.cover_letter,
+    cv: dto.cv,
+    gaps: dto.gaps,
+    unverified: dto.unverified,
+    cvDocumentTitle: dto.cv_document_title,
+    applyUrl: dto.apply_url,
+    instructions: dto.instructions,
+    error: dto.error,
+    editedBy: dto.edited_by,
+    editedAt: dto.edited_at ?? null,
+    updatedAt: dto.updated_at,
+  }));
+export type JobApplication = z.infer<typeof applicationDtoSchema>;
+
+export const applicationFormSchema = z.object({
+  coverLetter: z.string().trim().max(6000, 'Keep it under 6,000 characters'),
+  cv: z.string().trim().max(15000, 'Keep it under 15,000 characters'),
+});
+export const applicationFormResolver = zodResolver(applicationFormSchema);
+export type ApplicationFormInput = z.infer<typeof applicationFormSchema>;
+
+export const toApplicationBody = (input: ApplicationFormInput) => ({
+  cover_letter: input.coverLetter,
+  cv: input.cv,
+});
 
 // ---------------------------------------------------------------------------
 // Links that open the person's own apps (nothing is sent by Leadline)

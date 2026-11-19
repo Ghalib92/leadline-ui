@@ -94,7 +94,12 @@ export function CallButton({
   );
 }
 
-const GOOD: readonly LeadOutcome[] = ['interested', 'meeting'];
+const GOOD: readonly LeadOutcome[] = [
+  'interested',
+  'meeting',
+  'interview',
+  'offer',
+];
 
 export function OutcomeBadge({ outcome }: Readonly<{ outcome: LeadOutcome }>) {
   return (

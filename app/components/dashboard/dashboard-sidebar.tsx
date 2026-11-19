@@ -4,6 +4,7 @@ import {
   Bot,
   Building2,
   CalendarDays,
+  ClipboardList,
   Send,
   Home,
   LogOut,
@@ -50,9 +51,17 @@ function navFor(slug: string | undefined, candidate = false) {
           icon: Radar,
           end: false,
         },
-        // A job seeker works alone and calls no clients.
+        // A job seeker works alone and calls no clients; the same list tracks
+        // their applications.
         ...(candidate
-          ? []
+          ? [
+              {
+                to: `${base}/calls`,
+                label: 'Applications',
+                icon: ClipboardList,
+                end: false,
+              },
+            ]
           : [
               {
                 to: `${base}/calls`,

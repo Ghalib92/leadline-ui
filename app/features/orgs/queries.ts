@@ -218,8 +218,9 @@ export const useClientBrief = (orgId: string, enabled = true) =>
     enabled: !!orgId && enabled,
   });
 
-/** What a job seeker looks for (their Jobs workers' brief). */
-export const useJobBrief = (orgId: string, enabled = true) =>
+/** What a job seeker looks for (their Jobs workers' brief). `pollMs` refetches it,
+ * e.g. while their CV is read in the background. */
+export const useJobBrief = (orgId: string, enabled = true, pollMs?: number) =>
   useQuery({
     queryKey: orgKeys.jobBrief(orgId),
     queryFn: async (): Promise<JobBrief> => {
@@ -227,6 +228,7 @@ export const useJobBrief = (orgId: string, enabled = true) =>
       return jobBriefDtoSchema.parse(data);
     },
     enabled: !!orgId && enabled,
+    refetchInterval: pollMs || false,
   });
 
 /** What the organization bids for (its Tenders workers' brief). */

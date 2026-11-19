@@ -4,6 +4,7 @@ import tenderBrief from './__fixtures__/backend/tender_brief.json';
 import {
   clientBriefDtoSchema,
   clientBriefFormSchema,
+  jobBriefDtoSchema,
   tenderBriefDtoSchema,
   tenderBriefFormSchema,
   toClientBriefWrite,
@@ -80,5 +81,38 @@ describe('tenders brief', () => {
     expect(
       tenderBriefFormSchema.safeParse({ minValue: '', maxValue: 5 }).success
     ).toBe(true);
+  });
+});
+
+describe('job preferences', () => {
+  it('reads what reading the CV found', () => {
+    const brief = jobBriefDtoSchema.parse({
+      target_roles: ['Backend developer'],
+      skills: ['Python'],
+      cv_suggestions: {
+        document_id: 'd1',
+        document_title: 'Brian Otieno CV.pdf',
+        read_at: '2026-11-19T08:00:00Z',
+        filled: ['headline', 'years_experience'],
+        target_roles: ['Software Engineer'],
+        skills: ['Django', 'Docker'],
+        prompt_id: 'cv_reader/v1',
+        model: 'openai/gpt-oss-20b',
+      },
+    });
+    expect(brief.cvSuggestions).toEqual({
+      documentTitle: 'Brian Otieno CV.pdf',
+      readAt: '2026-11-19T08:00:00Z',
+      filled: ['headline', 'years_experience'],
+      targetRoles: ['Software Engineer'],
+      skills: ['Django', 'Docker'],
+    });
+  });
+
+  it('has no suggestions before a CV is read', () => {
+    expect(
+      jobBriefDtoSchema.parse({ cv_suggestions: {} }).cvSuggestions
+    ).toBeNull();
+    expect(jobBriefDtoSchema.parse({}).cvSuggestions).toBeNull();
   });
 });

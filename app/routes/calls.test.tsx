@@ -10,9 +10,11 @@ import activity from '~/lib/schema/__fixtures__/backend/lead_activity.json';
 import CallListPage from './o.$slug.calls';
 
 const ORG = 'Kq7vB2mXp9Lt';
+const orgView = vi.hoisted(() => ({ isCandidate: false }));
 vi.mock('~/lib/org/org-context', () => ({
   useOrg: () => ({
     org: { id: 'Kq7vB2mXp9Lt' },
+    view: orgView,
     role: 'member',
     can: () => true,
   }),
@@ -126,5 +128,55 @@ describe('Call list', () => {
       note: '',
       follow_up_on: null,
     });
+  });
+
+  it('is a job seeker’s application tracker', async () => {
+    orgView.isCandidate = true;
+    try {
+      server.use(
+        http.get(`*/api/organizations/${ORG}/call-list`, () =>
+          HttpResponse.json({
+            count: 1,
+            next: null,
+            previous: null,
+            results: [
+              {
+                ...callList.results[0],
+                title: 'Backend Developer',
+                funder: 'Savannah Informatics',
+                location: 'Nairobi, Kenya',
+                deadline: '2026-11-30T20:59:59Z',
+                apply_url: 'https://jobs.example.com/apply',
+                application: { status: 'ready' },
+                pitch: null,
+                phone: '',
+                whatsapp_number: '',
+                email: '',
+                evidence: [],
+                last_outcome: 'applied',
+                last_channel: 'online',
+              },
+            ],
+          })
+        )
+      );
+      renderPage();
+      const row = (
+        await screen.findByRole('link', { name: 'Backend Developer' })
+      ).closest('li')!;
+      expect(
+        screen.getByRole('heading', { name: 'Applications' })
+      ).toBeVisible();
+      expect(screen.getByRole('tab', { name: 'To apply' })).toBeVisible();
+      expect(within(row).getByText('Applied')).toBeVisible();
+      expect(within(row).getByText(/Savannah Informatics/)).toBeVisible();
+      expect(
+        within(row).getByRole('link', { name: /^apply/i })
+      ).toHaveAttribute('href', 'https://jobs.example.com/apply');
+      expect(within(row).queryByRole('link', { name: /whatsapp/i })).toBeNull();
+      expect(screen.getByText('1 job')).toBeVisible();
+    } finally {
+      orgView.isCandidate = false;
+    }
   });
 });

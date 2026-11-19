@@ -1,0 +1,29 @@
+{
+  "id": "Gh4aymFVZz2w",
+  "status": "ready",
+  "cover_letter": "Dear Hiring Team at Savannah Informatics,\n\nI am applying for the Backend Developer role because my four years of Python and Django experience building payment and fintech APIs align directly with your need for efficient, scalable backend code. At PesaLink Africa I built payment APIs with Django REST Framework that processed 50,000 transactions daily, demonstrating my ability to deliver high‑volume, reliable services. In the same position I worked with PostgreSQL, Redis, Celery, Docker and AWS (EC2, RDS), giving me hands‑on experience with relational databases, asynchronous processing and cloud deployment – all core to your healthcare platform.\n\nEarlier, as a Junior Python Developer at Soko Digital, I delivered a full‑stack e‑commerce backend in Django and integrated the M‑Pesa Daraja API, showing my skill in creating and maintaining RESTful endpoints and interfacing with external services. Throughout both roles I used Git for version control and collaborated with teammates on code changes.\n\nI hold a BSc in Computer Science (2020), meeting the educational requirement, and I am based in Nairobi, ready for on‑site work. While I have not yet used GraphQL in production, my experience designing REST APIs positions me to pick up GraphQL quickly, and I am eager to expand my skill set in that area.\n\nI would welcome the opportunity to discuss how my background can contribute to Savannah Informatics’ healthcare solutions. Thank you for considering my application.\n\nSincerely,\nBrian Kamau",
+  "cv": "# Brian Kamau\n**Backend developer (Python, Django)**\n\n## Profile\n- Backend developer with 4 years of Python and Django experience building payment and fintech APIs.\n- Delivered high‑volume transaction processing and integrated mobile payment services.\n- Strong foundation in relational databases, containerisation, cloud services and version control.\n\n## Skills\n- Python, Django, Django REST Framework\n- PostgreSQL, Redis, Celery\n- Docker, AWS (EC2, RDS)\n- REST APIs, Git\n\n## Experience\n### Backend Developer, PesaLink Africa (Nairobi) – 2023 to Present\n- Built payment APIs in Django REST Framework handling 50,000 transactions per day.\n- Utilised PostgreSQL, Redis, Celery, Docker and AWS (EC2, RDS) for data storage, asynchronous processing and deployment.\n- Collaborated with the team using Git for version control.\n\n### Junior Python Developer, Soko Digital (Nairobi) – 2021 to 2023\n- Built an e‑commerce backend in Django and integrated the M‑Pesa Daraja API.\n- Developed RESTful endpoints to enable reliable data exchange with external services.\n- Employed Git for source‑code management.\n\n## Education\n- BSc Computer Science, Jomo Kenyatta University of Agriculture and Technology, 2020",
+  "gaps": [
+    "The posting requires experience with GraphQL; your CV does not list GraphQL work. You can emphasize your REST API design experience and state you are prepared to learn GraphQL quickly.",
+    "Golang is listed as a preferred language, but your CV only shows Python/Django. Highlight your strong Python background and mention any interest or self‑study in Golang.",
+    "The job mentions working in Linux environments; your CV does not explicitly reference Linux. If you have used Linux for development or deployment, note that experience when discussing your AWS EC2 work."
+  ],
+  "unverified": [
+    "Delivered high‑volume transaction processing and integrated mobile payment services.",
+    "Strong foundation in relational databases, containerisation, cloud services and version control.",
+    "Utilised PostgreSQL, Redis, Celery, Docker and AWS (EC2, RDS) for data storage, asynchronous processing and deployment.",
+    "Collaborated with the team using Git for version control.",
+    "Developed RESTful endpoints to enable reliable data exchange with external services.",
+    "Employed Git for source‑code management."
+  ],
+  "cv_document_title": "Brian Kamau CV",
+  "apply_url": "https://www.myjobmag.co.ke/job/backend-developer-savannah-informatics-5",
+  "instructions": "",
+  "error": "",
+  "edited_by": null,
+  "edited_at": null,
+  "writing_started_at": "2026-11-19T10:53:01.164280+03:00",
+  "prompt_id": "application_writer/v2",
+  "model": "openai/gpt-oss-120b",
+  "updated_at": "2026-11-19T10:53:19.543018+03:00"
+}

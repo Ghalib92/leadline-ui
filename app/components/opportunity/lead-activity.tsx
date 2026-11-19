@@ -7,8 +7,10 @@ import {
 } from '~/features/leads';
 import {
   CLOSED_OUTCOMES,
+  clientOutcomes,
+  jobChannels,
+  jobOutcomes,
   leadChannels,
-  leadOutcomes,
   logActivityFormResolver,
   type LeadActivity,
   type LeadChannel,
@@ -33,15 +35,18 @@ import { useConfirm } from '~/components/ui/confirm-dialog';
 import { OutcomeBadge } from './lead-actions';
 import { WORKED_LEAD_STATUSES } from './pitch-card';
 
-/** Log a call, message or visit and what came of it. */
+/** Log a call, message or visit and what came of it; for a job, a step of the
+ * application (applied, interview, offer…). */
 export function LogActivityForm({
   orgId,
   oppId,
-  defaultChannel = 'call',
+  isJob = false,
+  defaultChannel,
   onLogged,
 }: Readonly<{
   orgId: string;
   oppId: string;
+  isJob?: boolean;
   defaultChannel?: LeadChannel;
   onLogged?: () => void;
 }>) {
@@ -49,7 +54,7 @@ export function LogActivityForm({
   const form = useForm<LogActivityFormInput>({
     resolver: logActivityFormResolver,
     defaultValues: {
-      channel: defaultChannel,
+      channel: defaultChannel ?? (isJob ? 'online' : 'call'),
       outcome: undefined,
       note: '',
       followUpOn: '',
@@ -84,15 +89,15 @@ export function LogActivityForm({
             control={form.control}
             name="channel"
             label="How"
-            options={leadChannels}
+            options={isJob ? jobChannels : leadChannels}
             searchable={false}
             clearable={false}
           />
           <FormPickerField
             control={form.control}
             name="outcome"
-            label="What happened"
-            options={leadOutcomes}
+            label={isJob ? 'Step' : 'What happened'}
+            options={isJob ? jobOutcomes : clientOutcomes}
             searchable={false}
             clearable={false}
             placeholder="Pick one"
@@ -103,7 +108,11 @@ export function LogActivityForm({
           name="note"
           label="Note"
           rows={2}
-          placeholder="Spoke to the manager, Grace. Wants a quote by Friday."
+          placeholder={
+            isJob
+              ? 'Applied through their careers page. Ref BE-2026-14.'
+              : 'Spoke to the manager, Grace. Wants a quote by Friday.'
+          }
         />
         {!closed && (
           <FormTextField
@@ -165,7 +174,8 @@ function ActivityItem({
   );
 }
 
-/** A client lead's calls and messages, newest first, with a form to log one. */
+/** A client lead's calls and messages (or a job's application steps), newest first,
+ * with a form to log one. */
 export function LeadActivityCard({
   orgId,
   opp,
@@ -179,11 +189,14 @@ export function LeadActivityCard({
 
   if (!approved) return null;
   const canLog = can('opportunities.triage');
+  const isJob = opp.type === 'job';
 
   const deleteEntry = async (id: string) => {
     const ok = await confirm({
       title: 'Delete this entry?',
-      description: 'It leaves the lead’s history and the call list.',
+      description: isJob
+        ? 'It leaves the job’s history and your applications.'
+        : 'It leaves the lead’s history and the call list.',
       confirmLabel: 'Delete',
       destructive: true,
     });
@@ -196,12 +209,16 @@ export function LeadActivityCard({
   };
 
   return (
-    <AppCard title="Calls and messages" contentClassName="space-y-5">
-      {canLog && <LogActivityForm orgId={orgId} oppId={opp.id} />}
+    <AppCard
+      title={isJob ? 'Application progress' : 'Calls and messages'}
+      contentClassName="space-y-5"
+    >
+      {canLog && <LogActivityForm orgId={orgId} oppId={opp.id} isJob={isJob} />}
       {activities.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Nothing logged yet. After you call or message them, log what happened
-          here.
+          {isJob
+            ? 'Nothing logged yet. When you apply, log it here with a date to follow up; then each interview, offer or answer.'
+            : 'Nothing logged yet. After you call or message them, log what happened here.'}
         </p>
       ) : (
         <ul className="space-y-3">

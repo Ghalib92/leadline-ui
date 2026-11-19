@@ -265,7 +265,7 @@ export const documentCategories = [
   { value: 'pitch_deck', label: 'Pitch deck' },
   { value: 'case_study', label: 'Case study / project report' },
   { value: 'policy', label: 'Policy document' },
-  { value: 'cv', label: 'Team CVs / bios' },
+  { value: 'cv', label: 'CV, résumé or team bios' },
   { value: 'other', label: 'Other' },
 ] as const satisfies readonly Option[];
 

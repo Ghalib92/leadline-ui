@@ -195,6 +195,17 @@ export const jobBriefDtoSchema = z
     companies: list(z.string()),
     excluded_keywords: list(z.string()),
     notes: text,
+    /** What reading the CV found ({} before it was read). */
+    cv_suggestions: z
+      .object({
+        document_title: text,
+        read_at: z.string().nullish(),
+        filled: list(z.string()),
+        target_roles: list(z.string()),
+        skills: list(z.string()),
+      })
+      .partial()
+      .nullish(),
   })
   .transform((dto) => ({
     headline: dto.headline,
@@ -211,6 +222,15 @@ export const jobBriefDtoSchema = z
     companies: dto.companies,
     excludedKeywords: dto.excluded_keywords,
     notes: dto.notes,
+    cvSuggestions: dto.cv_suggestions?.read_at
+      ? {
+          documentTitle: dto.cv_suggestions.document_title ?? '',
+          readAt: dto.cv_suggestions.read_at,
+          filled: dto.cv_suggestions.filled ?? [],
+          targetRoles: dto.cv_suggestions.target_roles ?? [],
+          skills: dto.cv_suggestions.skills ?? [],
+        }
+      : null,
   }));
 export type JobBrief = z.infer<typeof jobBriefDtoSchema>;
 
