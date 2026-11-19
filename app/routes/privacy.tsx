@@ -9,7 +9,7 @@ export function meta() {
   return generateSEOTags({
     title: 'Privacy | Leadline',
     description:
-      'What Leadline collects, why, who helps us run it, how long we keep it, and how to see, fix or delete your data.',
+      'What Leadline collects, why, how long we keep it, and how to see, fix or delete your data.',
     url: '/privacy',
     keywords: 'Leadline privacy, data protection, Kenya Data Protection Act',
   });
@@ -28,42 +28,6 @@ function Section({
     </section>
   );
 }
-
-/** Who helps us run Leadline, and what each one gets. Keep in step with the backend. */
-const PROVIDERS: { name: string; what: string }[] = [
-  {
-    name: 'Our server (Frankfurt, Germany)',
-    what: 'Stores your account, your organization, your documents and everything Leadline finds and writes for you.',
-  },
-  {
-    name: 'Vercel',
-    what: 'Hosts the website. Your requests pass through it on their way to our server.',
-  },
-  {
-    name: 'Groq (AI)',
-    what: 'Reads and writes for you: your profile, the summary of your documents, CVs, extracts from your documents and drafts are sent to its AI models. Groq says it does not keep this data, except short-lived logs (up to 30 days) for keeping its service safe and working.',
-  },
-  {
-    name: 'Google Gemini (AI)',
-    what: 'Reads only public content: published tenders, calls for proposals and public web pages. We never send it your documents, your CVs or your drafts.',
-  },
-  {
-    name: 'Tavily',
-    what: 'Runs web searches. It receives search words based on what you look for, such as “software tenders Kenya”.',
-  },
-  {
-    name: 'Jina AI and Firecrawl',
-    what: 'Open public web pages, such as a business’s website, when our server can’t read them directly. They receive the page address.',
-  },
-  {
-    name: 'Hunter',
-    what: 'Finds public business email addresses for funders and businesses you approve. It receives the business’s web address.',
-  },
-  {
-    name: 'ZeptoMail (Zoho)',
-    what: 'Sends our emails: sign-in codes, reminders and summaries. It receives your email address and the message.',
-  },
-];
 
 export default function PrivacyPage() {
   const mail = (
@@ -141,32 +105,13 @@ export default function PrivacyPage() {
           </p>
         </Section>
 
-        <Section title="Who helps us run Leadline">
+        <Section title="Who else handles it">
           <p>
-            These companies process data for us, only to provide their part of
-            the service. Some of them work outside Kenya, including in the
-            United States and the European Union.
-          </p>
-          <dl className="divide-y divide-border rounded-xl border border-border bg-card">
-            {PROVIDERS.map((provider) => (
-              <div
-                key={provider.name}
-                className="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:gap-4"
-              >
-                <dt className="font-medium text-foreground">{provider.name}</dt>
-                <dd className="text-sm">{provider.what}</dd>
-              </div>
-            ))}
-          </dl>
-        </Section>
-
-        <Section title="Public information about businesses">
-          <p>
-            To find clients, tenders and funders, Leadline reads public sources:
-            business directories, OpenStreetMap, tender portals and public
-            websites. It may show a business’s public name, phone number, email
-            address and website. If this is about you or your business and you
-            want it removed, write to {mail}.
+            A few trusted service providers help us run Leadline, for example to
+            host it, send emails and run the AI that reads and writes for you.
+            They may use your data only to do that work for us. Some of them are
+            outside Kenya. We never send your documents, CVs or drafts to a
+            service that uses them to train its AI.
           </p>
         </Section>
 

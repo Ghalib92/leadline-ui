@@ -21,11 +21,13 @@ describe('privacy page', () => {
     expect(links[0]).toHaveAttribute('href', `mailto:${CONTACT_EMAIL}`);
   });
 
-  it('says which AI sees private data and which sees only public content', () => {
+  it('keeps how Leadline is built to itself', () => {
     renderPage();
-    expect(screen.getByText('Groq (AI)')).toBeInTheDocument();
+    for (const name of [/Groq/, /Gemini/, /Vercel/, /Tavily/, /Frankfurt/]) {
+      expect(screen.queryByText(name)).toBeNull();
+    }
     expect(
-      screen.getByText(/never send it your documents, your CVs or your drafts/)
+      screen.getByText(/never send your documents, CVs or drafts/)
     ).toBeInTheDocument();
   });
 

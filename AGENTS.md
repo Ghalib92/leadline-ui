@@ -14,8 +14,9 @@ backend (`leadline_backend`) at `API_URL` — there is no in-browser mock.
 Shells:
 
 - **Marketing** (`components/root-layout.tsx`) — public: home (`/`), about
-  (`/about`), privacy (`/privacy`: plain-language privacy notice; its list of
-  service providers must match what the backend really sends where). Light header; a "Dashboard" button (→ `/app`) when signed in.
+  (`/about`), privacy (`/privacy`: plain-language privacy notice; it names no
+  vendors, hosting location or other architecture, only what is collected, why,
+  retention and rights). Light header; a "Dashboard" button (→ `/app`) when signed in.
 - **Auth** (`components/auth-layout.tsx`) — split screen: login, register,
   forgot/reset password, invite acceptance (`/invite/:token`).
 - **Onboarding** (`routes/onboarding.tsx`) — standalone, guarded in its own loader:
