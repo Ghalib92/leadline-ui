@@ -68,7 +68,7 @@
     "radix-ui": "^1.4.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-hook-form": "^7.71.1",
+    "react-hook-form": "^7.92.0",
     "react-hot-toast": "^2.6.0",
     "react-redux": "^9.2.0",
     "react-router": "8.4.0",

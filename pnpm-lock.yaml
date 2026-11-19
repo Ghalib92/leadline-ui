@@ -13,7 +13,7 @@ importers:
         version: 5.3.0
       '@hookform/resolvers':
         specifier: ^5.9.1
-        version: 5.9.1(@standard-schema/spec@1.1.0)(ajv@8.18.0)(react-hook-form@7.71.1(react@19.3.0))(valibot@1.5.0(typescript@5.9.3))(zod@4.3.6)
+        version: 5.9.1(@standard-schema/spec@1.1.0)(ajv@8.18.0)(react-hook-form@7.92.0(@types/react@19.3.0)(react@19.3.0))(valibot@1.5.0(typescript@5.9.3))(zod@4.3.6)
       '@netlify/vite-plugin-react-router':
         specifier: ^4.0.0
         version: 4.0.0(react-router@8.4.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(vite@7.3.1(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.9.1))
@@ -87,8 +87,8 @@ importers:
         specifier: ^19.3.0
         version: 19.3.0(react@19.3.0)
       react-hook-form:
-        specifier: ^7.71.1
-        version: 7.71.1(react@19.3.0)
+        specifier: ^7.92.0
+        version: 7.92.0(@types/react@19.3.0)(react@19.3.0)
       react-hot-toast:
         specifier: ^2.6.0
         version: 2.6.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -345,6 +345,10 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+
+  '@babel/runtime@7.29.14':
+    resolution: {integrity: sha512-Y5tqevQaUAZhhj82BpYMNC1ssvLQTVAfwKdm8iy8qwmhvC2/CpcAu8OC+QEtjM7pMk7knx83u1Qj8gzkicyelw==}
+    engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.29.7':
     resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
@@ -4443,11 +4447,15 @@ packages:
     peerDependencies:
       react: ^19.3.0
 
-  react-hook-form@7.71.1:
-    resolution: {integrity: sha512-9SUJKCGKo8HUSsCO+y0CtqkqI5nNuaDqTxyqPsZPqIwudpj4rCrAz/jZV+jn57bx5gtZKOh3neQu94DXMc+w5w==}
+  react-hook-form@7.92.0:
+    resolution: {integrity: sha512-O5ILyY5fYHN7N13Pfxpe55KboyNFsJdM03BHpshQkClJd8raugiAUGY7VjifITrfhVxyx81ko25azXCoayhf1w==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
+      '@types/react': '*'
       react: ^16.8.0 || ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   react-hot-toast@2.6.0:
     resolution: {integrity: sha512-bH+2EBMZ4sdyou/DPrfgIouFpcRLCJ+HoCA32UoAYHn6T3Ur5yfcDCeSr5mwldl6pFOsiocmrXMuoCJ1vV8bWg==}
@@ -5460,6 +5468,8 @@ snapshots:
       '@babel/core': 7.28.6
       '@babel/helper-plugin-utils': 7.28.6
 
+  '@babel/runtime@7.29.14': {}
+
   '@babel/runtime@7.29.7': {}
 
   '@babel/template@7.28.6':
@@ -5949,10 +5959,10 @@ snapshots:
 
   '@fontsource-variable/figtree@5.3.0': {}
 
-  '@hookform/resolvers@5.9.1(@standard-schema/spec@1.1.0)(ajv@8.18.0)(react-hook-form@7.71.1(react@19.3.0))(valibot@1.5.0(typescript@5.9.3))(zod@4.3.6)':
+  '@hookform/resolvers@5.9.1(@standard-schema/spec@1.1.0)(ajv@8.18.0)(react-hook-form@7.92.0(@types/react@19.3.0)(react@19.3.0))(valibot@1.5.0(typescript@5.9.3))(zod@4.3.6)':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.71.1(react@19.3.0)
+      react-hook-form: 7.92.0(@types/react@19.3.0)(react@19.3.0)
     optionalDependencies:
       '@standard-schema/spec': 1.1.0
       ajv: 8.18.0
@@ -7301,7 +7311,7 @@ snapshots:
   '@testing-library/dom@10.4.1':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.14
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
@@ -9846,9 +9856,11 @@ snapshots:
       react: 19.3.0
       scheduler: 0.28.0
 
-  react-hook-form@7.71.1(react@19.3.0):
+  react-hook-form@7.92.0(@types/react@19.3.0)(react@19.3.0):
     dependencies:
       react: 19.3.0
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   react-hot-toast@2.6.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     dependencies:
