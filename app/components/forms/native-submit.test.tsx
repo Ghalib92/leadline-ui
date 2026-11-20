@@ -16,24 +16,25 @@ import {
  * submit. Without `method="post"` that's a GET — email and password end up in
  * the URL, history and server logs.
  */
-function ssr(element: React.ReactNode) {
+function ssr(element: React.ReactNode, entry = '/') {
   const Stub = createRoutesStub([{ path: '/', Component: () => element }]);
   return renderToString(
     <QueryClientProvider client={new QueryClient()}>
-      <Stub initialEntries={['/']} />
+      <Stub initialEntries={[entry]} />
     </QueryClientProvider>
   );
 }
 
 describe('auth forms before JavaScript loads', () => {
   it.each([
-    ['LoginForm', <LoginForm key="a" />],
-    ['RegisterForm', <RegisterForm key="b" />],
-    ['ForgotPasswordForm', <ForgotPasswordForm key="c" />],
-    ['ResetPasswordCodeForm', <ResetPasswordCodeForm key="e" />],
-    ['VerifyEmailForm', <VerifyEmailForm key="f" />],
-  ])('%s never submits credentials in the URL', (_name, element) => {
-    const forms = ssr(element).match(/<form\b[^>]*>/g) ?? [];
+    ['LoginForm', <LoginForm key="a" />, '/'],
+    ['RegisterForm (business)', <RegisterForm key="b" />, '/?as=business'],
+    ['RegisterForm (job seeker)', <RegisterForm key="g" />, '/?as=job-seeker'],
+    ['ForgotPasswordForm', <ForgotPasswordForm key="c" />, '/'],
+    ['ResetPasswordCodeForm', <ResetPasswordCodeForm key="e" />, '/'],
+    ['VerifyEmailForm', <VerifyEmailForm key="f" />, '/'],
+  ])('%s never submits credentials in the URL', (_name, element, entry) => {
+    const forms = ssr(element, entry).match(/<form\b[^>]*>/g) ?? [];
     expect(forms.length).toBeGreaterThan(0);
     for (const form of forms) expect(form).toMatch(/method="post"/);
   });

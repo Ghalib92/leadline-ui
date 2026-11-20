@@ -35,6 +35,8 @@ export const registerSchema = z
     email: z.email('Enter a valid email address'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
+    /** Business sign-ups only: prefills setup; never sent with the account. */
+    businessName: z.string().trim().max(200).optional(),
   })
   .refine((values) => values.password === values.confirmPassword, {
     message: 'Passwords do not match',
@@ -77,6 +79,11 @@ export const changeEmailSchema = z.object({
   password: z.string().min(1, 'Enter your current password'),
 });
 
+/** Deleting the account asks for the password once more. */
+export const deleteAccountSchema = z.object({
+  password: z.string().min(1, 'Enter your password'),
+});
+
 export const changePasswordSchema = z
   .object({
     current: z.string().min(1, 'Enter your current password'),
@@ -102,6 +109,7 @@ export const resetPasswordWithCodeResolver = zodResolver(
   resetPasswordWithCodeSchema
 );
 export const changeEmailResolver = zodResolver(changeEmailSchema);
+export const deleteAccountResolver = zodResolver(deleteAccountSchema);
 export const changePasswordResolver = zodResolver(changePasswordSchema);
 export const updateProfileResolver = zodResolver(updateProfileSchema);
 
@@ -116,3 +124,4 @@ export type ResetPasswordWithCodeInput = z.infer<
   typeof resetPasswordWithCodeSchema
 >;
 export type ChangeEmailInput = z.infer<typeof changeEmailSchema>;
+export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;
