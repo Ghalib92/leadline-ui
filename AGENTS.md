@@ -387,13 +387,30 @@ code names (`agents`, `runs`, `briefs`) stay in code and URLs only.
 | integrations                | **Connected apps**                                           |
 | "the agents"                | **Leadline** or **the AI**                                   |
 
-The sidebar follows the order people use the app: **Home**, then **Find**
-(Searches, Opportunities/Jobs, Search history), **Follow up** (Call list or
-Applications, Funder emails, Deadlines), **Settings** (Profile & documents or
-Profile & CV, Team, Connected apps). Sidebar items carry `data-tour` ids for the
-first-run tour (`components/onboarding/first-run-tour.tsx`): shown once per person
-on their first org page (remembered in localStorage), again from ⌘K › "Take the
-tour". It is a floating card, not a modal, so the lit sidebar item stays visible.
+The sidebar follows the order people use the app, and differs by account type
+(`navFor` in `components/dashboard/dashboard-sidebar.tsx`):
+
+- **Organization:** **Home**, **Find** (Searches, Opportunities, Search history),
+  **Follow up** (Call list only with the clients goal, Funder emails only with
+  grants, Deadlines), **Settings** (Profile & documents, Team, Connected apps).
+- **Job seeker** (`isCandidate`): **Home**, **Find jobs** (Job searches, Jobs found,
+  Search history), **Apply** (Applications, Deadlines), **You** (Profile & CV).
+
+A job seeker is one person, not a small company: never show them organization
+words or fields (Admin, legal name, registration, budget, funders, SDGs, folders,
+pitch decks, grant databases, "archive organization"). Their role reads **Job
+seeker**; their workspace list says **workspaces**; their Profile & CV page has
+Profile, CV (required), Job sites, Search settings (depth only) and Account
+(Delete account). The CV comes first: the tour starts and ends on it, `CvPrompt`
+asks for it, and `useRunBlocked` holds searches until it has been read.
+
+Sign-up asks "What brings you to Leadline?" before the account form (`?as=business`
+or `?as=job-seeker`, `lib/account-kind.ts`); setup then opens on that kind's form.
+
+Sidebar items carry `data-tour` ids for the first-run tour
+(`components/onboarding/first-run-tour.tsx`): shown once per person on their first
+org page (remembered in localStorage), again from ⌘K › "Take the tour". It is a
+floating card, not a modal, so the lit sidebar item stays visible.
 
 ## Conventions
 
