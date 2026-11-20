@@ -141,7 +141,7 @@ export default function OpportunitiesPage() {
         }
         actions={
           <Button asChild variant="outline">
-            <Link to={path('/agents')}>Workers</Link>
+            <Link to={path('/agents')}>Searches</Link>
           </Button>
         }
       />

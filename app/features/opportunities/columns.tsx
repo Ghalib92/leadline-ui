@@ -62,14 +62,15 @@ export function useOpportunityColumns({
         accessorKey: 'title',
         header: 'Opportunity',
         cell: ({ row }) => (
-          <div className="min-w-[16rem] max-w-md">
+          <div className="max-w-[14rem] min-w-[12rem] 2xl:max-w-sm">
             <Link
               to={path(`/opportunities/${row.original.id}`)}
-              className="line-clamp-1 font-medium hover:underline"
+              title={row.original.title}
+              className="block truncate font-medium hover:underline"
             >
               {row.original.title}
             </Link>
-            <p className="line-clamp-1 text-xs text-muted-foreground">
+            <p className="truncate text-xs text-muted-foreground">
               {row.original.latestReview === null && (
                 <span className="mr-1 font-medium text-sky-700 dark:text-sky-300">
                   To review ·

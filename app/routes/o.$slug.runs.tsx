@@ -57,7 +57,7 @@ export default function RunsPage() {
         description="Every search: where it looked, what went wrong, and what it found."
         actions={
           <Button asChild variant="outline">
-            <Link to={path('/agents')}>Workers</Link>
+            <Link to={path('/agents')}>Searches</Link>
           </Button>
         }
       />

@@ -40,7 +40,7 @@ export function RunSettingsUsed({ run }: Readonly<{ run: AgentRun }>) {
   const count = (n: number, noun: string) =>
     `${n} ${noun}${n === 1 ? '' : 's'}`;
   const summary = [
-    count(used.builtinSources.length, 'built-in search'),
+    count(used.builtinSources.length, 'built-in source'),
     count(used.websites.length, 'website'),
     used.knowledgeMode === 'all'
       ? 'all documents'
