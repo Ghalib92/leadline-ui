@@ -631,6 +631,7 @@ export function toMyOrg(view: OrgView, prefs?: PreferencesView): MyOrg {
       createdAt: view.createdAt,
       createdBy: view.createdBy ?? '',
       isCandidate: view.isCandidate,
+      goals: view.profile.goals,
     },
   };
 }

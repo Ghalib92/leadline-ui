@@ -127,7 +127,7 @@ export default function OpportunitiesPage() {
   return (
     <Page width="wide">
       <PageHeader
-        title={view.isCandidate ? 'Jobs' : 'Opportunities'}
+        title={view.isCandidate ? 'Jobs found' : 'Opportunities'}
         description={
           runParam
             ? activeRun

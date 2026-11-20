@@ -5,10 +5,13 @@ import { Button } from '~/components/ui/button';
 import { useAuth } from '~/lib/auth/use-auth';
 import { useOrg } from '~/lib/org/org-context';
 import { useOrgPath } from '~/lib/org/use-org-path';
+import { useSetupStatus } from '~/features/orgs';
 import { cn } from '~/lib/utils';
 
 /** Fired by "Take the tour" (command menu) to show the tour again. */
 export const TOUR_EVENT = 'leadline:tour';
+/** Fired when the tour closes, so what waits for it (the CV prompt) can show. */
+export const TOUR_CLOSED_EVENT = 'leadline:tour-closed';
 
 export function startTour() {
   globalThis.window?.dispatchEvent(new Event(TOUR_EVENT));
@@ -52,34 +55,36 @@ const BUSINESS: Step[] = [
   },
 ];
 
+// A job seeker's order: CV first (nothing is searched without it), then
+// searches, the jobs found, applying.
 const JOB_SEEKER: Step[] = [
   {
     title: 'Welcome to Leadline',
     body: 'Leadline looks for jobs that fit your CV and helps you apply. Here is how it works, in four steps.',
   },
   {
+    target: 'profile',
+    title: '1. Upload your CV',
+    body: 'Start here. Every job is scored against your CV, and your cover letters are written from it. Leadline can’t search until it’s in.',
+  },
+  {
     target: 'searches',
-    title: '1. Set up a search',
-    body: 'A search looks for jobs that fit you, every day or every week, on its own. This is where you start.',
+    title: '2. Your job searches',
+    body: 'A job search looks for the jobs you want, every day or every week, on its own, on company career pages and job boards.',
   },
   {
     target: 'opportunities',
-    title: '2. See the jobs it found',
+    title: '3. See the jobs it found',
     body: 'Each job is scored against your CV, with what fits and what is missing. Approve the ones you want.',
   },
   {
     target: 'follow-up',
-    title: '3. Apply',
+    title: '4. Apply',
     body: 'Approved jobs move to Applications. Leadline writes a cover letter and a CV for that job; you apply on their site and note each step here.',
   },
   {
-    target: 'profile',
-    title: '4. Keep your CV up to date',
-    body: 'Every score and every letter comes from your CV, so the better it is, the better the results.',
-  },
-  {
     title: 'You’re ready',
-    body: 'Set up your first search and Leadline starts looking. You can take this tour again from the search box (⌘K).',
+    body: 'First, upload your CV. You can take this tour again from the search box (⌘K).',
   },
 ];
 
@@ -87,7 +92,7 @@ function doneKey(userId: string) {
   return `leadline:tour-done:${userId}`;
 }
 
-function wasDone(userId: string) {
+export function wasDone(userId: string) {
   try {
     return globalThis.localStorage?.getItem(doneKey(userId)) === '1';
   } catch {
@@ -124,8 +129,11 @@ function useHighlight(target: string | undefined) {
  */
 export function FirstRunTour() {
   const { user } = useAuth();
-  const { org, can } = useOrg();
+  const { org, view, can } = useOrg();
   const path = useOrgPath();
+  const { data: setup } = useSetupStatus(view.id);
+  const needsCv =
+    org.isCandidate && !!setup?.steps.some((s) => s.key === 'cv' && !s.done);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -149,6 +157,7 @@ export function FirstRunTour() {
   const close = useCallback(() => {
     setOpen(false);
     if (user?.id) markDone(user.id);
+    globalThis.window?.dispatchEvent(new Event(TOUR_CLOSED_EVENT));
   }, [user?.id]);
 
   useEffect(() => {
@@ -191,7 +200,9 @@ export function FirstRunTour() {
         </button>
       </div>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-        {step.body}
+        {last && org.isCandidate && !needsCv
+          ? 'Set up your first job search and Leadline starts looking. You can take this tour again from the search box (⌘K).'
+          : step.body}
       </p>
 
       <div className="mt-5 flex items-center justify-between gap-3">
@@ -220,7 +231,11 @@ export function FirstRunTour() {
             </Button>
           )}
           {last ? (
-            can('agents.create') ? (
+            needsCv ? (
+              <Button size="sm" asChild onClick={close}>
+                <Link to={path('/settings/general?tab=cv')}>Upload my CV</Link>
+              </Button>
+            ) : can('agents.create') ? (
               <Button size="sm" asChild onClick={close}>
                 <Link to={path('/agents?new=1')}>Set up a search</Link>
               </Button>

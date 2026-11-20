@@ -37,6 +37,44 @@ const blank: OrgSourceForm = {
   enabled: true,
 };
 
+/** What a source is, in each kind of account's words. */
+const COPY = {
+  organization: {
+    title: 'Your sources',
+    description:
+      'Tender portals, grant databases and pages that list opportunities. Leadline reads them on every search, on top of the places it already checks.',
+    empty:
+      'None yet. Add a tender portal, a grants page or a list of calls that Leadline should read.',
+    add: 'Add source',
+    addTitle: 'Add sources',
+    addDescription:
+      'Tender portals, grant pages or lists of calls for Leadline to read. Add as many as you like.',
+    editTitle: 'Edit source',
+    editDescription:
+      'A tender portal, grants page or list of calls for Leadline to read.',
+    url: 'https://example.org/funding-calls',
+    label: 'Optional, e.g. County tenders',
+    notes: 'Optional, e.g. Only ICT and construction tenders',
+  },
+  candidate: {
+    title: 'Job sites to watch',
+    description:
+      'Career pages and job sites you want Leadline to check on every search, like the careers page of a company you’d love to work for. Leadline also checks the job boards it knows.',
+    empty:
+      'None yet. Add the careers page of a company you want to work for, e.g. Safaricom or Airtel careers.',
+    add: 'Add a job site',
+    addTitle: 'Add job sites',
+    addDescription:
+      'Career pages and job sites for Leadline to check. Add as many as you like.',
+    editTitle: 'Edit job site',
+    editDescription: 'A careers page or job site for Leadline to check.',
+    url: 'https://www.safaricom.co.ke/careers',
+    label: 'Optional, e.g. Safaricom careers',
+    notes: 'Optional, e.g. Only engineering jobs',
+  },
+};
+type Copy = (typeof COPY)['organization'];
+
 function formatDomain(urlStr: string): string {
   try {
     const parsed = new URL(urlStr);
@@ -47,11 +85,13 @@ function formatDomain(urlStr: string): string {
 }
 
 /**
- * Custom grant portals, funding feeds, and RFP pages for discovery agents.
+ * Pages Leadline reads on every search: tender portals and grant databases for
+ * an organization, career pages and job sites for a job seeker.
  * `?edit=source` opens "add"; `?edit=source:<id>` edits.
  */
 export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
   const { view } = useOrg();
+  const copy = view.isCandidate ? COPY.candidate : COPY.organization;
   const { data: sources = [], isPending } = useSources(view.id);
   const save = useSaveSource(view.id);
   const remove = useRemoveSource(view.id);
@@ -131,8 +171,8 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
   return (
     <>
       <AppCard
-        title="Custom sources"
-        description="Portals, grant databases and opportunity lists Leadline reads."
+        title={copy.title}
+        description={copy.description}
         actions={
           canEdit && (
             <Button
@@ -140,17 +180,14 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
               variant="outline"
               onClick={() => setEditing('source')}
             >
-              <Plus className="h-3.5 w-3.5" /> Add source
+              <Plus className="h-3.5 w-3.5" /> {copy.add}
             </Button>
           )
         }
         contentClassName="divide-y divide-border"
       >
         {isPending ? null : sources.length === 0 ? (
-          <p className="py-2 text-sm text-muted-foreground">
-            No custom sources added yet. Add grant websites or feeds for
-            discovery agents to check.
-          </p>
+          <p className="py-2 text-sm text-muted-foreground">{copy.empty}</p>
         ) : (
           sources.map((source) => (
             <div
@@ -227,8 +264,8 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
         open={open}
         onOpenChange={(next) => !next && setEditing(null)}
         dismissible={false}
-        title="Edit source"
-        description="Add a funding portal, grants page or tender list for Leadline to read."
+        title={copy.editTitle}
+        description={copy.editDescription}
         footer={
           <>
             <Button variant="outline" onClick={() => setEditing(null)}>
@@ -251,9 +288,9 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
               control={form.control}
               name="url"
               autoComplete="url"
-              label="Source URL"
+              label="Link"
               type="url"
-              placeholder="https://example.org/funding-calls"
+              placeholder={copy.url}
               required
             />
             <FormTextField
@@ -261,14 +298,14 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
               name="label"
               autoComplete="off"
               label="Label"
-              placeholder="Optional, e.g. Gates Foundation Global Health"
+              placeholder={copy.label}
             />
             <FormTextareaField
               control={form.control}
               name="notes"
               autoComplete="off"
               label="Notes"
-              placeholder="Optional instructions for agents, e.g. Focus on climate and maternal health RFPs"
+              placeholder={copy.notes}
               rows={3}
             />
             <FormSwitchField
@@ -283,6 +320,7 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
       <AddSourcesSheet
         open={adding}
         orgId={view.id}
+        copy={copy}
         onClose={() => setEditing(null)}
       />
       {confirmDialog}
@@ -295,8 +333,14 @@ export function SourcesTab({ editing, setEditing }: Readonly<EditingProps>) {
 function AddSourcesSheet({
   open,
   orgId,
+  copy,
   onClose,
-}: Readonly<{ open: boolean; orgId: string; onClose: () => void }>) {
+}: Readonly<{
+  open: boolean;
+  orgId: string;
+  copy: Copy;
+  onClose: () => void;
+}>) {
   const save = useSaveSource(orgId);
   const form = useForm<OrgSourcesForm>({
     resolver: orgSourcesFormResolver,
@@ -351,8 +395,8 @@ function AddSourcesSheet({
       onOpenChange={(next) => !next && onClose()}
       dismissible={!form.formState.isDirty}
       size="lg"
-      title="Add sources"
-      description="Funding portals, grant pages or tender lists for Leadline to read. Add as many as you like."
+      title={copy.addTitle}
+      description={copy.addDescription}
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
@@ -390,9 +434,9 @@ function AddSourcesSheet({
                     control={form.control}
                     name={`sources.${index}.url`}
                     autoComplete="url"
-                    label="Source URL"
+                    label="Link"
                     type="url"
-                    placeholder="https://example.org/funding-calls"
+                    placeholder={copy.url}
                     required
                   />
                 </div>
@@ -414,14 +458,14 @@ function AddSourcesSheet({
                 name={`sources.${index}.label`}
                 autoComplete="off"
                 label="Label"
-                placeholder="Optional, e.g. Gates Foundation Global Health"
+                placeholder={copy.label}
               />
               <FormTextareaField
                 control={form.control}
                 name={`sources.${index}.notes`}
                 autoComplete="off"
                 label="Notes"
-                placeholder="Optional, e.g. Focus on climate and maternal health RFPs"
+                placeholder={copy.notes}
                 rows={2}
               />
               <FormSwitchField

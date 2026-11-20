@@ -5,6 +5,7 @@ import {
   Building2,
   CalendarDays,
   ClipboardList,
+  FileText,
   Send,
   Home,
   LogOut,
@@ -30,7 +31,11 @@ import { cn } from '~/lib/utils';
 import { OrgSwitcher } from './org-switcher';
 import { useActiveOrgSlug } from '~/lib/org/use-active-org';
 
-function navFor(slug: string | undefined, candidate = false) {
+export function navFor(
+  slug: string | undefined,
+  candidate = false,
+  goals: readonly string[] = []
+) {
   if (!slug) {
     return [
       {
@@ -40,13 +45,82 @@ function navFor(slug: string | undefined, candidate = false) {
     ];
   }
   const base = `/o/${slug}`;
-  // In the order people use Leadline: set up searches, see what they found, act on
-  // it, then settings. Plain words: users shouldn't need our vocabulary.
+  const home = {
+    heading: '',
+    items: [{ to: base, label: 'Home', icon: Home, end: true }],
+  };
+  const deadlines = {
+    to: `${base}/calendar`,
+    label: 'Deadlines',
+    icon: CalendarDays,
+    end: false,
+    tour: 'follow-up',
+  };
+  const history = {
+    to: `${base}/runs`,
+    label: 'Search history',
+    icon: Activity,
+    end: false,
+  };
+
+  // A job seeker: find jobs, apply, keep the profile and CV up to date. No
+  // team, no clients to call, no funders, no team apps.
+  if (candidate) {
+    return [
+      home,
+      {
+        heading: 'Find jobs',
+        items: [
+          {
+            to: `${base}/agents`,
+            label: 'Job searches',
+            icon: Bot,
+            end: false,
+            tour: 'searches',
+          },
+          {
+            to: `${base}/opportunities`,
+            label: 'Jobs found',
+            icon: Radar,
+            end: false,
+            tour: 'opportunities',
+          },
+          history,
+        ],
+      },
+      {
+        heading: 'Apply',
+        items: [
+          {
+            to: `${base}/calls`,
+            label: 'Applications',
+            icon: ClipboardList,
+            end: false,
+            tour: 'follow-up',
+          },
+          deadlines,
+        ],
+      },
+      {
+        heading: 'You',
+        items: [
+          {
+            to: `${base}/settings/general`,
+            label: 'Profile & CV',
+            icon: FileText,
+            end: false,
+            tour: 'profile',
+          },
+        ],
+      },
+    ];
+  }
+
+  // An organization: in the order people use Leadline (set up searches, see what
+  // they found, act on it, then settings), showing only what fits its goals.
+  const wants = (goal: string) => goals.length === 0 || goals.includes(goal);
   return [
-    {
-      heading: '',
-      items: [{ to: base, label: 'Home', icon: Home, end: true }],
-    },
+    home,
     {
       heading: 'Find',
       items: [
@@ -59,35 +133,19 @@ function navFor(slug: string | undefined, candidate = false) {
         },
         {
           to: `${base}/opportunities`,
-          label: candidate ? 'Jobs' : 'Opportunities',
+          label: 'Opportunities',
           icon: Radar,
           end: false,
           tour: 'opportunities',
         },
-        {
-          to: `${base}/runs`,
-          label: 'Search history',
-          icon: Activity,
-          end: false,
-        },
+        history,
       ],
     },
     {
       heading: 'Follow up',
       items: [
-        // A job seeker works alone and calls no clients; the same list tracks
-        // their applications.
-        ...(candidate
+        ...(wants('clients')
           ? [
-              {
-                to: `${base}/calls`,
-                label: 'Applications',
-                icon: ClipboardList,
-                end: false,
-                tour: 'follow-up',
-              },
-            ]
-          : [
               {
                 to: `${base}/calls`,
                 label: 'Call list',
@@ -95,6 +153,10 @@ function navFor(slug: string | undefined, candidate = false) {
                 end: false,
                 tour: 'follow-up',
               },
+            ]
+          : []),
+        ...(wants('grants')
+          ? [
               {
                 to: `${base}/outreach`,
                 label: 'Funder emails',
@@ -102,14 +164,9 @@ function navFor(slug: string | undefined, candidate = false) {
                 end: false,
                 tour: 'follow-up',
               },
-            ]),
-        {
-          to: `${base}/calendar`,
-          label: 'Deadlines',
-          icon: CalendarDays,
-          end: false,
-          tour: 'follow-up',
-        },
+            ]
+          : []),
+        deadlines,
       ],
     },
     {
@@ -117,14 +174,12 @@ function navFor(slug: string | undefined, candidate = false) {
       items: [
         {
           to: `${base}/settings/general`,
-          label: candidate ? 'Profile & CV' : 'Profile & documents',
+          label: 'Profile & documents',
           icon: Building2,
           end: false,
           tour: 'profile',
         },
-        ...(candidate
-          ? []
-          : [{ to: `${base}/team`, label: 'Team', icon: Users, end: false }]),
+        { to: `${base}/team`, label: 'Team', icon: Users, end: false },
         {
           to: `${base}/settings/integrations`,
           label: 'Connected apps',
@@ -152,7 +207,8 @@ export function DashboardSidebar({
   const slug = useActiveOrgSlug();
   const { data: myInvites = [] } = usePendingInvitations();
   const { data: myOrgs = [] } = useMyOrgs(!!slug);
-  const candidate = !!myOrgs.find((m) => m.org.slug === slug)?.org.isCandidate;
+  const active = myOrgs.find((m) => m.org.slug === slug)?.org;
+  const candidate = !!active?.isCandidate;
 
   const handleLogout = async () => {
     await logout.mutateAsync('/');
@@ -211,7 +267,7 @@ export function DashboardSidebar({
         </div>
 
         <nav className="flex-1 space-y-4 overflow-y-auto px-3">
-          {navFor(slug, candidate).map((group) => (
+          {navFor(slug, candidate, active?.goals).map((group) => (
             <div key={group.heading || 'home'} className="space-y-1">
               {group.heading && (
                 <p className="px-2 py-2 text-xs font-medium text-sidebar-foreground/60">
@@ -244,29 +300,32 @@ export function DashboardSidebar({
 
         {/* User */}
         <div className="border-t border-sidebar-border p-3">
-          <NavLink
-            to="/invitations"
-            onClick={onClose}
-            className={({ isActive }) =>
-              cn(
-                'mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                  : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-              )
-            }
-          >
-            <Mail className="h-4 w-4" />
-            Invitations
-            {myInvites.length > 0 && (
-              <span
-                className="ml-auto rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground tabular-nums"
-                aria-label={`${myInvites.length} pending`}
-              >
-                {myInvites.length}
-              </span>
-            )}
-          </NavLink>
+          {/* A job seeker only needs this when a team has invited them. */}
+          {(!candidate || myInvites.length > 0) && (
+            <NavLink
+              to="/invitations"
+              onClick={onClose}
+              className={({ isActive }) =>
+                cn(
+                  'mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                    : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                )
+              }
+            >
+              <Mail className="h-4 w-4" />
+              Invitations
+              {myInvites.length > 0 && (
+                <span
+                  className="ml-auto rounded-full bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground tabular-nums"
+                  aria-label={`${myInvites.length} pending`}
+                >
+                  {myInvites.length}
+                </span>
+              )}
+            </NavLink>
+          )}
           <div className="flex items-center gap-3 rounded-md px-2 py-2">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground">
               {initials(user?.name)}

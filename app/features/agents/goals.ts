@@ -2,6 +2,19 @@ import type { PickerItem } from '~/components/ui/picker';
 import type { Goal, GoalOption } from '~/lib/schema';
 import { useOrg } from '~/lib/org/org-context';
 import { useRunSettings } from '../runs/queries';
+import { useSetupStatus } from '../orgs/queries';
+
+/** A job seeker's searches wait for their CV; the reason, or null. */
+export const NO_CV = 'Upload your CV first: every job is scored against it.';
+
+export function useNeedsCv(): boolean {
+  const { view } = useOrg();
+  const { data } = useSetupStatus(view.isCandidate ? view.id : '');
+  return (
+    !!view.isCandidate &&
+    !!data?.steps.some((step) => step.key === 'cv' && !step.done)
+  );
+}
 
 /** The goals a worker may have: those the organization picked (all of them if it
  * picked none), plus the worker's own `current` goal if the organization has
@@ -39,7 +52,9 @@ export const defaultGoal = (goals: readonly GoalOption[]): Goal =>
 export function useRunBlocked(): (goal: Goal) => string | null {
   const { org } = useOrg();
   const { data } = useRunSettings(org.id);
+  const needsCv = useNeedsCv();
   return (goal) => {
+    if (needsCv) return NO_CV;
     const option = data?.goals.find((g) => g.value === goal);
     return option && !option.available
       ? `Searching for ${option.label.toLowerCase()} arrives in the next update.`

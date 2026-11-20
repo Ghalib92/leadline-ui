@@ -48,11 +48,11 @@ describe('adding sources', () => {
     );
     const user = userEvent.setup();
     await user.type(
-      await screen.findByRole('textbox', { name: /source url/i }),
+      await screen.findByRole('textbox', { name: /^link/i }),
       'https://a.example.org/calls'
     );
     await user.click(screen.getByRole('button', { name: /add another/i }));
-    const urls = screen.getAllByRole('textbox', { name: /source url/i });
+    const urls = screen.getAllByRole('textbox', { name: /^link/i });
     await user.type(urls[1], 'https://b.example.org/rfps');
     await user.click(screen.getByRole('button', { name: 'Add 2 sources' }));
     await waitFor(() => expect(onClose).toHaveBeenCalledWith(null));

@@ -136,7 +136,7 @@ export default function OpportunityDetailPage() {
       <PageHeader
         back={{
           to: path('/opportunities'),
-          label: view.isCandidate ? 'Jobs' : 'Opportunities',
+          label: view.isCandidate ? 'Jobs found' : 'Opportunities',
         }}
         title={opp.title}
         meta={

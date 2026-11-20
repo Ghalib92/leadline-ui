@@ -9,6 +9,7 @@ import { toastUtils } from '~/lib/utils/toast';
 import { Button } from '~/components/ui/button';
 import { PageLoader } from '~/components/dashboard/page';
 import { FirstRunTour } from '~/components/onboarding/first-run-tour';
+import { CvPrompt } from '~/components/onboarding/cv-prompt';
 
 /**
  * Resolves the org client-side from my orgs list (React Query), so switching
@@ -40,7 +41,7 @@ export default function OrgLayout() {
   if (status === 404) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 p-6 text-center">
-        <h1 className="text-xl font-semibold">Organization not found</h1>
+        <h1 className="text-xl font-semibold">Workspace not found</h1>
         <p className="text-sm text-muted-foreground">
           It may have been archived, you may have left it, or the link is wrong.
         </p>
@@ -78,6 +79,7 @@ export default function OrgLayout() {
       )}
       <Outlet />
       <FirstRunTour />
+      <CvPrompt />
     </OrgProvider>
   );
 }

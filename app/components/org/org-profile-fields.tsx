@@ -737,10 +737,71 @@ const halfWidth = new Set([
   'minValue', 'maxValue', 'currency',
 ]); // prettier-ignore
 
+/** The same fields, worded for one person looking for a job. */
+const personRenderers: Record<string, Render> = {
+  name: (c, r) => (
+    <FormTextField
+      control={c}
+      name="name"
+      autoComplete="name"
+      label="Full name"
+      placeholder="Amina Otieno"
+      required={r}
+    />
+  ),
+  description: (c, r) => (
+    <FormTextareaField
+      control={c}
+      name="description"
+      autoComplete="off"
+      label="About you"
+      placeholder="e.g. Backend developer with 4 years of Python and Django, building payment systems."
+      rows={3}
+      required={r}
+    />
+  ),
+  country: (c, r) => (
+    <FormPickerField
+      control={c}
+      name="country"
+      label="Country you live in"
+      options={countryOptions()}
+      placeholder="Choose a country"
+      required={r}
+    />
+  ),
+  website: (c) => (
+    <FormTextField
+      control={c}
+      name="website"
+      autoComplete="url"
+      label="LinkedIn or portfolio link"
+      type="url"
+      placeholder="https://www.linkedin.com/in/your-name"
+    />
+  ),
+  contactEmail: (c) => (
+    <FormTextField
+      control={c}
+      name="contactEmail"
+      autoComplete="email"
+      label="Email for employers"
+      type="email"
+      placeholder="you@example.com"
+    />
+  ),
+};
+
 export function OrgFields({
   names,
   required = [],
-}: Readonly<{ names: readonly string[]; required?: readonly string[] }>) {
+  person = false,
+}: Readonly<{
+  names: readonly string[];
+  required?: readonly string[];
+  /** A job seeker's own profile: personal labels, not company ones. */
+  person?: boolean;
+}>) {
   const { control } = useFormContext<FieldValues>();
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -749,7 +810,10 @@ export function OrgFields({
           key={name}
           className={halfWidth.has(name) ? undefined : 'sm:col-span-2'}
         >
-          {fieldRenderers[name]?.(control, required.includes(name))}
+          {((person && personRenderers[name]) || fieldRenderers[name])?.(
+            control,
+            required.includes(name)
+          )}
         </div>
       ))}
     </div>

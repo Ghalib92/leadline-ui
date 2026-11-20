@@ -6,7 +6,6 @@ import {
   changeEmailResolver,
   changePasswordResolver,
   updateProfileResolver,
-  ROLE_LABELS,
   type ChangeEmailInput,
   type ChangePasswordInput,
   type UpdateProfileInput,
@@ -31,11 +30,13 @@ import { Form } from '~/components/ui/form';
 import { AppCard, AppSheet, AppTabs } from '~/components/composed';
 import { FormPasswordField, FormTextField } from '~/components/form-fields';
 import { Page } from '~/components/dashboard/page';
+import { workspaceRole } from '~/components/dashboard/org-switcher';
+import { DeleteAccountCard } from '~/components/account/delete-account-card';
 
 export function meta() {
   return generateSEOTags({
     title: 'Account | Leadline',
-    description: 'Your Leadline profile, sign-in and organizations.',
+    description: 'Your Leadline profile, sign-in and workspaces.',
     url: '/account',
     noIndex: true,
   });
@@ -72,6 +73,9 @@ export default function AccountPage() {
   const changeEmail = useChangeEmail();
   const logout = useLogout();
   const { data: orgs = [] } = useMyOrgs();
+  // Someone who only looks for a job: no talk of organizations and roles.
+  const onlyJobSearch =
+    orgs.length > 0 && orgs.every(({ org }) => org.isCandidate);
   const { data: invites = [] } = usePendingInvitations();
 
   const profileForm = useForm<UpdateProfileInput>({
@@ -259,12 +263,19 @@ export default function AccountPage() {
                       </Button>
                     </div>
                   </AppCard>
+                  <DeleteAccountCard
+                    description={
+                      onlyJobSearch
+                        ? 'Deletes your account, your CV, your job searches and every job Leadline found for you.'
+                        : 'Deletes your account and every workspace only you use, with its documents. Teams you belong to keep their work.'
+                    }
+                  />
                 </div>
               ),
             },
             {
               value: 'organizations',
-              label: 'Organizations',
+              label: 'Workspaces',
               count: orgs.length,
               content: (
                 <div className="space-y-4">
@@ -281,8 +292,12 @@ export default function AccountPage() {
                     </Link>
                   )}
                   <AppCard
-                    title="Your organizations"
-                    description="Organizations you belong to and your role in each."
+                    title="Your workspaces"
+                    description={
+                      onlyJobSearch
+                        ? 'Your job search. Add a business here too if you have one.'
+                        : 'Your job search and the businesses or organizations you belong to.'
+                    }
                     actions={
                       <Button size="sm" variant="outline" asChild>
                         <Link to="/onboarding">
@@ -294,38 +309,41 @@ export default function AccountPage() {
                   >
                     {orgs.length === 0 ? (
                       <p className="py-4 text-sm text-muted-foreground">
-                        You’re not in any organization yet.
+                        You haven’t set anything up yet.
                       </p>
                     ) : (
-                      orgs.map(({ org, role }) => (
-                        <div
-                          key={org.id}
-                          className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
-                        >
-                          {org.logoUrl ? (
-                            <img
-                              src={org.logoUrl}
-                              alt=""
-                              className="h-9 w-9 rounded-lg object-cover"
-                            />
-                          ) : (
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-xs font-semibold text-primary-foreground">
-                              {initials(org.name)}
-                            </span>
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium">
-                              {org.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {ROLE_LABELS[role]}
-                            </p>
+                      orgs.map((entry) => {
+                        const { org } = entry;
+                        return (
+                          <div
+                            key={org.id}
+                            className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+                          >
+                            {org.logoUrl ? (
+                              <img
+                                src={org.logoUrl}
+                                alt=""
+                                className="h-9 w-9 rounded-lg object-cover"
+                              />
+                            ) : (
+                              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-xs font-semibold text-primary-foreground">
+                                {initials(org.name)}
+                              </span>
+                            )}
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium">
+                                {org.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {workspaceRole(entry)}
+                              </p>
+                            </div>
+                            <Button variant="ghost" size="sm" asChild>
+                              <Link to={`/o/${org.slug}`}>Open</Link>
+                            </Button>
                           </div>
-                          <Button variant="ghost" size="sm" asChild>
-                            <Link to={`/o/${org.slug}`}>Open</Link>
-                          </Button>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </AppCard>
                 </div>

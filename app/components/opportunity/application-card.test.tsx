@@ -100,10 +100,7 @@ describe('ApplicationCard', () => {
     renderCard();
     expect(
       await screen.findByRole('link', { name: 'Upload your CV' })
-    ).toHaveAttribute(
-      'href',
-      '/o/brian/settings/general?tab=documents&edit=upload'
-    );
+    ).toHaveAttribute('href', '/o/brian/settings/general?tab=cv');
   });
 
   it('writes one when there is none', async () => {

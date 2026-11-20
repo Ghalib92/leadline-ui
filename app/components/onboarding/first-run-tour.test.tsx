@@ -5,11 +5,15 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { FirstRunTour, startTour } from './first-run-tour';
 
 const org = { isCandidate: false };
+const setup = { steps: [{ key: 'cv', done: false }] };
 vi.mock('~/lib/auth/use-auth', () => ({
   useAuth: () => ({ user: { id: 'u1' }, isAuthenticated: true }),
 }));
 vi.mock('~/lib/org/org-context', () => ({
-  useOrg: () => ({ org, can: () => true }),
+  useOrg: () => ({ org, view: { id: 'o1' }, can: () => true }),
+}));
+vi.mock('~/features/orgs', () => ({
+  useSetupStatus: () => ({ data: setup }),
 }));
 
 function renderTour() {
@@ -25,6 +29,9 @@ function renderTour() {
       <a href="/o/acme/calendar" data-tour="follow-up">
         Deadlines
       </a>
+      <a href="/o/acme/settings/general" data-tour="profile">
+        Profile & CV
+      </a>
       <Routes>
         <Route path="/o/:slug" element={<FirstRunTour />} />
       </Routes>
@@ -35,6 +42,7 @@ function renderTour() {
 beforeEach(() => {
   localStorage.clear();
   org.isCandidate = false;
+  setup.steps[0].done = false;
 });
 
 describe('FirstRunTour', () => {
@@ -92,15 +100,38 @@ describe('FirstRunTour', () => {
     expect(localStorage.getItem('leadline:tour-done:u1')).toBe('1');
   });
 
-  it('speaks to job seekers about jobs and their CV', async () => {
+  it('takes a job seeker to their CV first, and ends there', async () => {
     org.isCandidate = true;
     const user = userEvent.setup();
     renderTour();
     expect(screen.getByText(/jobs that fit your CV/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Show me/ }));
-    await user.click(screen.getByRole('button', { name: /Next/ }));
     expect(
-      screen.getByRole('heading', { name: '2. See the jobs it found' })
+      screen.getByRole('heading', { name: '1. Upload your CV' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Profile & CV')).toHaveAttribute(
+      'data-tour-active'
+    );
+    for (let i = 0; i < 4; i++) {
+      await user.click(screen.getByRole('button', { name: /Next/ }));
+    }
+    expect(screen.getByRole('link', { name: 'Upload my CV' })).toHaveAttribute(
+      'href',
+      '/o/acme/settings/general?tab=cv'
+    );
+  });
+
+  it('sends a job seeker with a CV to set up a search', async () => {
+    org.isCandidate = true;
+    setup.steps[0].done = true;
+    const user = userEvent.setup();
+    renderTour();
+    await user.click(screen.getByRole('button', { name: /Show me/ }));
+    for (let i = 0; i < 4; i++) {
+      await user.click(screen.getByRole('button', { name: /Next/ }));
+    }
+    expect(
+      screen.getByRole('link', { name: 'Set up a search' })
     ).toBeInTheDocument();
   });
 });

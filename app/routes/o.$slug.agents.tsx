@@ -1,10 +1,11 @@
 import { useEffect, useEffectEvent } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
-import { Plus } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router';
+import { FileUp, Plus } from 'lucide-react';
 import {
   AgentTile,
   useAgents,
   useRunAgent,
+  useNeedsCv,
   useRunBlocked,
   useUpdateAgent,
 } from '~/features/agents';
@@ -45,6 +46,7 @@ export default function AgentsPage() {
   const { data: agents = [], isPending } = useAgents(org.id);
   const run = useRunAgent(org.id);
   const runBlocked = useRunBlocked();
+  const needsCv = useNeedsCv();
   const update = useUpdateAgent(org.id);
 
   const tab = searchParams.get('tab') ?? 'workers';
@@ -152,10 +154,10 @@ export default function AgentsPage() {
   return (
     <Page>
       <PageHeader
-        title="Searches"
+        title={view.isCandidate ? 'Job searches' : 'Searches'}
         description={
           view.isCandidate
-            ? 'Searches that run for you. Each uses your job preferences, plus anything you add to it.'
+            ? 'Job searches that run for you. Each uses your CV and job preferences, plus anything you add to it.'
             : "Searches that run for you. Each uses your organization's search preferences, plus anything you add to it."
         }
         actions={
@@ -167,6 +169,19 @@ export default function AgentsPage() {
         }
       />
 
+      {needsCv && (
+        <div className="mb-4 flex flex-col gap-3 rounded-xl border border-amber-300/60 bg-amber-50 px-4 py-3 text-sm text-amber-900 sm:flex-row sm:items-center dark:bg-amber-950/40 dark:text-amber-200">
+          <FileUp className="h-5 w-5 shrink-0" />
+          <p className="flex-1">
+            Upload your CV first. Leadline scores every job against it, so your
+            searches start once it’s in.
+          </p>
+          <Button size="sm" asChild>
+            <Link to={path('/settings/general?tab=cv')}>Upload my CV</Link>
+          </Button>
+        </div>
+      )}
+
       <AppTabs
         variant="underline"
         value={tab}
@@ -174,7 +189,7 @@ export default function AgentsPage() {
         tabs={[
           {
             value: 'workers',
-            label: `Searches (${agents.length})`,
+            label: `${view.isCandidate ? 'Job searches' : 'Searches'} (${agents.length})`,
             content: (
               <>
                 {isPending ? (

@@ -110,4 +110,5 @@ export const AGENT_SOURCES = [
   { value: 'procurement', label: 'Procurement portals' },
   { value: 'news', label: 'News & announcements' },
   { value: 'businesses', label: 'Business directories' },
+  { value: 'jobs', label: 'Career pages and job boards' },
 ];

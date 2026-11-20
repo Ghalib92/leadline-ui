@@ -28,6 +28,8 @@ interface EditSheetProps<TInput extends FieldValues, TOutput> {
   onSave: (values: TOutput) => Promise<unknown>;
   pending: boolean;
   successMessage?: string;
+  /** A job seeker's profile: personal field labels. */
+  person?: boolean;
 }
 
 /**
@@ -46,6 +48,7 @@ export function EditSheet<TInput extends FieldValues, TOutput>({
   onSave,
   pending,
   successMessage = 'Saved',
+  person = false,
 }: Readonly<EditSheetProps<TInput, TOutput>>) {
   const form = useForm<TInput, unknown, TOutput>({
     resolver,
@@ -103,7 +106,7 @@ export function EditSheet<TInput extends FieldValues, TOutput>({
     >
       <Form {...form}>
         <form method="post" id="org-edit-form" onSubmit={submit}>
-          <OrgFields names={fields} required={required} />
+          <OrgFields names={fields} required={required} person={person} />
         </form>
       </Form>
     </AppSheet>

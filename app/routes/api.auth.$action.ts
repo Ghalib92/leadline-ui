@@ -15,6 +15,7 @@ import { sessionCookie, type StoredSession } from '~/lib/auth/session.server';
 import {
   changeEmailSchema,
   changePasswordSchema,
+  deleteAccountSchema,
   forgotPasswordSchema,
   loginSchema,
   registerSchema,
@@ -140,6 +141,16 @@ const endpoints: Record<string, Endpoint> = {
     fields: { new_email: 'newEmail' },
     endsSession: true,
     fallback: 'Could not change the email.',
+  },
+  'delete-account': {
+    schema: deleteAccountSchema,
+    path: '/auth/delete-account/',
+    auth: true,
+    toBackend: ({ password }: z.infer<typeof deleteAccountSchema>) => ({
+      password,
+    }),
+    endsSession: true,
+    fallback: 'Could not delete the account.',
   },
   profile: {
     schema: updateProfileSchema,

@@ -45,8 +45,17 @@ const STATUS_LABEL: Record<string, string> = {
   reviewing: 'Saved',
 };
 
+/** Job seekers apply; they don't pursue or submit bids. */
+const JOB_STATUS_LABEL: Record<string, string> = {
+  pursuing: 'Applying',
+  submitted: 'Applied',
+  new: 'Saved',
+  reviewing: 'Saved',
+};
+
 export default function CalendarPage() {
-  const { org } = useOrg();
+  const { org, view } = useOrg();
+  const candidate = view.isCandidate;
   const [days, setDays] = useState(90);
   const { from, to } = useMemo(() => {
     const start = new Date();
@@ -71,7 +80,11 @@ export default function CalendarPage() {
     <Page>
       <PageHeader
         title="Deadlines"
-        description="Opportunities you are pursuing, submitted or saved, soonest first."
+        description={
+          candidate
+            ? 'Closing dates of the jobs you saved or are applying for, soonest first.'
+            : 'Opportunities you are pursuing, submitted or saved, soonest first.'
+        }
         actions={
           <Button
             variant="outline"
@@ -113,7 +126,11 @@ export default function CalendarPage() {
             <EmptyState
               icon={CalendarDays}
               title="No deadlines in this period"
-              description="Approve or save opportunities to track their deadlines here."
+              description={
+                candidate
+                  ? 'Approve or save jobs to see when they close here.'
+                  : 'Approve or save opportunities to track their deadlines here.'
+              }
             />
           ) : (
             <div className="space-y-6">
@@ -124,7 +141,11 @@ export default function CalendarPage() {
                   </h2>
                   <ul className="divide-y divide-border rounded-xl border border-border">
                     {items.map((item) => (
-                      <DeadlineRow key={item.id} item={item} />
+                      <DeadlineRow
+                        key={item.id}
+                        item={item}
+                        labels={candidate ? JOB_STATUS_LABEL : STATUS_LABEL}
+                      />
                     ))}
                   </ul>
                 </section>
@@ -133,13 +154,16 @@ export default function CalendarPage() {
           )}
         </div>
 
-        <ReminderCard orgId={org.id} />
+        <ReminderCard orgId={org.id} candidate={candidate} />
       </div>
     </Page>
   );
 }
 
-function DeadlineRow({ item }: Readonly<{ item: Deadline }>) {
+function DeadlineRow({
+  item,
+  labels,
+}: Readonly<{ item: Deadline; labels: Record<string, string> }>) {
   const path = useOrgPath();
   const date = new Date(item.deadline);
   const urgent = item.daysLeft <= 7;
@@ -159,7 +183,7 @@ function DeadlineRow({ item }: Readonly<{ item: Deadline }>) {
           {item.title}
         </Link>
         <p className="truncate text-xs text-muted-foreground">
-          {item.funder} · {STATUS_LABEL[item.status] ?? item.status}
+          {item.funder} · {labels[item.status] ?? item.status}
         </p>
       </div>
       <span
@@ -180,7 +204,10 @@ function DeadlineRow({ item }: Readonly<{ item: Deadline }>) {
   );
 }
 
-function ReminderCard({ orgId }: Readonly<{ orgId: string }>) {
+function ReminderCard({
+  orgId,
+  candidate,
+}: Readonly<{ orgId: string; candidate: boolean }>) {
   const { data: preference } = useReminderPreference(orgId);
   const update = useUpdateReminderPreference(orgId);
   if (!preference) return null;
@@ -206,7 +233,11 @@ function ReminderCard({ orgId }: Readonly<{ orgId: string }>) {
           <Bell className="h-4 w-4" /> Email reminders
         </span>
       }
-      description="Sent to admins and whoever approved the opportunity, with a calendar file."
+      description={
+        candidate
+          ? 'An email before each job closes, with a calendar file.'
+          : 'Sent to admins and whoever approved the opportunity, with a calendar file.'
+      }
     >
       <div className="flex items-center justify-between gap-3 text-sm">
         <label htmlFor="reminders-enabled">Remind me</label>
@@ -243,7 +274,9 @@ function ReminderCard({ orgId }: Readonly<{ orgId: string }>) {
         <label htmlFor="weekly-digest">
           Monday summary
           <span className="block text-xs text-muted-foreground">
-            The week&apos;s best finds, what closes soon and who to call back.
+            {candidate
+              ? 'The week’s best jobs for you and what closes soon.'
+              : 'The week’s best finds, what closes soon and who to call back.'}
           </span>
         </label>
         <Switch

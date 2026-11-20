@@ -1,7 +1,7 @@
 import { useEffect, useEffectEvent, useState, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { Pencil } from 'lucide-react';
-import { AGENT_SOURCES, OPPORTUNITY_TYPES, labelOf } from '~/data';
+import { labelOf } from '~/data';
 import { useRunSettings, useUpdateRunSettings } from '~/features/runs';
 import {
   runSettingsFormResolver,
@@ -14,7 +14,7 @@ import { extractError } from '~/lib/utils/extract-error';
 import { Button } from '~/components/ui/button';
 import { Form } from '~/components/ui/form';
 import { AppCard, AppSheet } from '~/components/composed';
-import { RunSettingsFields } from './run-settings-fields';
+import { RunSettingsFields, useSearchScope } from './run-settings-fields';
 
 const knowledgeLabel = {
   all: 'All documents',
@@ -62,6 +62,7 @@ export function RunSettingsTab() {
   const canEdit = view.myRole === 'admin' && !view.isArchived;
   const [editing, setEditing] = useState(false);
   const form = useForm<RunSettingsForm>({ resolver: runSettingsFormResolver });
+  const scope = useSearchScope();
 
   // Start from the saved values each time the sheet opens.
   const onOpened = useEffectEvent(() => {
@@ -86,11 +87,24 @@ export function RunSettingsTab() {
     settings.depths.find((d) => d.value === settings.depth)?.label ??
     settings.depth;
 
+  // Saved values outside the organization's goals are never searched: hide them.
+  const shown = (
+    values: string[],
+    options: readonly { value: string; label: string }[]
+  ) =>
+    values
+      .filter((v) => options.some((o) => o.value === v))
+      .map((v) => labelOf(options, v));
+
   return (
     <>
       <AppCard
         title="Search settings"
-        description="What “Search for opportunities” uses. Every search uses these too, plus anything it adds."
+        description={
+          view.isCandidate
+            ? 'How your job searches look. Every search uses these.'
+            : 'What “Search for opportunities” uses. Every search uses these too, plus anything it adds.'
+        }
         actions={
           canEdit && (
             <Button
@@ -104,29 +118,36 @@ export function RunSettingsTab() {
           )
         }
       >
-        <dl className="divide-y divide-border">
-          <Row label="Depth">{depth}</Row>
-          <Row label="Sources">
-            <Chips
-              items={settings.sources.map((s) => labelOf(AGENT_SOURCES, s))}
-            />
-          </Row>
-          <Row label="Opportunity types">
-            <Chips
-              items={settings.opportunityTypes.map((t) =>
-                labelOf(OPPORTUNITY_TYPES, t)
-              )}
-            />
-          </Row>
-          <Row label="Company documents">
-            {knowledgeLabel[settings.knowledgeMode]}
-          </Row>
-          {settings.knowledgeMode === 'selected' && (
-            <Row label="Folders">
-              <Chips items={settings.folders.map((f) => f.name)} />
+        {view.isCandidate ? (
+          <dl className="divide-y divide-border">
+            <Row label="How thorough">{depth}</Row>
+            <Row label="Where to look">
+              Company career pages and job boards, plus your job sites
             </Row>
-          )}
-        </dl>
+            <Row label="What to look for">Jobs that fit your CV</Row>
+            <Row label="Your CV">Read in every search</Row>
+          </dl>
+        ) : (
+          <dl className="divide-y divide-border">
+            <Row label="How thorough">{depth}</Row>
+            <Row label="Where to look">
+              <Chips items={shown(settings.sources, scope.sources)} />
+            </Row>
+            <Row label="What to look for">
+              <Chips
+                items={shown(settings.opportunityTypes, scope.opportunityTypes)}
+              />
+            </Row>
+            <Row label="Company documents">
+              {knowledgeLabel[settings.knowledgeMode]}
+            </Row>
+            {settings.knowledgeMode === 'selected' && (
+              <Row label="Folders">
+                <Chips items={settings.folders.map((f) => f.name)} />
+              </Row>
+            )}
+          </dl>
+        )}
       </AppCard>
 
       <AppSheet

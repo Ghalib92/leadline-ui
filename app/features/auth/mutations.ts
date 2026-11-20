@@ -7,6 +7,7 @@ import type {
   AuthUser,
   ChangeEmailInput,
   ChangePasswordInput,
+  DeleteAccountInput,
   ForgotPasswordInput,
   LoginInput,
   RegisterInput,
@@ -87,6 +88,25 @@ export const useLogout = () => {
         { redirectTo: redirectTo ?? '/' },
         { method: 'delete', action: '/auth/session' }
       );
+    },
+  });
+};
+
+/**
+ * Delete the account for good. The server ends the session (the cookie goes
+ * with the account), so drop everything cached and go home.
+ */
+export const useDeleteAccount = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { revalidate } = useRevalidator();
+  return useMutation({
+    mutationFn: (input: DeleteAccountInput) =>
+      postAuth<{ detail?: string }>('delete-account', input),
+    onSuccess: async () => {
+      queryClient.clear();
+      await revalidate();
+      await navigate('/', { replace: true });
     },
   });
 };

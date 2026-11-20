@@ -14,3 +14,11 @@ describe('setup checklist links', () => {
     );
   });
 });
+
+describe("a job seeker's checklist links", () => {
+  it('all open Profile & CV', () => {
+    expect(stepHref('cv')).toBe('/settings/general?tab=cv');
+    expect(stepHref('job_brief')).toBe('/settings/general?edit=job_brief');
+    expect(stepHref('basics')).toBe('/settings/general?edit=basics');
+  });
+});

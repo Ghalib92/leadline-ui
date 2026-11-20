@@ -12,6 +12,9 @@ import { DocumentsTab } from '~/components/org/settings/documents-tab';
 import { RunSettingsTab } from '~/components/org/settings/run-settings-tab';
 import { DossierTab } from '~/components/org/settings/dossier-tab';
 import { DangerZone } from '~/components/org/settings/danger-zone';
+import { CandidateProfileTab } from '~/components/org/settings/candidate-profile-tab';
+import { CvTab } from '~/components/org/settings/cv-tab';
+import { DeleteAccountCard } from '~/components/account/delete-account-card';
 import { Page } from '~/components/dashboard/page';
 
 export function meta() {
@@ -33,7 +36,9 @@ export default function GeneralSettingsPage() {
   const path = useOrgPath();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = searchParams.get('tab') ?? 'profile';
+  const asked = searchParams.get('tab') ?? 'profile';
+  // A job seeker's documents are their CV (older links say "documents").
+  const tab = view.isCandidate && asked === 'documents' ? 'cv' : asked;
   const editing = searchParams.get('edit');
 
   useEffect(() => {
@@ -59,6 +64,47 @@ export default function GeneralSettingsPage() {
     );
   const setEditing = (edit: string | null) => update({ edit });
   const props = { editing, setEditing };
+
+  if (view.isCandidate) {
+    return (
+      <Page width="narrow">
+        <PageHeader
+          title="Profile & CV"
+          description="Who you are, your CV and the jobs you want. Leadline uses them to find and score jobs for you."
+        />
+        <AppTabs
+          variant="underline"
+          value={tab}
+          onValueChange={(value) => update({ tab: value })}
+          tabs={[
+            {
+              value: 'profile',
+              label: 'Profile',
+              content: <CandidateProfileTab {...props} />,
+            },
+            { value: 'cv', label: 'CV', content: <CvTab /> },
+            {
+              value: 'sources',
+              label: 'Job sites',
+              content: <SourcesTab {...props} />,
+            },
+            {
+              value: 'runs',
+              label: 'Search settings',
+              content: <RunSettingsTab />,
+            },
+            {
+              value: 'access',
+              label: 'Account',
+              content: (
+                <DeleteAccountCard description="Deletes your account, your CV, your job searches and every job Leadline found for you." />
+              ),
+            },
+          ]}
+        />
+      </Page>
+    );
+  }
 
   return (
     <Page width="narrow">

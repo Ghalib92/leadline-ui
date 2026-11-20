@@ -150,6 +150,68 @@ const settingsPages: Entry[] = [
   },
 ];
 
+/** A job seeker's pages, in their sidebar's order. */
+const candidatePages: Entry[] = [
+  {
+    label: 'Home',
+    to: '',
+    icon: LayoutDashboard,
+    keywords: ['home', 'dashboard', 'overview'],
+  },
+  {
+    label: 'Job searches',
+    to: '/agents',
+    icon: Bot,
+    keywords: ['searches', 'workers', 'agents', 'job preferences'],
+  },
+  {
+    label: 'Jobs found',
+    to: '/opportunities',
+    icon: Radar,
+    keywords: ['jobs', 'matches', 'opportunities'],
+  },
+  { label: 'Search history', to: '/runs', icon: Activity, keywords: ['runs'] },
+  {
+    label: 'Applications',
+    to: '/calls',
+    icon: ClipboardCheck,
+    keywords: ['apply', 'cover letter', 'interviews'],
+  },
+  {
+    label: 'Deadlines',
+    to: '/calendar',
+    icon: CalendarDays,
+    keywords: ['calendar', 'due', 'closing'],
+  },
+];
+
+const candidateSettings: Entry[] = [
+  {
+    label: 'Profile & CV',
+    to: '/settings/general',
+    icon: User,
+    keywords: ['profile', 'settings', 'job preferences'],
+  },
+  {
+    label: 'Upload your CV',
+    to: '/settings/general?tab=cv',
+    icon: FileText,
+    keywords: ['cv', 'resume', 'résumé', 'upload'],
+  },
+  {
+    label: 'Job sites to watch',
+    to: '/settings/general?tab=sources',
+    icon: Globe,
+    keywords: ['sources', 'career pages', 'websites'],
+  },
+  {
+    label: 'Search settings',
+    to: '/settings/general?tab=runs',
+    icon: SlidersHorizontal,
+    keywords: ['depth'],
+  },
+];
+
 const youPages: Entry[] = [
   {
     label: 'Account',
@@ -164,10 +226,10 @@ const youPages: Entry[] = [
     keywords: ['invites'],
   },
   {
-    label: 'Switch organization',
+    label: 'Switch workspace',
     to: '/app',
     icon: Home,
-    keywords: ['home', 'organizations'],
+    keywords: ['home', 'organizations', 'workspaces'],
   },
 ];
 
@@ -180,7 +242,9 @@ export function CommandMenu() {
   const navigate = useNavigate();
   const slug = useActiveOrgSlug();
   const { data: orgs = [] } = useMyOrgs();
-  const orgId = orgs.find((entry) => entry.org.slug === slug)?.org.id ?? '';
+  const active = orgs.find((entry) => entry.org.slug === slug)?.org;
+  const orgId = active?.id ?? '';
+  const candidate = !!active?.isCandidate;
   const { data: agents = [] } = useAgents(orgId);
   const base = slug ? `/o/${slug}` : null;
 
@@ -237,12 +301,12 @@ export function CommandMenu() {
                 New search
               </CommandItem>
               <CommandItem
-                value="Review opportunities"
+                value={candidate ? 'Review jobs' : 'Review opportunities'}
                 keywords={['approve', 'reject', 'pending']}
                 onSelect={() => go(`${base}/opportunities?review=pending`)}
               >
                 <ClipboardCheck />
-                Review opportunities
+                {candidate ? 'Review jobs' : 'Review opportunities'}
               </CommandItem>
               <CommandItem
                 value="Take the tour"
@@ -256,7 +320,9 @@ export function CommandMenu() {
                 Take the tour
               </CommandItem>
             </CommandGroup>
-            <CommandGroup heading="Go to">{items(orgPages, base)}</CommandGroup>
+            <CommandGroup heading="Go to">
+              {items(candidate ? candidatePages : orgPages, base)}
+            </CommandGroup>
             {agents.length > 0 && (
               <CommandGroup heading="Searches">
                 {agents.map((agent) => (
@@ -274,7 +340,7 @@ export function CommandMenu() {
               </CommandGroup>
             )}
             <CommandGroup heading="Settings">
-              {items(settingsPages, base)}
+              {items(candidate ? candidateSettings : settingsPages, base)}
             </CommandGroup>
             <CommandSeparator />
           </>

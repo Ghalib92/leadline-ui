@@ -27,6 +27,8 @@ export const organizationSchema = z.object({
   createdBy: z.string(),
   /** A job seeker's own workspace (jobs, their CV, no team). */
   isCandidate: z.boolean().optional(),
+  /** What it looks for (clients, tenders, grants, jobs); empty when not picked. */
+  goals: z.array(z.string()).optional(),
 });
 
 export const myOrgSchema = z.object({

@@ -136,7 +136,16 @@ export function ProfileTab({ editing, setEditing }: Readonly<EditingProps>) {
   const update = useUpdateOrg(view.id);
   const canEdit = view.myRole === 'admin' && !view.isArchived;
   const p = view.profile;
-  const sheet = editing ? profileSheets[editing] : undefined;
+  // Funders and SDGs only matter to grant searches.
+  const grants = p.goals.length === 0 || p.goals.includes('grants');
+  const grantOnly = new Set<keyof OrgProfile>(['pastFunding', 'sdgs']);
+  const found = editing ? profileSheets[editing] : undefined;
+  const sheet = found && {
+    ...found,
+    fields: grants
+      ? found.fields
+      : found.fields.filter((f) => !grantOnly.has(f)),
+  };
   const edit = (key: string) =>
     canEdit && <EditButton onClick={() => setEditing(key)} />;
 
@@ -215,7 +224,9 @@ export function ProfileTab({ editing, setEditing }: Readonly<EditingProps>) {
             {textOrEmpty(p.targetBeneficiaries)}
           </Field>
           <Field label="Track record">{textOrEmpty(p.trackRecord)}</Field>
-          <Field label="Past funders">{textOrEmpty(p.pastFunding)}</Field>
+          {grants && (
+            <Field label="Past funders">{textOrEmpty(p.pastFunding)}</Field>
+          )}
         </dl>
       </AppCard>
 
@@ -224,9 +235,11 @@ export function ProfileTab({ editing, setEditing }: Readonly<EditingProps>) {
           <Field label="Sectors">
             <Chips values={p.sectors} list={SECTORS} />
           </Field>
-          <Field label="SDGs">
-            <Chips values={p.sdgs.map(String)} list={sdgOptions} />
-          </Field>
+          {grants && (
+            <Field label="SDGs">
+              <Chips values={p.sdgs.map(String)} list={sdgOptions} />
+            </Field>
+          )}
           <Field label="Countries">
             <Chips values={p.operatingCountries} list={countryOptions()} />
           </Field>

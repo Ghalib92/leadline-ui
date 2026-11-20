@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { useMyOrgs } from '~/features/orgs';
-import { ROLE_LABELS, type Organization } from '~/lib/schema';
+import { ROLE_LABELS, type MyOrg, type Organization } from '~/lib/schema';
 import { initials } from '~/lib/utils/format';
 import {
   DropdownMenu,
@@ -31,6 +31,10 @@ function OrgAvatar({
   );
 }
 
+/** What someone is in a workspace: a job seeker in their own, else their role. */
+export const workspaceRole = ({ org, role }: MyOrg) =>
+  org.isCandidate ? 'Job seeker' : ROLE_LABELS[role];
+
 export function OrgSwitcher({
   activeSlug: slug,
   onNavigate,
@@ -44,39 +48,42 @@ export function OrgSwitcher({
         <OrgAvatar org={current?.org} />
         <span className="min-w-0 flex-1">
           <span className="block truncate font-medium">
-            {current?.org.name ?? 'Choose organization'}
+            {current?.org.name ?? 'Choose a workspace'}
           </span>
           {current && (
             <span className="block text-xs text-sidebar-foreground/60">
-              {ROLE_LABELS[current.role]}
+              {workspaceRole(current)}
             </span>
           )}
         </span>
         <ChevronsUpDown className="h-4 w-4 opacity-60" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-60">
-        <DropdownMenuLabel>Organizations</DropdownMenuLabel>
-        {orgs.map(({ org, role }) => (
-          <DropdownMenuItem key={org.id} asChild>
-            <Link
-              to={`/o/${org.slug}`}
-              onClick={onNavigate}
-              className="flex items-center gap-2"
-            >
-              <OrgAvatar org={org} />
-              <span className="min-w-0 flex-1 truncate">{org.name}</span>
-              <span className="text-xs text-muted-foreground">
-                {ROLE_LABELS[role]}
-              </span>
-              {org.slug === slug && <Check className="h-4 w-4" />}
-            </Link>
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuLabel>Your workspaces</DropdownMenuLabel>
+        {orgs.map((entry) => {
+          const { org } = entry;
+          return (
+            <DropdownMenuItem key={org.id} asChild>
+              <Link
+                to={`/o/${org.slug}`}
+                onClick={onNavigate}
+                className="flex items-center gap-2"
+              >
+                <OrgAvatar org={org} />
+                <span className="min-w-0 flex-1 truncate">{org.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {workspaceRole(entry)}
+                </span>
+                {org.slug === slug && <Check className="h-4 w-4" />}
+              </Link>
+            </DropdownMenuItem>
+          );
+        })}
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/onboarding" onClick={onNavigate}>
             <Plus className="h-4 w-4" />
-            Create organization
+            New workspace
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
