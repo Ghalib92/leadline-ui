@@ -105,8 +105,10 @@ export const useDeleteAccount = () => {
       postAuth<{ detail?: string }>('delete-account', input),
     onSuccess: async () => {
       queryClient.clear();
-      await revalidate();
+      // Leave the signed-in page first: refreshing it without a session would
+      // send them to the sign-in page instead of home.
       await navigate('/', { replace: true });
+      await revalidate();
     },
   });
 };

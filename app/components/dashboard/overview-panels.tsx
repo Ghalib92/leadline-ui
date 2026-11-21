@@ -105,10 +105,19 @@ const stages = [
   { key: 'submitted', label: 'Submitted' },
 ] as const;
 
+/** A job seeker applies; they don't pursue or submit bids. */
+const JOB_LABELS: Record<(typeof stages)[number]['key'], string> = {
+  new: 'New',
+  reviewing: 'Reviewing',
+  pursuing: 'Applying',
+  submitted: 'Applied',
+};
+
 /** Open opportunities at each stage; each opens the feed filtered to it. */
 export function PipelineStrip({
   pipeline,
-}: Readonly<{ pipeline: Overview['pipeline'] }>) {
+  jobs = false,
+}: Readonly<{ pipeline: Overview['pipeline']; jobs?: boolean }>) {
   const path = useOrgPath();
   return (
     <nav
@@ -126,7 +135,9 @@ export function PipelineStrip({
             index > 1 && 'border-t sm:border-t-0'
           )}
         >
-          <p className="text-xs text-muted-foreground">{stage.label}</p>
+          <p className="text-xs text-muted-foreground">
+            {jobs ? JOB_LABELS[stage.key] : stage.label}
+          </p>
           <p className="mt-0.5 text-2xl font-semibold tabular-nums">
             {pipeline[stage.key]}
           </p>

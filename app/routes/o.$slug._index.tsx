@@ -24,7 +24,7 @@ import { Page, PageLoader } from '~/components/dashboard/page';
 export function meta() {
   return generateSEOTags({
     title: 'Home | Leadline',
-    description: 'Your organization’s opportunity pipeline at a glance.',
+    description: 'What needs you today, and what Leadline found.',
     url: '/app',
     noIndex: true,
   });
@@ -74,7 +74,7 @@ function RunButton() {
 }
 
 export default function OrgOverview() {
-  const { org } = useOrg();
+  const { org, view } = useOrg();
   const path = useOrgPath();
   const { data, isPending } = useOrgOverview(org.id);
 
@@ -93,7 +93,7 @@ export default function OrgOverview() {
       <div className="space-y-6">
         <SetupChecklist />
         <AttentionList items={data.attention} />
-        <PipelineStrip pipeline={data.pipeline} />
+        <PipelineStrip pipeline={data.pipeline} jobs={view.isCandidate} />
 
         <div className="grid gap-6 lg:grid-cols-2">
           <AppCard title="Upcoming deadlines">
