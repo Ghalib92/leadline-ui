@@ -8,11 +8,17 @@ export const orgApi = (orgId: string, path = '') =>
 /** DRF reads repeated keys (`type=a&type=b`), not axios' default `type[]=a`. */
 export const repeatParams = { paramsSerializer: { indexes: null } } as const;
 
-/** Download a file endpoint (proxied with the session) under `fallbackName`. */
-export async function downloadFile(path: string, fallbackName: string) {
+/** Download a file endpoint (proxied with the session) under `fallbackName`.
+ * `params` adds options the endpoint reads (e.g. `{ format: 'pdf' }`). */
+export async function downloadFile(
+  path: string,
+  fallbackName: string,
+  params?: Record<string, string>
+) {
   const response = await apiClient.get<Blob>(path, {
     responseType: 'blob',
     timeout: 120_000,
+    params,
   });
   const disposition = String(response.headers['content-disposition'] ?? '');
   const name = /filename="?([^";]+)"?/.exec(disposition)?.[1] ?? fallbackName;

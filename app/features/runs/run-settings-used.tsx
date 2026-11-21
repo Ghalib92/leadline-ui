@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { ChevronRight } from 'lucide-react';
 import { AGENT_SOURCES, OPPORTUNITY_TYPES, labelOf } from '~/data';
 import type { AgentRun } from '~/lib/schema';
+import { useOrg } from '~/lib/org/org-context';
 import { useOrgPath } from '~/lib/org/use-org-path';
 import { ScopeChips } from '~/components/org/agent/scope-chips';
 
@@ -34,6 +35,8 @@ function Row({
  */
 export function RunSettingsUsed({ run }: Readonly<{ run: AgentRun }>) {
   const path = useOrgPath();
+  // A job search reads the CV, not company folders, and looks only for jobs.
+  const candidate = useOrg().view.isCandidate;
   const used = run.settings;
   if (!used) return null;
 
@@ -42,11 +45,13 @@ export function RunSettingsUsed({ run }: Readonly<{ run: AgentRun }>) {
   const summary = [
     count(used.builtinSources.length, 'built-in source'),
     count(used.websites.length, 'website'),
-    used.knowledgeMode === 'all'
-      ? 'all documents'
-      : used.knowledgeMode === 'none'
-        ? 'no documents'
-        : count(used.folders.length, 'folder'),
+    candidate
+      ? 'your CV'
+      : used.knowledgeMode === 'all'
+        ? 'all documents'
+        : used.knowledgeMode === 'none'
+          ? 'no documents'
+          : count(used.folders.length, 'folder'),
     used.depth.value &&
       `${depthLabel[used.depth.value] ?? used.depth.value} depth`,
   ]
@@ -72,8 +77,9 @@ export function RunSettingsUsed({ run }: Readonly<{ run: AgentRun }>) {
       </summary>
       <div className="space-y-4 border-t border-border px-5 py-4">
         <p className="text-xs text-muted-foreground">
-          Grey comes from your organization, blue from the search, amber was
-          chosen for this run only.
+          {candidate
+            ? 'Grey comes from your search settings, blue from this search, amber was chosen for this run only.'
+            : 'Grey comes from your organization, blue from the search, amber was chosen for this run only.'}
         </p>
         <dl className="divide-y divide-border">
           <Row label="Built-in searches" hint="Sources the AI searches itself">
@@ -96,14 +102,16 @@ export function RunSettingsUsed({ run }: Readonly<{ run: AgentRun }>) {
               />
             )}
           </Row>
-          <Row label="Opportunity types">
-            <ScopeChips
-              items={used.opportunityTypes.map((t) => ({
-                text: labelOf(OPPORTUNITY_TYPES, t.value),
-                origin: t.origin,
-              }))}
-            />
-          </Row>
+          {!candidate && (
+            <Row label="Opportunity types">
+              <ScopeChips
+                items={used.opportunityTypes.map((t) => ({
+                  text: labelOf(OPPORTUNITY_TYPES, t.value),
+                  origin: t.origin,
+                }))}
+              />
+            </Row>
+          )}
           <Row label="Keywords">
             <ScopeChips
               items={used.keywords.map((k) => ({
@@ -112,24 +120,26 @@ export function RunSettingsUsed({ run }: Readonly<{ run: AgentRun }>) {
               }))}
             />
           </Row>
-          <Row label="Company documents" hint="What the AI could read">
-            {used.knowledgeMode === 'folders' ? (
-              <ScopeChips
-                items={used.folders.map((f) => ({
-                  text: f.name,
-                  origin: f.origin,
-                }))}
-              />
-            ) : (
-              <span
-                className={
-                  used.knowledgeMode === 'none' ? 'text-muted-foreground' : ''
-                }
-              >
-                {used.knowledgeMode === 'all' ? 'All documents' : 'None'}
-              </span>
-            )}
-          </Row>
+          {!candidate && (
+            <Row label="Company documents" hint="What the AI could read">
+              {used.knowledgeMode === 'folders' ? (
+                <ScopeChips
+                  items={used.folders.map((f) => ({
+                    text: f.name,
+                    origin: f.origin,
+                  }))}
+                />
+              ) : (
+                <span
+                  className={
+                    used.knowledgeMode === 'none' ? 'text-muted-foreground' : ''
+                  }
+                >
+                  {used.knowledgeMode === 'all' ? 'All documents' : 'None'}
+                </span>
+              )}
+            </Row>
+          )}
           {used.depth.value && (
             <Row label="Depth">
               <ScopeChips

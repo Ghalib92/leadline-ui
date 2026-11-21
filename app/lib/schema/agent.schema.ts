@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { webLink } from './web-link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { opportunityTypeSchema } from './opportunity.schema';
 import { goalSchema } from './organization.schema';
@@ -15,7 +16,7 @@ export const agentScheduleSchema = z.enum(['manual', 'daily', 'weekly']);
 export const scopeOriginSchema = z.enum(['organization', 'agent']);
 
 export const agentLinkSchema = z.object({
-  url: z.url('Enter a full URL, e.g. https://example.org/calls').max(500),
+  url: webLink('Enter a link, e.g. example.org/calls'),
   label: z.string().trim().max(120, 'Keep the label under 120 characters'),
   notes: z.string().trim().max(500, 'Keep the note under 500 characters'),
   enabled: z.boolean(),
@@ -112,6 +113,31 @@ export const runResultSchema = z.object({
 });
 
 export const agentInputResolver = zodResolver(agentInputSchema);
+
+/** A job seeker's search runs on their own words: the planner and the judge read
+ * both fields, so both are required (the backend checks the same lengths). */
+export const jobSearchInputSchema = agentInputSchema.extend({
+  description: z
+    .string()
+    .trim()
+    .min(
+      20,
+      'Say what this search is for in a sentence, e.g. “Remote backend roles at fintech companies”.'
+    )
+    .max(280, 'Keep it under 280 characters')
+    // Optional only in type, as in agentInputSchema: forms always send the text.
+    .optional(),
+  instructions: z
+    .string()
+    .trim()
+    .min(
+      30,
+      'Tell Leadline what to look for and what to skip. The more context, the better the jobs it finds.'
+    )
+    .max(2000, 'Keep instructions under 2000 characters')
+    .optional(),
+});
+export const jobSearchInputResolver = zodResolver(jobSearchInputSchema);
 
 export type AgentSchedule = z.infer<typeof agentScheduleSchema>;
 export type Agent = z.infer<typeof agentSchema>;

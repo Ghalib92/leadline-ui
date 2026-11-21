@@ -45,7 +45,7 @@ const tabKeys = ['overview', 'history', 'opportunities', 'settings'] as const;
 /** One automation: overview, run history, what it found, and its settings (`?tab=`). */
 export default function AgentPage() {
   const { id = '' } = useParams();
-  const { org, can } = useOrg();
+  const { org, can, view } = useOrg();
   const path = useOrgPath();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -122,7 +122,10 @@ export default function AgentPage() {
   return (
     <Page>
       <PageHeader
-        back={{ to: path('/agents'), label: 'Searches' }}
+        back={{
+          to: path('/agents'),
+          label: view.isCandidate ? 'Job searches' : 'Searches',
+        }}
         title={agent.name}
         meta={
           <>
@@ -195,7 +198,7 @@ export default function AgentPage() {
           },
           {
             value: 'opportunities',
-            label: 'Opportunities',
+            label: view.isCandidate ? 'Jobs found' : 'Opportunities',
             content: <AgentOpportunities agent={agent} />,
           },
           {

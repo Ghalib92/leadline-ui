@@ -48,7 +48,10 @@ export function FormTextField<TFieldValues extends FieldValues>({
           </FormLabel>
           <FormControl>
             <Input
-              type={type}
+              // A link is a text field with the URL keyboard: the browser's own URL
+              // check refuses "linkedin.com/in/…", which the schema completes itself.
+              type={type === 'url' ? 'text' : type}
+              inputMode={type === 'url' ? 'url' : undefined}
               placeholder={placeholder}
               autoComplete={autoComplete}
               disabled={disabled}

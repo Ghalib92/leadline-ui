@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { optionalWebLink, webLink } from './web-link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   documentCategories,
@@ -205,9 +206,7 @@ export const orgProfileFormSchema = z
     ),
     teamSize: z.string(),
     annualBudget: z.string(),
-    website: blankOr(
-      z.url('Enter a full URL, e.g. https://example.org').max(500)
-    ),
+    website: optionalWebLink('Enter a link, e.g. linkedin.com/in/your-name'),
     contactEmail: blankOr(z.email('Enter a valid email address')),
     phone: z.string().trim().max(30),
     country: blankOr(z.string().regex(/^[A-Z]{2}$/, 'Choose a country')),
@@ -472,7 +471,7 @@ export type OrgLink = z.infer<typeof linkDtoSchema>;
 
 export const linkFormSchema = z.object({
   kind: z.enum(enumValues(linkKinds)),
-  url: z.url('Enter a full URL, e.g. https://example.org').max(500),
+  url: webLink('Enter a link, e.g. example.org'),
   label: z.string().trim().max(100),
 });
 export type LinkForm = z.infer<typeof linkFormSchema>;
@@ -497,7 +496,7 @@ export const orgSourceDtoSchema = z
 export type OrgSource = z.infer<typeof orgSourceDtoSchema>;
 
 export const orgSourceFormSchema = z.object({
-  url: z.url('Enter a full URL, e.g. https://example.org/calls').max(500),
+  url: webLink('Enter a link, e.g. example.org/careers'),
   label: z.string().trim().max(120),
   notes: z.string().trim().max(500),
   enabled: z.boolean(),

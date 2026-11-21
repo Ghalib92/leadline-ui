@@ -6,6 +6,7 @@ import { AGENT_SOURCES, OPPORTUNITY_TYPES, labelOf } from '~/data';
 import { businessCategories } from '~/data/org-taxonomy';
 import {
   agentInputResolver,
+  jobSearchInputResolver,
   toAgentInput,
   type Agent,
   type AgentInput,
@@ -21,6 +22,8 @@ import { toastUtils } from '~/lib/utils/toast';
 import { extractError } from '~/lib/utils/extract-error';
 import { AppCard, AppSheet } from '~/components/composed';
 import { ScopeChips } from './scope-chips';
+import { JobSearchReads } from './job-search-reads';
+import { JOB_SEARCH_COPY } from './job-search-copy';
 import { Button } from '~/components/ui/button';
 import { Form } from '~/components/ui/form';
 import {
@@ -79,6 +82,36 @@ const sections = {
   { title: string; description: string; fields: readonly (keyof AgentInput)[] }
 >;
 type SectionKey = keyof typeof sections;
+
+/** A job seeker's search, in their words: it reads their CV and preferences, not an
+ * organization's settings, and has no folders or opportunity types to pick. */
+const jobSections: Partial<
+  Record<SectionKey, { title?: string; description: string }>
+> = {
+  basics: {
+    description:
+      "What it's called, what it's for, how often it runs and how deep it searches.",
+  },
+  instructions: {
+    title: 'Instructions',
+    description:
+      'What this search should look for and skip. Leadline reads them on every run.',
+  },
+  sources: {
+    title: 'Where it looks',
+    description:
+      'Job sites this search also reads, on top of those in Profile & CV › Job sites.',
+  },
+  lookFor: {
+    title: 'Keywords',
+    description: 'Extra words to search for, on top of the jobs you want.',
+  },
+};
+const sectionText = (key: SectionKey, candidate: boolean) => ({
+  title: (candidate && jobSections[key]?.title) || sections[key].title,
+  description:
+    (candidate && jobSections[key]?.description) || sections[key].description,
+});
 const isSection = (value: string | null): value is SectionKey =>
   !!value && value in sections;
 
@@ -138,6 +171,8 @@ export function AgentSettings({
   canManage,
 }: Readonly<{ agent: Agent; canManage: boolean }>) {
   const path = useOrgPath();
+  const { view } = useOrg();
+  const candidate = view.isCandidate;
   const [searchParams, setSearchParams] = useSearchParams();
   const requested = searchParams.get('edit');
   const editing = canManage && isSection(requested) ? requested : null;
@@ -165,15 +200,15 @@ export function AgentSettings({
   const section = (key: SectionKey, children: ReactNode) => (
     <AppCard
       key={key}
-      title={sections[key].title}
-      description={sections[key].description}
+      title={sectionText(key, candidate).title}
+      description={sectionText(key, candidate).description}
       actions={
         canManage && (
           <Button
             variant="outline"
             size="sm"
             onClick={() => setEditing(key)}
-            aria-label={`Edit ${sections[key].title.toLowerCase()}`}
+            aria-label={`Edit ${sectionText(key, candidate).title.toLowerCase()}`}
           >
             <Pencil className="h-3.5 w-3.5" /> Edit
           </Button>
@@ -186,7 +221,8 @@ export function AgentSettings({
 
   return (
     <div className="space-y-4">
-      {summary && (
+      {candidate && <JobSearchReads agent={agent} />}
+      {summary && !candidate && (
         <div className="rounded-lg border border-border bg-muted/30 px-4 py-3 text-sm">
           <p>
             Each run searches {summary.text}.{' '}
@@ -223,9 +259,14 @@ export function AgentSettings({
           </Row>
           <Row label="Name">{agent.name}</Row>
           <Row label="Description">
-            {agent.description || (
-              <span className="text-muted-foreground">None</span>
-            )}
+            {agent.description ||
+              (candidate ? (
+                <span className="text-amber-700 dark:text-amber-400">
+                  Missing. Say what this search is for.
+                </span>
+              ) : (
+                <span className="text-muted-foreground">None</span>
+              ))}
           </Row>
           <Row label="Schedule">
             {schedules.find((s) => s.value === agent.schedule)?.label}
@@ -235,7 +276,9 @@ export function AgentSettings({
             <span className="text-muted-foreground">
               {scope?.depth.origin === 'agent'
                 ? '(set on this search)'
-                : '(organization default)'}
+                : candidate
+                  ? '(your default)'
+                  : '(organization default)'}
             </span>
           </Row>
         </>
@@ -244,11 +287,16 @@ export function AgentSettings({
       {section(
         'instructions',
         <>
-          <Row label="Extra instructions">
+          <Row label={candidate ? 'Instructions' : 'Extra instructions'}>
             {agent.instructions ? (
               <p className="whitespace-pre-wrap text-sm leading-relaxed">
                 {agent.instructions}
               </p>
+            ) : candidate ? (
+              <span className="text-amber-700 dark:text-amber-400">
+                Missing. Tell it what to look for and what to skip: the more
+                context, the better the jobs it finds.
+              </span>
             ) : (
               <span className="text-muted-foreground">
                 No extra instructions. The search uses its standard rules and
@@ -289,7 +337,7 @@ export function AgentSettings({
       {section(
         'sources',
         <>
-          <Row label="Source types">
+          <Row label={candidate ? 'Built-in job sites' : 'Source types'}>
             <ScopeChips
               items={tag(scope?.sources ?? [], (r: { value: string }) =>
                 labelOf(AGENT_SOURCES, r.value)
@@ -315,14 +363,16 @@ export function AgentSettings({
       {section(
         'lookFor',
         <>
-          <Row label="Opportunity types">
-            <ScopeChips
-              items={tag(
-                scope?.opportunityTypes ?? [],
-                (r: { value: string }) => labelOf(OPPORTUNITY_TYPES, r.value)
-              )}
-            />
-          </Row>
+          {!candidate && (
+            <Row label="Opportunity types">
+              <ScopeChips
+                items={tag(
+                  scope?.opportunityTypes ?? [],
+                  (r: { value: string }) => labelOf(OPPORTUNITY_TYPES, r.value)
+                )}
+              />
+            </Row>
+          )}
           <Row label="Keywords">
             <ScopeChips
               items={tag(
@@ -334,29 +384,30 @@ export function AgentSettings({
         </>
       )}
 
-      {section(
-        'documents',
-        <>
-          <Row label="Organization setting">
-            {knowledgeLabel[scope?.knowledgeMode ?? 'all']}
-          </Row>
-          {/* With all documents, folders add nothing; otherwise they are what runs read. */}
-          {scope?.knowledgeMode !== 'all' && (
-            <Row label="Folders read">
-              <ScopeChips
-                items={tag(
-                  (scope?.folders ?? []).filter(
-                    (f) =>
-                      scope?.knowledgeMode === 'selected' ||
-                      f.origin === 'agent'
-                  ),
-                  (r: { name: string }) => r.name
-                )}
-              />
+      {!candidate &&
+        section(
+          'documents',
+          <>
+            <Row label="Organization setting">
+              {knowledgeLabel[scope?.knowledgeMode ?? 'all']}
             </Row>
-          )}
-        </>
-      )}
+            {/* With all documents, folders add nothing; otherwise they are what runs read. */}
+            {scope?.knowledgeMode !== 'all' && (
+              <Row label="Folders read">
+                <ScopeChips
+                  items={tag(
+                    (scope?.folders ?? []).filter(
+                      (f) =>
+                        scope?.knowledgeMode === 'selected' ||
+                        f.origin === 'agent'
+                    ),
+                    (r: { name: string }) => r.name
+                  )}
+                />
+              </Row>
+            )}
+          </>
+        )}
 
       <AgentSettingsSheet
         agent={agent}
@@ -377,7 +428,8 @@ function AgentSettingsSheet({
   section: SectionKey | null;
   onClose: () => void;
 }>) {
-  const { org } = useOrg();
+  const { org, view } = useOrg();
+  const candidate = view.isCandidate;
   const update = useUpdateAgent(org.id);
   const { data: folders = [] } = useFolders(org.id);
   const { data: runSettings } = useRunSettings(org.id);
@@ -417,7 +469,7 @@ function AgentSettingsSheet({
   };
 
   const form = useForm<AgentInput>({
-    resolver: agentInputResolver,
+    resolver: candidate ? jobSearchInputResolver : agentInputResolver,
     defaultValues: defaults(),
   });
   const links = useFieldArray({ control: form.control, name: 'links' });
@@ -450,7 +502,7 @@ function AgentSettingsSheet({
   const orgDepth =
     runSettings?.depths.find((d) => d.value === runSettings.depth)?.label ??
     'Standard';
-  const meta = section ? sections[section] : null;
+  const meta = section ? sectionText(section, candidate) : null;
 
   return (
     <AppSheet
@@ -480,31 +532,50 @@ function AgentSettingsSheet({
         <form id="agent-settings" onSubmit={onSubmit} className="space-y-4">
           {section === 'basics' && (
             <>
-              <FormPickerField
-                control={form.control}
-                name="goal"
-                label="What it looks for"
-                description="Changing it removes extra sources and types that don't fit the new goal."
-                options={goalItems(goals)}
-                searchable={false}
-                clearable={false}
-                required
-              />
+              {/* A job seeker's searches all look for jobs. */}
+              {!candidate && (
+                <FormPickerField
+                  control={form.control}
+                  name="goal"
+                  label="What it looks for"
+                  description="Changing it removes extra sources and types that don't fit the new goal."
+                  options={goalItems(goals)}
+                  searchable={false}
+                  clearable={false}
+                  required
+                />
+              )}
               <FormTextField
                 control={form.control}
                 name="name"
                 label="Name"
-                placeholder="Health grants in East Africa"
+                placeholder={
+                  candidate
+                    ? JOB_SEARCH_COPY.name
+                    : 'Health grants in East Africa'
+                }
                 autoComplete="off"
                 required
               />
-              <FormTextareaField
-                control={form.control}
-                name="description"
-                label="Description"
-                placeholder="What this search looks for, in a sentence"
-                rows={2}
-              />
+              {candidate ? (
+                <FormTextareaField
+                  control={form.control}
+                  name="description"
+                  label={JOB_SEARCH_COPY.description.label}
+                  description={JOB_SEARCH_COPY.description.help}
+                  placeholder={JOB_SEARCH_COPY.description.placeholder}
+                  rows={2}
+                  required
+                />
+              ) : (
+                <FormTextareaField
+                  control={form.control}
+                  name="description"
+                  label="Description"
+                  placeholder="What this search looks for, in a sentence"
+                  rows={2}
+                />
+              )}
               <FormPickerField
                 control={form.control}
                 name="schedule"
@@ -517,23 +588,34 @@ function AgentSettingsSheet({
                 control={form.control}
                 name="depth"
                 label="How deep to search"
-                placeholder={`Organization default (${orgDepth})`}
+                placeholder={`${candidate ? 'Your default' : 'Organization default'} (${orgDepth})`}
                 options={runSettings?.depths ?? []}
                 searchable={false}
               />
             </>
           )}
 
-          {section === 'instructions' && (
-            <FormTextareaField
-              control={form.control}
-              name="instructions"
-              label="Extra instructions"
-              description="Tell this search what to look for, put first, or avoid. Be specific."
-              placeholder="e.g. Focus on grants supporting climate resilience in East Africa, avoid matching equity requirements, prioritize calls with deadlines at least 30 days away."
-              rows={6}
-            />
-          )}
+          {section === 'instructions' &&
+            (candidate ? (
+              <FormTextareaField
+                control={form.control}
+                name="instructions"
+                label={JOB_SEARCH_COPY.instructions.label}
+                description={JOB_SEARCH_COPY.instructions.help}
+                placeholder={JOB_SEARCH_COPY.instructions.placeholder}
+                rows={6}
+                required
+              />
+            ) : (
+              <FormTextareaField
+                control={form.control}
+                name="instructions"
+                label="Extra instructions"
+                description="Tell this search what to look for, put first, or avoid. Be specific."
+                placeholder="e.g. Focus on grants supporting climate resilience in East Africa, avoid matching equity requirements, prioritize calls with deadlines at least 30 days away."
+                rows={6}
+              />
+            ))}
 
           {section === 'customers' && (
             <>
@@ -566,7 +648,9 @@ function AgentSettingsSheet({
                   goalSources.length === 0
                     ? 'Sources for this goal arrive in the next update'
                     : goalSources.every((s) => orgSources.has(s.value))
-                      ? 'Your organization already uses every source type'
+                      ? candidate
+                        ? 'Every job source is already on'
+                        : 'Your organization already uses every source type'
                       : 'Add a source type'
                 }
                 options={goalSources.filter((s) => !orgSources.has(s.value))}
@@ -578,8 +662,9 @@ function AgentSettingsSheet({
                 <p className="text-sm font-medium">Extra websites</p>
                 {links.fields.length === 0 && (
                   <p className="text-xs text-muted-foreground">
-                    A funder's calls page, a portal or a listing this worker
-                    should always read.
+                    {candidate
+                      ? "A company's careers page or a job board this search should always read."
+                      : "A funder's calls page, a portal or a listing this worker should always read."}
                   </p>
                 )}
                 {links.fields.map((field, index) => (
@@ -592,7 +677,11 @@ function AgentSettingsSheet({
                       name={`links.${index}.url`}
                       label="Website"
                       type="url"
-                      placeholder="https://funder.org/calls"
+                      placeholder={
+                        candidate
+                          ? 'www.safaricom.co.ke/careers'
+                          : 'https://funder.org/calls'
+                      }
                       autoComplete="url"
                       required
                     />
@@ -600,14 +689,20 @@ function AgentSettingsSheet({
                       control={form.control}
                       name={`links.${index}.label`}
                       label="Label"
-                      placeholder="Funder calls page"
+                      placeholder={
+                        candidate ? 'Safaricom careers' : 'Funder calls page'
+                      }
                       autoComplete="off"
                     />
                     <FormTextareaField
                       control={form.control}
                       name={`links.${index}.notes`}
                       label="Note for the AI"
-                      placeholder="Only the open calls section; skip anything marked closed"
+                      placeholder={
+                        candidate
+                          ? 'Only technology and engineering roles'
+                          : 'Only the open calls section; skip anything marked closed'
+                      }
                       rows={2}
                     />
                     <div className="flex items-center gap-3">
@@ -651,27 +746,33 @@ function AgentSettingsSheet({
 
           {section === 'lookFor' && (
             <>
-              <FormPickerField
-                control={form.control}
-                name="opportunityTypes"
-                label="Extra opportunity types"
-                placeholder={
-                  goalTypes.length === 0
-                    ? 'No opportunity types for this goal'
-                    : goalTypes.every((t) => orgTypes.has(t.value))
-                      ? 'Your organization already looks for every type'
-                      : 'Add a type'
-                }
-                options={goalTypes.filter((t) => !orgTypes.has(t.value))}
-                multi
-                optionStyle="checkbox"
-                searchable={false}
-              />
+              {!candidate && (
+                <FormPickerField
+                  control={form.control}
+                  name="opportunityTypes"
+                  label="Extra opportunity types"
+                  placeholder={
+                    goalTypes.length === 0
+                      ? 'No opportunity types for this goal'
+                      : goalTypes.every((t) => orgTypes.has(t.value))
+                        ? 'Your organization already looks for every type'
+                        : 'Add a type'
+                  }
+                  options={goalTypes.filter((t) => !orgTypes.has(t.value))}
+                  multi
+                  optionStyle="checkbox"
+                  searchable={false}
+                />
+              )}
               <FormTagInputField
                 control={form.control}
                 name="keywords"
                 label="Extra keywords"
-                placeholder="e.g. maternal health, then Enter"
+                placeholder={
+                  candidate
+                    ? 'e.g. LangGraph, then Enter'
+                    : 'e.g. maternal health, then Enter'
+                }
                 maxTags={20}
               />
             </>

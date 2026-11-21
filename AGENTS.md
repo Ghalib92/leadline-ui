@@ -404,6 +404,12 @@ Profile, CV (required), Job sites, Search settings (depth only) and Account
 (Delete account). The CV comes first: the tour starts and ends on it, `CvPrompt`
 asks for it, and `useRunBlocked` holds searches until it has been read.
 
+A job search runs on the person's own words: its description and instructions are
+required (`jobSearchInputResolver`, examples in `agent/job-search-copy.ts`), and its
+pages show **What every run reads** (CV, preferences, description, instructions)
+instead of organization settings, folders or opportunity types. "Read my CV" is
+limited (once every 10 minutes, 3 a day); `CvFindings` says when it can run again.
+
 Sign-up asks "What brings you to Leadline?" before the account form (`?as=business`
 or `?as=job-seeker`, `lib/account-kind.ts`); setup then opens on that kind's form.
 
@@ -434,6 +440,10 @@ floating card, not a modal, so the lit sidebar item stays visible.
 ## Forms — React Hook Form + Zod + Reusable Field Components
 
 All forms must use **React Hook Form** with **Zod** validation via `zodResolver`. Use the reusable field components from `app/components/form-fields/` instead of inline `FormField` renders. This ensures consistent error display, label formatting, and form context integration.
+
+Links: use `webLink` / `optionalWebLink` (`lib/schema/web-link.ts`), which add
+`https://` to "linkedin.com/in/…". `FormTextField type="url"` renders a text input
+with the URL keyboard: the browser's own URL check would block such links silently.
 
 ### Available field components
 

@@ -100,7 +100,7 @@ describe('automation settings', () => {
     const sources = screen.getByText('Websites').closest('div') as HTMLElement;
     expect(within(sources).getByText('County tenders')).toHaveAttribute(
       'title',
-      'From your organization'
+      'From your search settings'
     );
     expect(within(sources).getByText('Partner calls')).toHaveAttribute(
       'title',

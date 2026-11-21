@@ -284,9 +284,9 @@ function ApplicationView({
   application,
 }: Readonly<{ orgId: string; oppId: string; application: JobApplication }>) {
   const [downloading, setDownloading] = useState(false);
-  const download = () => {
+  const download = (format: 'docx' | 'pdf') => {
     setDownloading(true);
-    downloadApplication(orgId, oppId)
+    downloadApplication(orgId, oppId, format)
       .catch((error) =>
         toastUtils.error('Download failed', extractError(error))
       )
@@ -309,10 +309,18 @@ function ApplicationView({
         <Button
           size="sm"
           variant="outline"
-          onClick={download}
+          onClick={() => download('pdf')}
           disabled={downloading}
         >
-          <Download className="h-4 w-4" /> Download Word (CV and letter)
+          <Download className="h-4 w-4" /> Download PDF (CV and letter)
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => download('docx')}
+          disabled={downloading}
+        >
+          <Download className="h-4 w-4" /> Word, to edit
         </Button>
       </div>
 

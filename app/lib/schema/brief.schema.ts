@@ -179,6 +179,50 @@ export const toTenderBriefWrite = (form: TenderBriefForm) => {
 
 // ---- Job preferences (job seekers) -------------------------------------------
 
+const cvRoleSchema = z.object({
+  title: z.string(),
+  employer: text,
+  start: text,
+  end: text,
+  location: text,
+  highlights: list(z.string()),
+});
+
+/** Everything the last read of the CV found ({} before it was read). */
+const cvProfileDtoSchema = z
+  .object({
+    headline: text,
+    summary: text,
+    current_title: text,
+    current_employer: text,
+    location: text,
+    looking_for: text,
+    years_experience: z.number().nullable().default(null),
+    seniority: list(z.string()),
+    skills: list(z.string()),
+    experience: list(cvRoleSchema).catch([]),
+    education: list(
+      z.object({ qualification: z.string(), institution: text, year: text })
+    ).catch([]),
+    certifications: list(z.string()),
+    languages: list(z.string()),
+    read_at: z.string().nullish(),
+  })
+  .partial()
+  .nullish();
+
+/** Whether the CV can be read again now: reads are limited (each costs tokens). */
+const cvReadDtoSchema = z
+  .object({
+    blocked: z.enum(['', 'cooldown', 'daily']).catch(''),
+    wait_seconds: z.number().default(0),
+    next_read_at: z.string().nullish(),
+    reads_today: z.number().default(0),
+    reads_per_day: z.number().default(3),
+    cooldown_minutes: z.number().default(10),
+  })
+  .nullish();
+
 export const jobBriefDtoSchema = z
   .object({
     headline: text,
@@ -206,6 +250,8 @@ export const jobBriefDtoSchema = z
       })
       .partial()
       .nullish(),
+    cv_profile: cvProfileDtoSchema,
+    cv_read: cvReadDtoSchema,
   })
   .transform((dto) => ({
     headline: dto.headline,
@@ -231,7 +277,31 @@ export const jobBriefDtoSchema = z
           skills: dto.cv_suggestions.skills ?? [],
         }
       : null,
+    cvProfile: dto.cv_profile?.read_at
+      ? {
+          headline: dto.cv_profile.headline ?? '',
+          summary: dto.cv_profile.summary ?? '',
+          currentTitle: dto.cv_profile.current_title ?? '',
+          currentEmployer: dto.cv_profile.current_employer ?? '',
+          location: dto.cv_profile.location ?? '',
+          lookingFor: dto.cv_profile.looking_for ?? '',
+          yearsExperience: dto.cv_profile.years_experience ?? null,
+          skills: dto.cv_profile.skills ?? [],
+          experience: dto.cv_profile.experience ?? [],
+          education: dto.cv_profile.education ?? [],
+          certifications: dto.cv_profile.certifications ?? [],
+          languages: dto.cv_profile.languages ?? [],
+        }
+      : null,
+    cvRead: {
+      blocked: dto.cv_read?.blocked ?? '',
+      nextReadAt: dto.cv_read?.next_read_at ?? null,
+      readsToday: dto.cv_read?.reads_today ?? 0,
+      readsPerDay: dto.cv_read?.reads_per_day ?? 3,
+      cooldownMinutes: dto.cv_read?.cooldown_minutes ?? 10,
+    },
   }));
+export type CvProfile = NonNullable<JobBrief['cvProfile']>;
 export type JobBrief = z.infer<typeof jobBriefDtoSchema>;
 
 export const jobBriefFormSchema = z

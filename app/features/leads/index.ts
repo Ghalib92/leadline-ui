@@ -181,11 +181,16 @@ export const useEditApplication = (orgId: string, oppId: string) =>
     return data;
   });
 
-/** The tailored CV and the cover letter as one Word file. */
-export const downloadApplication = (orgId: string, oppId: string) =>
+/** The tailored CV and the cover letter as one file: Word or PDF. */
+export const downloadApplication = (
+  orgId: string,
+  oppId: string,
+  format: 'docx' | 'pdf' = 'docx'
+) =>
   downloadFile(
     orgApi(orgId, `${applicationPath(oppId)}/export`),
-    'application.docx'
+    `application.${format}`,
+    { format }
   );
 
 // ---------------------------------------------------------------------------

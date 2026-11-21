@@ -2,7 +2,7 @@ import type { SettingOrigin } from '~/lib/schema';
 import { cn } from '~/lib/utils';
 
 const chipTitle = {
-  organization: 'From your organization',
+  organization: 'From your search settings',
   agent: 'Added by this search',
   run: 'Chosen for this search only',
 } as const;

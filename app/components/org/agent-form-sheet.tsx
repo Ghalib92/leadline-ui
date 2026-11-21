@@ -1,7 +1,12 @@
 import { useEffect, useEffectEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import { agentInputResolver, type AgentInput } from '~/lib/schema';
+import {
+  agentInputResolver,
+  jobSearchInputResolver,
+  type AgentInput,
+} from '~/lib/schema';
+import { JOB_SEARCH_COPY } from '~/components/org/agent/job-search-copy';
 import {
   defaultGoal,
   goalItems,
@@ -70,7 +75,8 @@ export function AgentFormSheet({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }>) {
-  const { org } = useOrg();
+  const { org, view } = useOrg();
+  const candidate = view.isCandidate;
   const navigate = useNavigate();
   const path = useOrgPath();
   const create = useCreateAgent(org.id);
@@ -94,7 +100,7 @@ export function AgentFormSheet({
   });
 
   const form = useForm<AgentInput>({
-    resolver: agentInputResolver,
+    resolver: candidate ? jobSearchInputResolver : agentInputResolver,
     defaultValues: defaults(),
   });
 
@@ -121,7 +127,9 @@ export function AgentFormSheet({
       const agent = await create.mutateAsync(input);
       toastUtils.success(
         'Search created',
-        "It uses your organization's search settings. Add to them here."
+        candidate
+          ? 'Run it now, or let it run on its schedule.'
+          : "It uses your organization's search settings. Add to them here."
       );
       onOpenChange(false);
       navigate(path(`/agents/${agent.id}?tab=settings`));
@@ -136,8 +144,12 @@ export function AgentFormSheet({
       onOpenChange={onOpenChange}
       dismissible={false}
       size="lg"
-      title="New search"
-      description="It searches with your organization's settings. You can add instructions, sources, types, keywords and folders next."
+      title={candidate ? 'New job search' : 'New search'}
+      description={
+        candidate
+          ? 'Every run reads your CV, your job preferences and what you write here. The more context you give, the better the jobs it finds.'
+          : "It searches with your organization's settings. You can add instructions, sources, types, keywords and folders next."
+      }
       footer={
         <>
           <Button
@@ -159,40 +171,68 @@ export function AgentFormSheet({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-4"
         >
-          <FormPickerField
-            control={form.control}
-            name="goal"
-            label="What should it find?"
-            description="It searches only the sources and types that fit."
-            options={goalItems(goals)}
-            loading={goals.length === 0}
-            searchable={false}
-            clearable={false}
-            required
-          />
+          {/* A job seeker's searches all look for jobs. */}
+          {!candidate && (
+            <FormPickerField
+              control={form.control}
+              name="goal"
+              label="What should it find?"
+              description="It searches only the sources and types that fit."
+              options={goalItems(goals)}
+              loading={goals.length === 0}
+              searchable={false}
+              clearable={false}
+              required
+            />
+          )}
           <FormTextField
             control={form.control}
             name="name"
             label="Name"
-            placeholder={hints.name}
+            placeholder={candidate ? JOB_SEARCH_COPY.name : hints.name}
             autoComplete="off"
             required
           />
-          <FormTextareaField
-            control={form.control}
-            name="description"
-            label="Description"
-            placeholder={hints.description}
-            rows={2}
-          />
-          <FormTextareaField
-            control={form.control}
-            name="instructions"
-            label="Extra instructions"
-            description="Anything this search should focus on, prefer or avoid."
-            placeholder={hints.brief}
-            rows={3}
-          />
+          {candidate ? (
+            <>
+              <FormTextareaField
+                control={form.control}
+                name="description"
+                label={JOB_SEARCH_COPY.description.label}
+                description={JOB_SEARCH_COPY.description.help}
+                placeholder={JOB_SEARCH_COPY.description.placeholder}
+                rows={2}
+                required
+              />
+              <FormTextareaField
+                control={form.control}
+                name="instructions"
+                label={JOB_SEARCH_COPY.instructions.label}
+                description={JOB_SEARCH_COPY.instructions.help}
+                placeholder={JOB_SEARCH_COPY.instructions.placeholder}
+                rows={5}
+                required
+              />
+            </>
+          ) : (
+            <>
+              <FormTextareaField
+                control={form.control}
+                name="description"
+                label="Description"
+                placeholder={hints.description}
+                rows={2}
+              />
+              <FormTextareaField
+                control={form.control}
+                name="instructions"
+                label="Extra instructions"
+                description="Anything this search should focus on, prefer or avoid."
+                placeholder={hints.brief}
+                rows={3}
+              />
+            </>
+          )}
           {goal === 'clients' && (
             <>
               <FormPickerField

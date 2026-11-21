@@ -17,7 +17,7 @@ export function RunAutomationDialog({
   open,
   onClose,
 }: Readonly<{ open: boolean; onClose: () => void }>) {
-  const { org, can } = useOrg();
+  const { org, can, view } = useOrg();
   const path = useOrgPath();
   const navigate = useNavigate();
   const { data: agents = [], isPending } = useAgents(org.id);
@@ -46,8 +46,12 @@ export function RunAutomationDialog({
     <AppDialog
       open={open}
       onOpenChange={(next) => !next && onClose()}
-      title="Run a search"
-      description="Each one searches with your organization's settings plus what it adds."
+      title={view.isCandidate ? 'Run a job search' : 'Run a search'}
+      description={
+        view.isCandidate
+          ? 'Each one reads your CV, your job preferences and its own instructions.'
+          : "Each one searches with your organization's settings plus what it adds."
+      }
       footer={
         can('agents.create') && (
           <Button asChild>
@@ -67,8 +71,9 @@ export function RunAutomationDialog({
         </div>
       ) : runnable.length === 0 ? (
         <p className="py-4 text-sm text-muted-foreground">
-          You have no searches to run yet. Create one to search on a schedule or
-          whenever you like.
+          {view.isCandidate
+            ? 'You have no job searches yet. Create one: say what it is for and what to look for, and it searches on a schedule or whenever you like.'
+            : 'You have no searches to run yet. Create one to search on a schedule or whenever you like.'}
         </p>
       ) : (
         <ul className="max-h-80 divide-y divide-border overflow-y-auto rounded-lg border border-border">

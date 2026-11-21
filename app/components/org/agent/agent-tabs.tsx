@@ -13,6 +13,7 @@ import { EmptyState, PageLoader } from '~/components/dashboard/page';
 import { Button } from '~/components/ui/button';
 import { scopeSummary } from './agent-settings';
 import { ScopeChips } from './scope-chips';
+import { JobSearchReads } from './job-search-reads';
 
 const depthLabel = { quick: 'Quick', standard: 'Standard', deep: 'Deep' };
 
@@ -35,7 +36,8 @@ export function AgentOverview({
   agent,
   onOpenSettings,
 }: Readonly<{ agent: Agent; onOpenSettings: () => void }>) {
-  const { org } = useOrg();
+  const { org, view } = useOrg();
+  const candidate = view.isCandidate;
   const path = useOrgPath();
   const { data: runs } = useRuns(org.id, { agentId: agent.id, limit: 1 });
   const { data: found } = useOpportunities(org.id, {
@@ -48,7 +50,10 @@ export function AgentOverview({
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Tile label="Runs" value={runs?.total ?? '–'} />
-        <Tile label="Opportunities found" value={found?.total ?? '–'} />
+        <Tile
+          label={candidate ? 'Jobs found' : 'Opportunities found'}
+          value={found?.total ?? '–'}
+        />
         <Tile
           label="Last run"
           value={agent.lastRunAt ? timeAgo(agent.lastRunAt) : 'Never'}
@@ -64,15 +69,23 @@ export function AgentOverview({
           hint={
             scope?.depth.origin === 'agent'
               ? 'Set on this search'
-              : 'Organization default'
+              : candidate
+                ? 'Your default'
+                : 'Organization default'
           }
         />
       </div>
 
+      {candidate && <JobSearchReads agent={agent} />}
+
       {scope && (
         <AppCard
-          title="What each run searches"
-          description={`${scopeSummary(scope).text}. Grey items come from your organization; blue ones are added here.`}
+          title={candidate ? 'Where it looks' : 'What each run searches'}
+          description={
+            candidate
+              ? 'Grey items apply to all your searches (Profile & CV › Search settings and Job sites); blue ones are added here.'
+              : `${scopeSummary(scope).text}. Grey items come from your organization; blue ones are added here.`
+          }
           actions={
             <Button variant="outline" size="sm" onClick={onOpenSettings}>
               View settings
@@ -89,19 +102,24 @@ export function AgentOverview({
                 text: l.label || l.url,
                 origin: l.origin,
               })),
-              ...scope.opportunityTypes.map((t) => ({
-                text: labelOf(OPPORTUNITY_TYPES, t.value),
-                origin: t.origin,
-              })),
-              ...(scope.knowledgeMode === 'all'
-                ? [{ text: 'All documents', origin: 'organization' as const }]
-                : scope.folders
-                    .filter(
-                      (f) =>
-                        scope.knowledgeMode === 'selected' ||
-                        f.origin === 'agent'
-                    )
-                    .map((f) => ({ text: f.name, origin: f.origin }))),
+              // A job search looks for jobs and reads the CV: no types or folders.
+              ...(candidate
+                ? []
+                : scope.opportunityTypes.map((t) => ({
+                    text: labelOf(OPPORTUNITY_TYPES, t.value),
+                    origin: t.origin,
+                  }))),
+              ...(candidate
+                ? []
+                : scope.knowledgeMode === 'all'
+                  ? [{ text: 'All documents', origin: 'organization' as const }]
+                  : scope.folders
+                      .filter(
+                        (f) =>
+                          scope.knowledgeMode === 'selected' ||
+                          f.origin === 'agent'
+                      )
+                      .map((f) => ({ text: f.name, origin: f.origin }))),
             ]}
           />
         </AppCard>
