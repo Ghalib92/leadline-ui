@@ -4,6 +4,7 @@ import type { Agent } from '~/lib/schema';
 import { timeAgo } from '~/lib/utils/format';
 import { useOrgPath } from '~/lib/org/use-org-path';
 import { RunStatusBadge } from '~/features/runs/badges';
+import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Switch } from '~/components/ui/switch';
 
@@ -21,6 +22,19 @@ interface AgentTileProps {
   onToggle: (enabled: boolean) => void;
   /** Why it can't run yet (its goal has no search); disables Run now. */
   runBlocked?: string | null;
+}
+
+/** A job seeker's search written from their CV, which Home's "Run a search" runs. */
+export function DefaultSearchBadge() {
+  return (
+    <Badge
+      variant="secondary"
+      className="shrink-0 text-xs font-normal"
+      title="Written from your CV. Run a search on Home runs it."
+    >
+      Default · from your CV
+    </Badge>
+  );
 }
 
 /** One automation in the list: name, schedule, last run. Details live on its page. */
@@ -41,6 +55,7 @@ export function AgentTile({
         <p className="flex items-center gap-1 font-medium group-hover:underline">
           <span className="truncate">{agent.name}</span>
           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          {agent.isDefault && <DefaultSearchBadge />}
         </p>
         <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
           <span>{scheduleLabel[agent.schedule]}</span>
@@ -60,14 +75,17 @@ export function AgentTile({
         </p>
       </Link>
       <div className="flex items-center gap-3">
-        <Switch
-          checked={agent.enabled}
-          onCheckedChange={onToggle}
-          disabled={!canManage}
-          aria-label={
-            agent.enabled ? `Turn off ${agent.name}` : `Turn on ${agent.name}`
-          }
-        />
+        {/* The default search stays on. */}
+        {!agent.isDefault && (
+          <Switch
+            checked={agent.enabled}
+            onCheckedChange={onToggle}
+            disabled={!canManage}
+            aria-label={
+              agent.enabled ? `Turn off ${agent.name}` : `Turn on ${agent.name}`
+            }
+          />
+        )}
         {canManage && (
           <Button
             size="sm"

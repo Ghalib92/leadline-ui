@@ -44,12 +44,14 @@ export function JobSearchReads({ agent }: Readonly<{ agent: Agent }>) {
     },
     {
       label: "This search's description",
+      source: sourceOf(agent, 'description'),
       ok: !!agent.description?.trim(),
       detail:
         agent.description?.trim() || 'Missing. Say what this search is for.',
     },
     {
       label: "This search's instructions",
+      source: sourceOf(agent, 'instructions'),
       ok: !!agent.instructions?.trim(),
       detail:
         agent.instructions?.trim() ||
@@ -79,6 +81,12 @@ export function JobSearchReads({ agent }: Readonly<{ agent: Agent }>) {
                 ) : (
                   row.label
                 )}
+                {'source' in row && row.source && (
+                  <span className="font-normal text-muted-foreground">
+                    {' '}
+                    · {row.source}
+                  </span>
+                )}
               </p>
               <p className="line-clamp-2 whitespace-pre-wrap text-muted-foreground">
                 {row.detail}
@@ -87,6 +95,20 @@ export function JobSearchReads({ agent }: Readonly<{ agent: Agent }>) {
           </li>
         ))}
       </ul>
+      {agent.isDefault && (
+        <p className="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">
+          This is your default search: Leadline wrote it from your CV, and Run a
+          search on Home runs it. Edit anything in Settings. When your CV is
+          read again, or your job preferences change, the parts you haven’t
+          edited are rewritten to match.
+        </p>
+      )}
     </AppCard>
   );
+}
+
+/** A default search's field: still as the CV wrote it, or the person's own. */
+function sourceOf(agent: Agent, field: 'description' | 'instructions') {
+  if (!agent.isDefault) return '';
+  return agent.followsCv?.includes(field) ? 'from your CV' : 'your words';
 }

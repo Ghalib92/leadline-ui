@@ -77,6 +77,13 @@ export const agentSchema = z.object({
   createdAt: z.string(),
   /** Backend: whether I may edit, delete or run it (admins and the owner). */
   canManage: z.boolean().optional(),
+  /**
+   * A job seeker's "Default search", written from their CV: Home's "Run a
+   * search" runs it. It keeps its name, stays on and can't be deleted.
+   */
+  isDefault: z.boolean().optional(),
+  /** Its fields still as the CV wrote them; the next CV read updates these. */
+  followsCv: z.array(z.enum(['description', 'instructions'])).optional(),
 });
 
 export const agentInputSchema = z.object({

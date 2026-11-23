@@ -182,16 +182,26 @@ export const useEditApplication = (orgId: string, oppId: string) =>
   });
 
 /** The tailored CV and the cover letter as one file: Word or PDF. */
-export const downloadApplication = (
+/**
+ * The tailored CV and the cover letter, as two files of one format: one each,
+ * so they can be attached separately. Parts the application lacks are skipped.
+ */
+export async function downloadApplication(
   orgId: string,
   oppId: string,
-  format: 'docx' | 'pdf' = 'docx'
-) =>
-  downloadFile(
-    orgApi(orgId, `${applicationPath(oppId)}/export`),
-    `application.${format}`,
-    { format }
-  );
+  format: 'docx' | 'pdf',
+  parts: readonly ApplicationPart[] = ['cv', 'letter']
+) {
+  for (const part of parts) {
+    await downloadFile(
+      orgApi(orgId, `${applicationPath(oppId)}/export`),
+      `${part === 'cv' ? 'cv' : 'cover-letter'}.${format}`,
+      { format, part }
+    );
+  }
+}
+
+export type ApplicationPart = 'cv' | 'letter';
 
 // ---------------------------------------------------------------------------
 // Calls and messages

@@ -1,6 +1,7 @@
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { Loader2, Play, Trash2 } from 'lucide-react';
 import {
+  DefaultSearchBadge,
   useAgent,
   useDeleteAgent,
   useRunAgent,
@@ -129,15 +130,20 @@ export default function AgentPage() {
         title={agent.name}
         meta={
           <>
-            <span className="inline-flex items-center gap-2">
-              <Switch
-                checked={agent.enabled}
-                onCheckedChange={onToggle}
-                disabled={!canManage || update.isPending}
-                aria-label={agent.enabled ? 'Turn off' : 'Turn on'}
-              />
-              {agent.enabled ? 'On' : 'Off'}
-            </span>
+            {agent.isDefault ? (
+              // The default search stays on; Home's "Run a search" runs it.
+              <DefaultSearchBadge />
+            ) : (
+              <span className="inline-flex items-center gap-2">
+                <Switch
+                  checked={agent.enabled}
+                  onCheckedChange={onToggle}
+                  disabled={!canManage || update.isPending}
+                  aria-label={agent.enabled ? 'Turn off' : 'Turn on'}
+                />
+                {agent.enabled ? 'On' : 'Off'}
+              </span>
+            )}
             <span aria-hidden>·</span>
             {scheduleLabel[agent.schedule]}
           </>
@@ -160,17 +166,19 @@ export default function AgentPage() {
                 )}
                 Run now
               </Button>
-              <AppDropdown
-                label="More actions"
-                items={[
-                  {
-                    label: 'Delete search',
-                    icon: Trash2,
-                    destructive: true,
-                    onSelect: onDelete,
-                  },
-                ]}
-              />
+              {!agent.isDefault && (
+                <AppDropdown
+                  label="More actions"
+                  items={[
+                    {
+                      label: 'Delete search',
+                      icon: Trash2,
+                      destructive: true,
+                      onSelect: onDelete,
+                    },
+                  ]}
+                />
+              )}
             </>
           )
         }

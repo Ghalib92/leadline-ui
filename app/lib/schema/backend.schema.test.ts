@@ -62,6 +62,23 @@ describe('backend contract', () => {
     });
   });
 
+  it("reads a job seeker's default search and what still follows the CV", () => {
+    const [plain] = agentDtoSchema.array().parse(agents);
+    expect(plain.isDefault).toBe(false); // older payloads: not the default
+    expect(plain.followsCv).toEqual([]);
+    const [fromCv] = agentDtoSchema.array().parse([
+      {
+        ...agents[0],
+        name: 'Default search',
+        goal: 'jobs',
+        is_default: true,
+        follows_cv: ['instructions'],
+      },
+    ]);
+    expect(fromCv.isDefault).toBe(true);
+    expect(fromCv.followsCv).toEqual(['instructions']);
+  });
+
   it('reads what an agent adds and the merged scope it searches', () => {
     const [agent] = agentDtoSchema.array().parse(agents);
     expect(agent.depth).toBe('');

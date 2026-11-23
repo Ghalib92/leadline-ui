@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
-import { ChevronRight, Play } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
+import { ChevronRight, Loader2, Play } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { InsightsPanel } from '~/components/dashboard/insights-panel';
 import { useOrgOverview } from '~/features/orgs';
+import { useRunBlocked } from '~/features/agents';
+import { useStartSearch } from '~/features/runs';
+import { extractError } from '~/lib/utils/extract-error';
+import { toastUtils } from '~/lib/utils/toast';
 import { DeadlineBadge, MatchScore, TypeBadge } from '~/features/opportunities';
 import { useOrg } from '~/lib/org/org-context';
 import { useOrgPath } from '~/lib/org/use-org-path';
@@ -59,13 +63,54 @@ function OpportunityRow({
   );
 }
 
-/** Opens "Run an automation": run one, create one, or search once. */
+/**
+ * A job seeker's "Run a search" runs their default search (written from the
+ * CV) straight away; "Other searches" lists the rest. An organization picks a
+ * search in the dialog.
+ */
 function RunButton() {
+  const { org, view } = useOrg();
+  const path = useOrgPath();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const start = useStartSearch(org.id);
+  const blocked = useRunBlocked()('jobs');
+
+  if (!view.isCandidate) {
+    return (
+      <>
+        <Button size="lg" onClick={() => setOpen(true)}>
+          <Play className="h-4 w-4" />
+          Run a search
+        </Button>
+        <RunAutomationDialog open={open} onClose={() => setOpen(false)} />
+      </>
+    );
+  }
+
+  const runDefault = () =>
+    start.mutate(undefined, {
+      onSuccess: ({ run }) => navigate(path(`/runs/${run.id}`)),
+      onError: (error) =>
+        toastUtils.error('Could not start the search', extractError(error)),
+    });
+
   return (
     <>
-      <Button size="lg" onClick={() => setOpen(true)}>
-        <Play className="h-4 w-4" />
+      <Button variant="outline" size="lg" onClick={() => setOpen(true)}>
+        Other searches
+      </Button>
+      <Button
+        size="lg"
+        onClick={runDefault}
+        disabled={start.isPending || !!blocked}
+        title={blocked ?? 'Runs your default search, written from your CV'}
+      >
+        {start.isPending ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Play className="h-4 w-4" />
+        )}
         Run a search
       </Button>
       <RunAutomationDialog open={open} onClose={() => setOpen(false)} />

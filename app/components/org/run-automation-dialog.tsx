@@ -1,6 +1,11 @@
 import { Link, useNavigate } from 'react-router';
 import { Loader2, Play, Plus } from 'lucide-react';
-import { useAgents, useRunAgent, useRunBlocked } from '~/features/agents';
+import {
+  DefaultSearchBadge,
+  useAgents,
+  useRunAgent,
+  useRunBlocked,
+} from '~/features/agents';
 import { useOrg } from '~/lib/org/org-context';
 import { useOrgPath } from '~/lib/org/use-org-path';
 import { timeAgo } from '~/lib/utils/format';
@@ -87,7 +92,8 @@ export function RunAutomationDialog({
                 >
                   {agent.name}
                 </Link>
-                <p className="text-xs text-muted-foreground">
+                <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                  {agent.isDefault && <DefaultSearchBadge />}
                   {agent.lastRunAt
                     ? `Last run ${timeAgo(agent.lastRunAt)}`
                     : 'Never run'}

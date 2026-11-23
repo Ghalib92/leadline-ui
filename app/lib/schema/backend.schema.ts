@@ -352,6 +352,11 @@ export const agentDtoSchema = z
     depth: z.enum(['', ...runDepths]).catch(''),
     effective: agentScopeDtoSchema.nullish(),
     can_manage: z.boolean(),
+    is_default: z.boolean().catch(false).default(false),
+    follows_cv: z
+      .array(z.enum(['description', 'instructions']))
+      .catch([])
+      .default([]),
     created_at: z.string(),
   })
   .transform(
@@ -381,6 +386,8 @@ export const agentDtoSchema = z
       lastRunOpportunities: dto.last_run_opportunities ?? undefined,
       createdAt: dto.created_at,
       canManage: dto.can_manage,
+      isDefault: dto.is_default,
+      followsCv: dto.follows_cv,
     })
   );
 

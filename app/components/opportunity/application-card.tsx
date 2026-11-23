@@ -283,14 +283,25 @@ function ApplicationView({
   oppId,
   application,
 }: Readonly<{ orgId: string; oppId: string; application: JobApplication }>) {
-  const [downloading, setDownloading] = useState(false);
+  const [downloading, setDownloading] = useState<'docx' | 'pdf' | null>(null);
+  // Two files, so each can be attached on its own; an empty part is skipped.
+  const parts = [
+    ...(application.cv.trim() ? (['cv'] as const) : []),
+    ...(application.coverLetter.trim() ? (['letter'] as const) : []),
+  ];
+  const what =
+    parts.length === 2
+      ? 'CV and cover letter'
+      : parts[0] === 'cv'
+        ? 'CV'
+        : 'cover letter';
   const download = (format: 'docx' | 'pdf') => {
-    setDownloading(true);
-    downloadApplication(orgId, oppId, format)
+    setDownloading(format);
+    downloadApplication(orgId, oppId, format, parts)
       .catch((error) =>
         toastUtils.error('Download failed', extractError(error))
       )
-      .finally(() => setDownloading(false));
+      .finally(() => setDownloading(null));
   };
   return (
     <div className="space-y-6">
@@ -306,23 +317,45 @@ function ApplicationView({
             </a>
           </Button>
         )}
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => download('pdf')}
-          disabled={downloading}
-        >
-          <Download className="h-4 w-4" /> Download PDF (CV and letter)
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => download('docx')}
-          disabled={downloading}
-        >
-          <Download className="h-4 w-4" /> Word, to edit
-        </Button>
+        {parts.length > 0 && (
+          <>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => download('pdf')}
+              disabled={!!downloading}
+              title={`Your ${what}, ${parts.length === 2 ? 'as two PDF files' : 'as a PDF'}`}
+            >
+              {downloading === 'pdf' ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}{' '}
+              Download PDF{parts.length === 2 ? 's' : ''}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => download('docx')}
+              disabled={!!downloading}
+              title={`Your ${what}, ${parts.length === 2 ? 'as two Word files' : 'as a Word file'}`}
+            >
+              {downloading === 'docx' ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}{' '}
+              Word, to edit
+            </Button>
+          </>
+        )}
       </div>
+      {parts.length === 2 && (
+        <p className="-mt-4 text-xs text-muted-foreground">
+          Your CV and cover letter download as two files, ready to attach
+          separately.
+        </p>
+      )}
 
       {application.unverified.length > 0 && (
         <Section

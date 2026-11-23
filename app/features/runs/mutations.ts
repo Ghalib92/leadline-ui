@@ -35,6 +35,8 @@ export const useUpdateRunSettings = (orgId: string) => {
 /**
  * "Search for opportunities": a run from the org's search settings, with no
  * saved search. `settings` (optional) apply to this run only. Any member.
+ * For a job seeker it runs their default search (written from the CV, created
+ * on the way if needed).
  */
 export const useStartSearch = (orgId: string) => {
   const queryClient = useQueryClient();
@@ -54,6 +56,7 @@ export const useStartSearch = (orgId: string) => {
       });
       queryClient.invalidateQueries({ queryKey: orgKeys.overview(orgId) });
       queryClient.invalidateQueries({ queryKey: opportunityKeys.org(orgId) });
+      queryClient.invalidateQueries({ queryKey: agentKeys.all });
     },
   });
 };

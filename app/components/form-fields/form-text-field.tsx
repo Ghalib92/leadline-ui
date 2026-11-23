@@ -1,6 +1,7 @@
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -12,6 +13,8 @@ interface FormTextFieldProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
   label: string;
+  /** Help under the field. */
+  description?: string;
   placeholder?: string;
   /** HTML autocomplete token (`email`, `new-password`, `organization`…): autofill + a11y. */
   autoComplete?: string;
@@ -31,6 +34,7 @@ export function FormTextField<TFieldValues extends FieldValues>({
   control,
   name,
   label,
+  description,
   placeholder,
   autoComplete,
   required = false,
@@ -58,6 +62,7 @@ export function FormTextField<TFieldValues extends FieldValues>({
               {...field}
             />
           </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}

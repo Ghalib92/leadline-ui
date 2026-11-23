@@ -554,6 +554,12 @@ function AgentSettingsSheet({
                     ? JOB_SEARCH_COPY.name
                     : 'Health grants in East Africa'
                 }
+                description={
+                  agent.isDefault
+                    ? 'Your default search keeps its name. Create a search to name your own.'
+                    : undefined
+                }
+                disabled={agent.isDefault}
                 autoComplete="off"
                 required
               />

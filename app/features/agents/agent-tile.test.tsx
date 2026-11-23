@@ -91,4 +91,24 @@ describe('AgentTile', () => {
     renderTile({ ...sampleAgent, enabled: false });
     expect(screen.getByRole('button', { name: /run now/i })).toBeDisabled();
   });
+
+  it('marks the default search, which stays on', () => {
+    renderTile({
+      ...sampleAgent,
+      name: 'Default search',
+      goal: 'jobs',
+      isDefault: true,
+    });
+    expect(screen.getByText('Default · from your CV')).toBeInTheDocument();
+    expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /run now/i })).toBeEnabled();
+  });
+
+  it('lets other searches be switched off', () => {
+    renderTile();
+    expect(screen.queryByText(/Default/)).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('switch', { name: /Turn off Education Grants Scout/ })
+    ).toBeInTheDocument();
+  });
 });
